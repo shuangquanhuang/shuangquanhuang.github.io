@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="习题3-1 证明在两类线性分类中，权重向量w与决策平面正交。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nndl_3">
+<meta property="og:url" content="http://yoursite.com/2019/08/13/nndl-3/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="习题3-1 证明在两类线性分类中，权重向量w与决策平面正交。">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2019/08/13/nndl-3/output_21_0.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/13/nndl-3/output_22_0.png">
+<meta property="article:published_time" content="2019-08-13T10:03:47.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.795Z">
+<meta property="article:author" content="Firepaw">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/13/nndl-3/output_21_0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/13/nndl-3/"/>
+
+
+
+
+
+  <title>nndl_3 | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/13/nndl-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">nndl_3</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-13T18:03:47+08:00">
+                2019-08-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>习题3-1</strong> 证明在两类线性分类中，权重向量w与决策平面正交。</p>
+<span id="more"></span>
+
+<p>正交就是垂直，向量$\mathbf w$ 和向量$\mathbf v$正交等价于 $\mathbf w^T \mathbf v = 0$</p>
+<p>如果一个超平面的方程是$\mathbf w^T \mathbf x + b = 0$，那么法向量$\mathbf v$就必须垂直于这个超平面内的任意一个向量。</p>
+<p>假设$\mathbf {x_1}, \mathbf {x_2}$是超平面上的任意两点，那么它们满足</p>
+<p>$\mathbf w^T \mathbf{x_1} + b = 0$, $\mathbf w^T \mathbf{x_2} + b = 0$</p>
+<p>$\mathbf {x_1}$和$\mathbf {x_2}$构成的向量是$\mathbf {x_1} - \mathbf {x_2}$。</p>
+<p>根据上面的式子，我们也知道$\mathbf w^T(\mathbf{x1}−\mathbf{x2}) = 0$。</p>
+<p>所以$\mathbf w$向量就是始终和超平面内任意一个向量垂直的向量，所以法向量$\mathbf v$就等于$\mathbf w$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">w = np.random.rand(<span class="number">10</span>, <span class="number">1</span>)</span><br><span class="line">b = np.random.rand()</span><br><span class="line">w, b</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(array([[0.01914967],
+        [0.28370511],
+        [0.18520577],
+        [0.39552736],
+        [0.19361916],
+        [0.39455089],
+        [0.23097882],
+        [0.22954742],
+        [0.6859955 ],
+        [0.30240609]]), 0.9271464278990567)
+</code></pre>
+<p>$\mathbf w^T+\mathbf x + b = 0 \Rightarrow \mathbf x = (\mathbf w^T)^{-1}\dot(-b)$</p>
+<p>$\mathbf w$不满秩，没有逆，但是可以求伪逆，伪逆是离原点最近的解。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x1 = -np.linalg.pinv(w.T)*b</span><br><span class="line">x1</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[-0.01567261],
+       [-0.23219189],
+       [-0.15157738],
+       [-0.32371023],
+       [-0.15846313],
+       [-0.32291106],
+       [-0.18903928],
+       [-0.18786778],
+       [-0.56143716],
+       [-0.24749727]])
+</code></pre>
+<p>$\mathbf{x_2}$是另一个解</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x2 = np.zeros_like(x1)</span><br><span class="line">x2[-<span class="number">1</span>, <span class="number">0</span>] = -b/w[-<span class="number">1</span>]</span><br><span class="line">x2</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[ 0.        ],
+       [ 0.        ],
+       [ 0.        ],
+       [ 0.        ],
+       [ 0.        ],
+       [ 0.        ],
+       [ 0.        ],
+       [ 0.        ],
+       [ 0.        ],
+       [-3.06589869]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">w.T.dot(x1)+b, w.T.dot(x2)+b</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(array([[0.]]), array([[0.]]))
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">u = x1-x2</span><br><span class="line">w.T.dot(u)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[-1.66533454e-16]])
+</code></pre>
+<p>可以看出$\mathbf w^T \mathbf u = \mathbf w^T (\mathbf{x_1}-\mathbf{x_2}) = 0$</p>
+<p>所以$\mathbf w$和超平面$\mathbf w^T \mathbf x + b = 0$正交。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>习题3-2</strong> 在线性空间中，证明一个点$\mathbf x$到平面$f(\mathbf x; \mathbf w)= \mathbf w^T \mathbf x + b = 0$ 的距离为 $|f (\mathbf x;\mathbf w)|/ \Vert \mathbf w \Vert$。</p>
+<p><a target="_blank" rel="noopener" href="https://mathinsight.org/distance_point_plane">Distance From Point To Plane</a></p>
+<p>由$3-1$知，平面 $f(\mathbf x; \mathbf w)= \mathbf w^T \mathbf x + b = 0$ 的法向量是$\mathbf w$。</p>
+<p>在平面上任意选一点$\mathbf y$，向量$\vec{\mathbf{xy}}$在法向量$\mathbf w$上的投影即是点$\mathbf x$到平面的距离。</p>
+<p>即向量$\vec{\mathbf{xy}}$ 和单位法向量 $\frac{\mathbf w}{\Vert \mathbf w \Vert}$的点积。</p>
+<p>取$\mathbf y = -(\mathbf w^T)^{-1}b$，所以$\vec{\mathbf{yx}}= \mathbf x - \mathbf y = \mathbf x + (\mathbf w^T)^{-1}b$。</p>
+<p>所以距离</p>
+<p>$$<br>\begin{aligned}<br>d &amp;= \vec{\mathbf{yx}} \cdot \frac{\mathbf w}{\Vert \mathbf w \Vert}<br>\\ &amp;= \left \vert \frac{1}{\Vert \mathbf w \Vert} \mathbf w^T (\mathbf x + (\mathbf w^T)^{-1}b) \right \vert<br>\\ &amp;= \frac{\left \vert \mathbf w^T \mathbf x + b \right \vert}{\Vert \mathbf w \Vert}<br>\\ &amp;= \frac{\left \vert f(\mathbf x; \mathbf w)\right \vert }{\Vert \mathbf w \Vert}<br>\end{aligned}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = np.random.rand(<span class="number">10</span>, <span class="number">1</span>)</span><br><span class="line">d = w.T.dot(x) / np.<span class="built_in">sum</span>(np.square(w))</span><br><span class="line">d</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[1.38224886]])
+</code></pre>
+<p><strong>习题3-4</strong> 在线性分类中，决策区域是凸的。即若点$\mathbf x_1$和$\mathbf x_2$被分为类c，则点<br>$\rho \mathbf x_1 + (1-\rho) \mathbf x_2$ 也会被分为类c，其中$\rho \in (0, 1)$。</p>
+<p>假设$f(\mathbf x; \mathbf w) &gt; 0$时分类为c，那么：</p>
+<p>$$<br>f(\mathbf x_1; \mathbf w) &gt; 0<br>\\ f(\mathbf x_2; \mathbf w) &gt; 0<br>$$</p>
+<p>所以</p>
+<p>$$<br>\begin{aligned}<br>\\ f(\rho \mathbf x_1 + (1-\rho) \mathbf x_2; \mathbf w) &amp;= \mathbf w^T (\rho \mathbf x_1 + (1-\rho) \mathbf x_2) + b<br>\\ &amp;= \rho \mathbf w^T \mathbf x_1 + (1-\rho) \mathbf w^T \mathbf x_2 + b<br>\\ &amp;= \rho (\mathbf w^T + b) + (1-\rho) (\mathbf w^T \mathbf x_2 + b)<br>\\ &amp;= f(\mathbf x_1; \mathbf w) + f(\mathbf x_2; \mathbf w)<br>\\ &amp;&gt; 0<br>\end{aligned}<br>$$<br>即也被分类为c。</p>
+<p><strong>习题3-6</strong>在Logistic回归中，是否可以用$\hat{\mathbf y}=\sigma(\mathbf w^T \mathbf x)$去逼近正确的标签$\mathbf y$， 并用平方损失 $(\mathbf y − \hat{\mathbf y})^2$ 最小化来优化参数$\mathbf w$?</p>
+<p>在逻辑回归中，$y \in {0, 1}$，根据概率论，我们约定$\hat y = P(y=1|x)$。这样我们可以得到：</p>
+<p>$$<br>P(y|x) =<br>\begin{cases}<br>\hat y ;&amp; \ y=1 \\<br>1- \hat y ; &amp; \ y=0<br>\end{cases}<br>$$<br>综合起来就有：</p>
+<p>$$<br>P(y|x) = {\hat y}^y(1-\hat y)^{(1-y)}<br>$$</p>
+<p>取自然对数不改变概率函数的单调性，因此最大和概率函数等价于最大化：</p>
+<p>$$<br>log P(y|x) = y log \hat y + (1-y) log (1-\hat y)<br>$$</p>
+<p>使用梯度下降法求解，需要对上式取相反数，从而转化为求最小值：</p>
+<p>$$<br>\mathcal L(w, b)=-\left[y log \hat y + (1-y) log (1-\hat y) \right]<br>$$</p>
+<p>在整个训练集上使用$m$个样本使用以上的损失函数，可以得到最终的成本损失函数。假设所有的样本都是独立同分布的，因此概率分布是所有概率分布的乘积：</p>
+<p>$$<br>P(y|x_1, x_2, \ldots, x_m)=\prod_{i=1}^mP(y|x_i)<br>$$</p>
+<p>同样，对上式取对数，使用极大似然估计求得概率最大时对应的参数。类似地，我们需要最小化函数，因此取相反数，即：</p>
+<p>$$<br>\mathcal R(\mathbf w) = -\sum_{i=1}^m \left( y^{(i)} log {\hat y}^{(i)} + (1-y^{(i)}) log (1-{\hat y}^{(i)}) \right)<br>$$<br>通常我们会给函数额外添加一个缩放系数$\frac{1}{m}$，得到：</p>
+<p>$$<br>\mathcal R(\mathbf w) = -\frac{1}{m} \sum_{i=1}^m \left( y^{(i)} log {\hat y}^{(i)} + (1-y^{(i)}) log (1-{\hat y}^{(i)}) \right)<br>$$</p>
+<p>因为$ \frac{\partial \hat y}{\partial \mathbf w^T \mathbf x}={\hat y}^{(n)}(1-{\hat y}^{(n)})$, 所以关于参数$\mathbf w$的偏导数为：</p>
+<p>$$<br>\begin{aligned}<br>\frac{\partial \mathcal R(\mathbf w)}{\partial \mathbf w} &amp;=-\frac{1}{N}\sum_{n=1}^N\left(y^{(n)}\frac{\hat y^{(n)}(1-\hat y^{(n)})}{\hat y^{(n)}} {\mathbf x}^{(n)} - (1-y^{(n)}\frac{\hat y^{(n)}(1-\hat y^{(n)})}{1-\hat y^{(n)}}\mathbf x^{(n)}  \right) \\<br>&amp;=-\frac{1}{N}\sum_{n=1}^N\left(y^{(n)}(1-{\hat y}^{(n)}) \mathbf x^{(n)}-(1-y^{(n)}){\hat y}^{(n)}\mathbf x^{(n)}\right) \\<br>&amp;=-\frac{1}{N}\sum_{n=1}^N\mathbf x^{(n)}\left(y^{n}-{\hat y}^{(n)}\right)<br>\end{aligned}<br>$$</p>
+<p>采用梯度下降法，通过下式迭代更新：</p>
+<p>$$<br>\mathbf w_{t+1} = \mathbf w_t+\alpha\frac{1}{N}\sum_{n=1}^N\mathbf x^{(n)}\left(y^{(n)}-{\hat y}_{\mathbf w_t}^{(n)}\right)<br>$$</p>
+<p>如果使用平方损失:</p>
+<p>$$<br>\begin{aligned}<br>\mathcal L(\mathbf x; \theta) &amp;= \frac{1}{2M} (\mathbf y - \hat{\mathbf y})^2<br>\\ &amp;= \frac{1}{2M} (\mathbf y - \sigma(\mathbf w^T \mathbf x))^2<br>\\ \frac{\partial \mathcal L}{\partial \theta}&amp;= -\frac{1}{M}(\mathbf y - \hat{\mathbf y}) \frac{\partial \sigma(\mathbf w^T \mathbf x)}{\partial \theta}<br>\end{aligned}<br>$$<br>其中$\sigma(x) = \frac{1}{1+e^{-x}}$，它的导数是$\frac{\partial \sigma(x)}{\partial x} = \sigma(x)(1-\sigma(x))$</p>
+<p>所以</p>
+<p>$$<br>\frac{\partial \mathcal L(\mathbf x; \theta)}{\partial \theta} = -\frac{1}{M}(\mathbf y - \hat{\mathbf y}) \mathbf x^T \mathbf w(1-\mathbf w)<br>$$</p>
+<p>并不能收敛，而用$\frac{1}{2N}(1-\mathbf y \mathbf {\hat y})^2$做损失函数是可以的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> cm</span><br><span class="line"><span class="comment"># cmap = cm.get_cmap(&#x27;Blues&#x27;)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># w = np.random.rand(2, 1)</span></span><br><span class="line">w0 = np.array([<span class="number">0.6</span>, <span class="number">0.2</span>])</span><br><span class="line">b0 = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line">points = np.random.rand(<span class="number">20</span>, <span class="number">2</span>)</span><br><span class="line">x = np.linspace(<span class="number">0</span>, <span class="number">1</span>, <span class="number">20</span>).reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">x = np.concatenate([x, np.ones_like(x)], axis=<span class="number">1</span>)</span><br><span class="line">x[:, <span class="number">0</span>]</span><br><span class="line">y = x.dot(w0)+b0</span><br><span class="line">plt.plot(x[:,<span class="number">0</span>], y)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">w = (y[<span class="number">1</span>]-y[<span class="number">0</span>]) / (x[<span class="number">1</span>, <span class="number">0</span>] - x[<span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line">b = y[<span class="number">0</span>] - w*x[<span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line">w, b</span><br><span class="line"></span><br><span class="line">cat = [<span class="number">1</span> <span class="keyword">if</span> x &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">for</span> x <span class="keyword">in</span> points[:, <span class="number">1</span>] - (w*points[:, <span class="number">0</span>] + b)]</span><br><span class="line"><span class="comment"># colors = [&#x27;r&#x27; if x &gt; 0 else &#x27;g&#x27; for x in cat]</span></span><br><span class="line">plt.scatter(x=points[:, <span class="number">0</span>], y=points[:, <span class="number">1</span>], c=cat)</span><br><span class="line"><span class="comment"># print(cmap(0), cmap(1))</span></span><br><span class="line"><span class="built_in">print</span>(y)</span><br></pre></td></tr></table></figure>
+
+<pre><code>[0.3        0.33157895 0.36315789 0.39473684 0.42631579 0.45789474
+ 0.48947368 0.52105263 0.55263158 0.58421053 0.61578947 0.64736842
+ 0.67894737 0.71052632 0.74210526 0.77368421 0.80526316 0.83684211
+ 0.86842105 0.9       ]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">w = np.random.rand(<span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">y = np.array([<span class="number">1</span> <span class="keyword">if</span> v == <span class="number">1</span> <span class="keyword">else</span> -<span class="number">1</span> <span class="keyword">for</span> v <span class="keyword">in</span> cat]).reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"><span class="built_in">print</span>(y)</span><br><span class="line"><span class="built_in">print</span>(x.shape, y.shape, w.shape)</span><br><span class="line">alpha = <span class="number">0.01</span></span><br><span class="line">N = <span class="built_in">len</span>(y)</span><br><span class="line">costs = []</span><br><span class="line">x = np.c_[-points[:, <span class="number">0</span>], [-<span class="number">1</span>]*<span class="built_in">len</span>(points), points[:, <span class="number">1</span>]]</span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    cost = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(y)):</span><br><span class="line">        rand_ind = np.random.randint(<span class="number">0</span>, N)</span><br><span class="line">        xi = x[rand_ind].reshape(<span class="number">1</span>, -<span class="number">1</span>)</span><br><span class="line">        yi = y[rand_ind].reshape(<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        yhat = np.<span class="built_in">sum</span>(np.sign(xi.dot(w)))</span><br><span class="line">        yi = np.<span class="built_in">sum</span>(yi)</span><br><span class="line">        cost += <span class="number">1.0</span> / <span class="number">2</span> / N * (<span class="number">1</span>-yi*yhat) ** <span class="number">2</span></span><br><span class="line">        a = (<span class="number">1</span>-yi * yhat) * yi</span><br><span class="line">        w = w + <span class="number">1.0</span> / N * alpha * a * (xi.reshape(-<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line">        w[-<span class="number">1</span>, <span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    costs.append(cost)</span><br></pre></td></tr></table></figure>
+
+<pre><code>[[-1]
+ [-1]
+ [-1]
+ [-1]
+ [-1]
+ [-1]
+ [ 1]
+ [-1]
+ [ 1]
+ [-1]
+ [-1]
+ [-1]
+ [ 1]
+ [ 1]
+ [ 1]
+ [-1]
+ [ 1]
+ [-1]
+ [-1]
+ [-1]]
+(20, 2) (20, 1) (3, 1)
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.plot([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(costs))], costs)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/08/13/nndl-3/output_21_0.png" class="">
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yhat = np.sign(x.dot(w))</span><br><span class="line">plt.scatter(x=-x[:, <span class="number">0</span>], y=x[:, <span class="number">2</span>], c=[<span class="number">1</span> <span class="keyword">if</span> v &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">for</span> v <span class="keyword">in</span> y.flatten()])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/08/13/nndl-3/output_22_0.png" class="">
+
+
+<p>线性回归使用MSE作为损失函数的原因和Logistic类似。</p>
+<p>假设$y=\mathbf x \mathbf w + \epsilon$，其中$\epsilon \sim \mathcal N(0, \sigma^2)$是方差为$\sigma^2$的高斯分布且与$\mathbf x$独立，即训练集和拟合的直线之间的差值符合高斯分布。</p>
+<p>用最大似然估计，似然函数为：</p>
+<p>$$<br>\begin{aligned}<br>\mathcal L(y|\mathbf x; \mathbf w, \sigma^2)&amp;=\underset{\mathbf w}{\arg \max} \prod_{i=1}^N P(y_i|\mathbf x_i; \mathbf w, \sigma^2) \<br>&amp;=\underset{\mathbf w}{\arg \max}\prod_{i=1}^N\frac{1}{\sqrt{2\pi\sigma^2}}exp(-\frac{(y_i-\mathbf w^T \mathbf x_i)}{2\sigma^2}) \<br>\end{aligned}<br>$$</p>
+<p>取对数得到：</p>
+<p>$$<br>\begin{aligned}<br>log \mathcal L(y|\mathbf x; \mathbf w, \sigma^2) &amp;= \sum_{i=1}^N (log\frac{1}{\sqrt{2\pi\sigma^2}} -\frac{(y_i-\mathbf w^T \mathbf x_i)}{2\sigma^2}) \<br>&amp;=-\frac{N}{2}log 2 \pi - n log \sigma - \frac{1}{2\sigma^2}\sum_{i=1}^N(y_i-\mathbf w^T \mathbf x_i)^2<br>\end{aligned}<br>$$</p>
+<p>求似然函数的最大值，等价于$\sum_{i=1}^N(y_i-\mathbf w^T \mathbf x_i)^2$的最小值。</p>
+<p>所以使用最小二乘可以得到最佳拟合直线。</p>
+<p>令导数$=0$ 得到:</p>
+<p>$$<br>\begin{aligned}<br>\frac{\partial}{\partial \mathbf w}\mathcal R(\mathbf w) &amp;= \frac{\partial}{\partial \mathbf w}\mathcal -X(\mathbf y - X^T\mathbf w) = 0<br>\\ \Rightarrow \mathbf w^*&amp;=(XX^T)^{-1}\mathbf y<br>\end{aligned}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/08/nndl_2_6/" rel="next" title="最大似然估计高斯分布">
+                <i class="fa fa-chevron-left"></i> 最大似然估计高斯分布
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/14/nndl-perceptron/" rel="prev" title="感知机">
+                感知机 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

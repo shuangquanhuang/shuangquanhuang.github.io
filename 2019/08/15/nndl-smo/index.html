@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="支持向量机的优化问题 支持向量机的目标函数优化等价于对如下拉格朗日对偶函数的优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SMO算法">
+<meta property="og:url" content="http://yoursite.com/2019/08/15/nndl-smo/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="支持向量机的优化问题 支持向量机的目标函数优化等价于对如下拉格朗日对偶函数的优化">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2019/08/15/nndl-smo/output_4_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/15/nndl-smo/output_7_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/15/nndl-smo/output_9_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/15/nndl-smo/output_39_0.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/15/nndl-smo/output_42_0.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/15/nndl-smo/output_44_0.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/15/nndl-smo/output_45_0.png">
+<meta property="article:published_time" content="2019-08-15T13:49:54.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.801Z">
+<meta property="article:author" content="Firepaw">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/15/nndl-smo/output_4_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/15/nndl-smo/"/>
+
+
+
+
+
+  <title>SMO算法 | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/15/nndl-smo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SMO算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-15T21:49:54+08:00">
+                2019-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>支持向量机的优化问题</strong></p>
+<p>支持向量机的目标函数优化等价于对如下拉格朗日对偶函数的优化</p>
+<span id="more"></span>
+
+<p>$$<br>\max_a\ W(\alpha)=\sum_{i=1}^N\alpha_i-\frac{1}{2}\sum_{i=1}^N\sum_{j=1}^Ny^{(i)}y^{(j)}\alpha_i\alpha_j\langle x^{(i)}, x^{(j)} \rangle<br>$$</p>
+<p>subject to:</p>
+<p>$$<br>\sum_{i=1}^N \alpha_i y_i = 0 \\<br>0 \leq \alpha_i \leq C;\ i=1, 2, \cdots, N<br>$$</p>
+<p>其中</p>
+<ul>
+<li>$N$是训练集的数量</li>
+<li>$x^{(i)}$是第$i$个训练特征向量</li>
+<li>$\alpha_i\alpha_j\langle x^{(i)}, x^{(j)} \rangle$是 $x^{(i)}$ 和 $x^{(j)}$的内积，结果是标量</li>
+<li>$y^{(i)}$是第$i$个训练样例的输出</li>
+<li>$\alpha_i$是第$i$个训练样例的拉格朗日算子</li>
+<li>$C$是正则化参数，$C$越大错误分类时的cost越大，正则化越弱，即对错误分类的容忍越小，超平面的间隔越小。</li>
+<li>使用核函数$\mathbf K(x, z)$时，用$\langle \phi(x^{(I)}, \phi(x^{(j)} \rangle$代替$\langle x^{(i)}, x^{(j)} \rangle$，其中特征映射函数是$\phi(x)$</li>
+</ul>
+<p>我们知道</p>
+<p>$$<br>\mathbf w=\sum_{i=1}^N\alpha_iy^{(i)}\mathbf x^{(n)}<br>$$</p>
+<p>所以SVM的决策函数为</p>
+<p>$$<br>f(\mathbf x)=sign(\mathbf w^T \mathbf x+b)=sign\left(\sum_{i=1}^N\alpha_iy^{(i)}\langle \mathbf x^{(i)}, \mathbf x_{test} \rangle + b\right)<br>$$</p>
+<p>决策函数只依赖于$\alpha_i=0$的样本点，即支持向量。</p>
+<p><strong>核函数</strong></p>
+<p>Kernel function defines inner product in the transformed space.</p>
+<p>对于线性不可分的训练数据，可以将特征$\mathbf x$映射到高维空间$\phi(\mathbf x)$，然后再高维空间中找到超平面进行分割。</p>
+<p>此时对偶函数变为：</p>
+<p>$$<br>\max_a\ W(\alpha)=\sum_{i=1}^N\alpha_i-\frac{1}{2}\sum_{i=1}^N\sum_{j=1}^Ny^{(i)}y^{(j)}\alpha_i\alpha_j\langle \phi(x^{(i)}), \phi(x^{(j))} \rangle<br>$$</p>
+<p>如果我们定义函数$K$为</p>
+<p>$$<br>K(x^{(i)},x^{(j)}) = \langle \phi(x^{(i)}), \phi(x^{(j))} \rangle<br>$$</p>
+<p>因为$K(x^{(i)},x^{(j)}）$是向量内积，所以在计算对偶函数的时候只需要知道函数$K$的值，而不需要知道$\phi(x)$的具体形式，从而避免在高维处理数据，这就是<strong>Kernel Trick</strong></p>
+<p><strong>SMO算法</strong></p>
+<p>坐标上升法(Coordinate Ascent)每次通过更新函数中的一维，通过多次的迭代以达到优化函数的目的。</p>
+<p>由于目标函数为凸函数，一般的优化算法都通过梯度方法一次优化一个变量求解二次规划问题的最大值，但是，对于以上问题，由于限制条件 $\sum_{i=1}^{n}y_{i}\alpha_{i}=0$存在，当某个 $\alpha_{i}$从 $\alpha_{i}^{old} $更新到 $\alpha_{i}^{new}$时，上述限制条件即被打破。为了克服以上的困难，SMO采用一次更新两个变量的方法。</p>
+<p><strong>数学推导</strong></p>
+<p>不失一般性(Without loss of generality)，我们假设选取$\alpha_1, \alpha_2$进行优化，其他$\alpha_i, i\notin {1,2}$不变。因为$\sum_{i=1}^N\alpha_iy_i=0$，所以$y_1\alpha_1^{(old)}+y_2\alpha_2^{(old)}=constant=y_1\alpha_1^{(new)}+y_2\alpha_2^{(new)}$，即$\alpha_1, \alpha_2$在一条直线上。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="comment"># This line is only needed if you have a HiDPI display</span></span><br><span class="line">%config InlineBackend.figure_format = <span class="string">&#x27;retina&#x27;</span></span><br><span class="line"></span><br><span class="line">C = <span class="number">1</span></span><br><span class="line">f = plt.figure(figsize=(<span class="number">15</span>,<span class="number">6</span>))</span><br><span class="line">ax = plt.subplot(<span class="number">121</span>)</span><br><span class="line">ax.set_xlim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.set_ylim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">0</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">1</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.4</span>, <span class="number">1.05</span>, <span class="string">r&#x27;$\alpha_2=C$&#x27;</span>)</span><br><span class="line">ax.text(-<span class="number">0.08</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$\alpha_1=0$&#x27;</span>, rotation=<span class="string">&#x27;vertical&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">1.02</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$\alpha_1=C$&#x27;</span>, rotation=<span class="string">&#x27;vertical&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.4</span>, -<span class="number">0.08</span>, <span class="string">r&#x27;$\alpha_2=0$&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">0.5</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">0.5</span>])</span><br><span class="line">ax.scatter(<span class="number">0.6</span>, <span class="number">0.1</span>, marker=<span class="string">&#x27;o&#x27;</span>, facecolor=<span class="string">&#x27;w&#x27;</span>, cmap=plt.cm.viridis, s=<span class="number">100</span>, linewidth=<span class="number">1</span>, edgecolors=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.2</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$y_1, y_2 \in \\&#123;+1, -1\\&#125;$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.2</span>, <span class="number">0.4</span>, <span class="string">r&#x27;$y_1\alpha_1+y_2\alpha_2=C; y_1y_2 &lt; 0 \Leftrightarrow y_1 \neq y_2$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.2</span>, <span class="number">0.3</span>, <span class="string">r&#x27;$\Rightarrow \alpha_1-\alpha_2=\gamma$&#x27;</span>)</span><br><span class="line">ax.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ax = plt.subplot(<span class="number">122</span>)</span><br><span class="line">ax.set_xlim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.set_ylim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">0</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">1</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.4</span>, <span class="number">1.05</span>, <span class="string">r&#x27;$\alpha_2=C$&#x27;</span>)</span><br><span class="line">ax.text(-<span class="number">0.08</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$\alpha_1=0$&#x27;</span>, rotation=<span class="string">&#x27;vertical&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">1.02</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$\alpha_1=C$&#x27;</span>, rotation=<span class="string">&#x27;vertical&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.4</span>, -<span class="number">0.08</span>, <span class="string">r&#x27;$\alpha_2=0$&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">0.0</span>, <span class="number">0.5</span>], [<span class="number">0.5</span>, <span class="number">0</span>])</span><br><span class="line">ax.scatter(<span class="number">0.2</span>, <span class="number">0.3</span>, marker=<span class="string">&#x27;o&#x27;</span>, facecolor=<span class="string">&#x27;w&#x27;</span>, cmap=plt.cm.viridis, s=<span class="number">100</span>, linewidth=<span class="number">1</span>, edgecolors=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$y_1, y_2 \in \\&#123;+1, -1\\&#125;$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.4</span>, <span class="string">r&#x27;$y_1\alpha_1+y_2\alpha_2=C; y_1y_2 &gt; 0 \Leftrightarrow y_1 = y_2$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.3</span>, <span class="string">r&#x27;$\Rightarrow \alpha_1+\alpha_2=\gamma$&#x27;</span>)</span><br><span class="line">ax.axis(<span class="string">&#x27;off&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(-0.2, 1.2, -0.2, 1.2)
+</code></pre>
+<img src="/2019/08/15/nndl-smo/output_4_1.png" class="">
+
+
+<p>不失一般性，可以先计算$\alpha_2^{(new)}$，然后根据它计算$\alpha_1^{(new)}$。</p>
+<p>根据$0 \leq \alpha_1, \alpha_2 \leq C$和$y_1\alpha_1^{(old)}+y_2\alpha_2^{(old)}=constant=y_1\alpha_1^{(new)}+y_2\alpha_2^{(new)}$，即$\alpha_1, \alpha_2$可以得出$\alpha_2^{new}$更严格的限制条件：</p>
+<p>$$<br>U \leq \alpha_2^{(new)} \leq V<br>$$</p>
+<p>其中$U,V$的定义如下:</p>
+<ul>
+<li>如果$y_1 \neq y_2$，对应于上面左图</li>
+</ul>
+<p>$$<br>\begin{cases}<br>U = \max \{0, \alpha_2^{(old)}-\alpha_1^{(old)} \}, \\<br>V = \min \{C, C-\alpha_1^{(old)}+\alpha_2^{(old)} \}<br>\end{cases}<br>$$</p>
+<ul>
+<li>如果$y_1=y_2$，对应于上面右图</li>
+</ul>
+<p>$$<br>\begin{cases}<br>U = \max \{ 0, \alpha_1^{(old)}+\alpha_2^{(old)}-C \},\\<br>V = \min \{ C, \alpha_1^{(old)}+\alpha_2^{(old)} \}<br>\end{cases}<br>$$</p>
+<p>下面是关于$U,V$的具体讨论</p>
+<ul>
+<li><p>如果$y_1 \neq y_2$， 有$\alpha_1-\alpha_2=\gamma$</p>
+<ul>
+<li>如果$\gamma \gt 0$，有$0\leq\alpha_2\leq C-\gamma=C-\alpha_1+\alpha_2$，如下面左图</li>
+<li>如果$\gamma \lt 0$，有$\alpha_2-\alpha_1=-\gamma \leq \alpha_2 \leq C$，如下面右图</li>
+</ul>
+<p>  两个式子综合得到：</p>
+<p>  $$<br>  \begin{cases}<br>  U = \max \{ 0, \alpha_2^{(old)}-\alpha_1^{(old)} \} ,\\<br>  V = \min \{ C, C-\alpha_1^{(old)}+\alpha_2^{(old)} \}<br>  \end{cases}<br>  $$</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">f = plt.figure(figsize=(<span class="number">15</span>,<span class="number">6</span>))</span><br><span class="line">ax = plt.subplot(<span class="number">121</span>)</span><br><span class="line">ax.set_xlim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.set_ylim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.arrow(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1.2</span>, <span class="number">0</span>, length_includes_head = <span class="literal">True</span>, head_width = <span class="number">0.03</span>)</span><br><span class="line">ax.arrow(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1.2</span>, length_includes_head = <span class="literal">True</span>, head_width = <span class="number">0.03</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">1</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.text(-<span class="number">0.05</span>, <span class="number">1.1</span>, <span class="string">r&#x27;$\alpha_2$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">1.1</span>, -<span class="number">0.05</span>, <span class="string">r&#x27;$\alpha_1$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">1.02</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$(C, C-\gamma)$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.4</span>, -<span class="number">0.08</span>, <span class="string">r&#x27;$(\gamma, 0)$&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">0.5</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">0.5</span>])</span><br><span class="line">ax.scatter(<span class="number">0.6</span>, <span class="number">0.1</span>, marker=<span class="string">&#x27;o&#x27;</span>, facecolor=<span class="string">&#x27;w&#x27;</span>, cmap=plt.cm.viridis, s=<span class="number">100</span>, linewidth=<span class="number">1</span>, edgecolors=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$\gamma &gt; 0$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.4</span>, <span class="string">r&#x27;$0 \leq \alpha_2 \leq C-\gamma=C-\alpha_1+\alpha_2$&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ax.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ax = plt.subplot(<span class="number">122</span>)</span><br><span class="line">ax.set_xlim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.set_ylim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.arrow(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1.2</span>, <span class="number">0</span>, length_includes_head = <span class="literal">True</span>, head_width = <span class="number">0.03</span>)</span><br><span class="line">ax.arrow(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1.2</span>, length_includes_head = <span class="literal">True</span>, head_width = <span class="number">0.03</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">1</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.text(-<span class="number">0.05</span>, <span class="number">1.1</span>, <span class="string">r&#x27;$\alpha_2$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">1.1</span>, -<span class="number">0.05</span>, <span class="string">r&#x27;$\alpha_1$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.02</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$(0, -\gamma)$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.4</span>, <span class="number">1.02</span>, <span class="string">r&#x27;$(C+\gamma, C)$&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">0.5</span>], [<span class="number">0.5</span>, <span class="number">1</span>])</span><br><span class="line">ax.scatter(<span class="number">0.2</span>, <span class="number">0.7</span>, marker=<span class="string">&#x27;o&#x27;</span>, facecolor=<span class="string">&#x27;w&#x27;</span>, cmap=plt.cm.viridis, s=<span class="number">100</span>, linewidth=<span class="number">1</span>, edgecolors=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$\gamma &lt; 0$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.4</span>, <span class="string">r&#x27;$-\gamma \leq \alpha_2 \leq C$&#x27;</span>)</span><br><span class="line">ax.axis(<span class="string">&#x27;off&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(-0.2, 1.2, -0.2, 1.2)
+</code></pre>
+<img src="/2019/08/15/nndl-smo/output_7_1.png" class="">
+
+<ul>
+<li><p>如果$y_1 = y_2$， 有$\alpha_1+\alpha_2=\gamma$</p>
+<ul>
+<li>如果$\gamma \gt C$，有$\gamma-C \leq \alpha_2 \leq C$，如下面左图</li>
+<li>如果$\gamma \lt C$，有$0 \leq \alpha_2 \leq \gamma $，如下面右图</li>
+</ul>
+<p>  两个式子综合得到：</p>
+<p>  $$<br>  \begin{cases}<br>  U = \max \{ 0, \alpha_1^{(old)}+\alpha_2^{(old)}-C \} ,\\<br>  V = \min \{ C, \alpha_1^{(old)}+\alpha_2^{(old)} \}<br>  \end{cases}<br>  $$</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">f = plt.figure(figsize=(<span class="number">15</span>,<span class="number">6</span>))</span><br><span class="line">ax = plt.subplot(<span class="number">121</span>)</span><br><span class="line">ax.set_xlim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.set_ylim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.arrow(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1.2</span>, <span class="number">0</span>, length_includes_head = <span class="literal">True</span>, head_width = <span class="number">0.03</span>)</span><br><span class="line">ax.arrow(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1.2</span>, length_includes_head = <span class="literal">True</span>, head_width = <span class="number">0.03</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">1</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.text(-<span class="number">0.05</span>, <span class="number">1.1</span>, <span class="string">r&#x27;$\alpha_2$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">1.1</span>, -<span class="number">0.05</span>, <span class="string">r&#x27;$\alpha_1$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">1.02</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$(C, \gamma-C)$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.4</span>, <span class="number">1.02</span>, <span class="string">r&#x27;$(\gamma-C, C)$&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">0.5</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">0.5</span>])</span><br><span class="line">ax.scatter(<span class="number">0.6</span>, <span class="number">0.9</span>, marker=<span class="string">&#x27;o&#x27;</span>, facecolor=<span class="string">&#x27;w&#x27;</span>, cmap=plt.cm.viridis, s=<span class="number">100</span>, linewidth=<span class="number">1</span>, edgecolors=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$\gamma &gt; C$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.4</span>, <span class="string">r&#x27;$\gamma-C \leq \alpha_2 \leq C$&#x27;</span>)</span><br><span class="line">ax.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ax = plt.subplot(<span class="number">122</span>)</span><br><span class="line">ax.set_xlim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.set_ylim(-<span class="number">0.2</span>, <span class="number">1.2</span>)</span><br><span class="line">ax.arrow(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1.2</span>, <span class="number">0</span>, length_includes_head = <span class="literal">True</span>, head_width = <span class="number">0.03</span>)</span><br><span class="line">ax.arrow(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1.2</span>, length_includes_head = <span class="literal">True</span>, head_width = <span class="number">0.03</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">1</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">ax.text(-<span class="number">0.05</span>, <span class="number">1.1</span>, <span class="string">r&#x27;$\alpha_2$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">1.1</span>, -<span class="number">0.05</span>, <span class="string">r&#x27;$\alpha_1$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.01</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$(0, \gamma)$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.45</span>, -<span class="number">0.05</span>, <span class="string">r&#x27;$(\gamma, 0)$&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">0</span>, <span class="number">0.5</span>], [<span class="number">0.5</span>, <span class="number">0</span>])</span><br><span class="line">ax.scatter(<span class="number">0.3</span>, <span class="number">0.2</span>, marker=<span class="string">&#x27;o&#x27;</span>, facecolor=<span class="string">&#x27;w&#x27;</span>, cmap=plt.cm.viridis, s=<span class="number">100</span>, linewidth=<span class="number">1</span>, edgecolors=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$\gamma &lt; C$&#x27;</span>)</span><br><span class="line">ax.text(<span class="number">0.3</span>, <span class="number">0.4</span>, <span class="string">r&#x27;$0 \leq \alpha_2 \leq \gamma$&#x27;</span>)</span><br><span class="line">ax.axis(<span class="string">&#x27;off&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(-0.2, 1.2, -0.2, 1.2)
+</code></pre>
+<img src="/2019/08/15/nndl-smo/output_9_1.png" class="">
+
+<p>要优化</p>
+<p>$$<br>\max_a\ W(\alpha)=\sum_{i=1}^N\alpha_i-\frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N\alpha_i\alpha_jy_iy_j K(x_i, x_j)<br>$$</p>
+<p>subject to</p>
+<p>$$<br>\sum_{i=1}^N\alpha_iy_i=0 \\<br>0 \leq \alpha_i \leq C, i=1, 2, \cdots, N<br>$$</p>
+<p>假设算法在某次更新时更新的变量为 $\alpha_{1}$和 $\alpha_{2}$，则其余变量都可以视为常量。为了描述方便，规定</p>
+<p>$$<br>K_{ij}=K(\mathbf {x_{i}} ,\mathbf {x_{j}} )\\<br>f(\mathbf {x_{i}} )=\sum_{j=1}^{n}y_{j}\alpha_{j}K_{ij}+b \\<br>v_i=\sum_{j=3}^N\alpha_jy_jK_{ij}=f(\mathbf {x_{i}} )-\sum_{j=1}^{2}y_{j}\alpha_{j}K_{ij}-b<br>$$</p>
+<p>因而，二次规划目标值可以写成</p>
+<p>$$<br>\begin{array}<br>{lcl}W(\alpha_{1},\alpha_{2})&amp;=&amp;\sum_{i=1}^{n}\alpha_{i}-{\frac {1}{2}}\sum_{i=1}^{n}\sum_{j=1}^{n}y_{i}y_{j}K(x_{i},x_{j})\alpha_{i}\alpha_{j}\\<br>&amp;=&amp;\alpha_1+\alpha_2-\frac{1}{2}K_{11}\alpha_1^2-\frac{1}{2}K_{22}\alpha_2^2-\alpha_1\alpha_2y_1y_2K_{12} \\<br>&amp;&amp;-y_1\alpha_1\sum_{j=3}^Ny_j\alpha_jK_{1j}-y_2\alpha_2\sum_{j=3}^Ny_j\alpha_jK_{2j} \\<br>&amp;&amp;+\sum_{j=3}^N\alpha_j-\frac{1}{2}\sum_{i=3}^N\sum_{j=3}^N\alpha_i\alpha_jy_iy_jK_{ij}\\<br>&amp;=&amp;\alpha_{1}+\alpha_{2}-{\frac {1}{2}}K_{11}\alpha_{1}^{2}-{\frac {1}{2}}K_{22}\alpha_{2}^{2}-\alpha_{1}\alpha_{2}y_{1}y_{2}K_{12}\\&amp;&amp;-y_{1}\alpha_{1}v_{1}-y_{2}\alpha_{2}v_{2}+{\text{constant}}<br>\end{array}<br>$$</p>
+<p>由于限制条件 $\sum_{i=1}^{n}y_{i}\alpha_{i}=0$ 存在，将 $\alpha_{3},\ldots ,\alpha_{n},y_{3},\ldots ,y_{n}$ 看作常数，则有 $\alpha_{1}y_{1}+\alpha_{2}y_{2}=C$成立（ $C$为常数）。由于 $y_{i}\in \{-1,1\}$，从而 $\alpha_{1}=\gamma -s\alpha_{2}$（ $\gamma$为变量 $y_1C$， $s=y_{1}y_{2}$）。取 $\alpha_{2}$为优化变量，则上式又可写成</p>
+<p>$$<br>\begin{array}<br>{lcl}W(\alpha_{2})&amp;=&amp;\gamma -s\alpha_{2}+\alpha_{2}-{\frac {1}{2}}K_{11}(\gamma -s\alpha_{2})^{2}-{\frac {1}{2}}K_{22}\alpha_{2}^{2}\\<br>&amp;&amp;-sK_{12}(\gamma -s\alpha_{2})\alpha_{2}-y_{1}(\gamma -s\alpha_{2})v_{1}-y_{2}\alpha_{2}v_{2}+{\text{constant}}\\<br>&amp;=&amp;-\frac{1}{2}K_{11}(\gamma^2-2\gamma s\alpha_2+\alpha_2^2)-\frac{1}{2}K_{22}\alpha_2^2+s^2K_{12}\alpha_2^2 \\<br>&amp;&amp;+(1-s-sK_{12}\gamma)\alpha_2-y_1v_1y_2v_2+constant\\<br>&amp;=&amp;\frac{1}{2}(2K_{12}-K_{11}-K_{22})\alpha_2^2 \\<br>&amp;&amp; +(1-s+K_{11}s\gamma-K_{12}s\gamma+y_2v_1-y_2v_2)\alpha_2 \\<br>&amp;&amp;+constant<br>\end{array}<br>$$<br>对 $\alpha_{2}$求偏导以求得最大值，有</p>
+<p>$$<br>\begin{array}<br>{lcl}{\frac {\partial W(\alpha_{2})}{\partial \alpha_{2}}}&amp;=&amp;(2K_{12}-K_{11}-K_{22})\alpha_2<br>\\&amp;&amp;+(1-s+K_{11}s\gamma-K_{12}s\gamma+y_2v_1-y_2v_2)=0<br>\end{array}<br>$$</p>
+<p>由此得到：</p>
+<p>$$<br>\begin{aligned}<br>\alpha_2^{(new, unc)}(K_{11}+K_{22}-2K_{12})&amp;=&amp; 1-s+K_{11}s\gamma-K_{12}s\gamma+y_2v_1-y_2v_2 \\<br>&amp;=&amp;1-s+(K_{11}-K_{12})s\gamma+y_2(v_1-v_2)<br>\end{aligned}<br>$$</p>
+<p>两边同时乘以$y_2$得到：</p>
+<p>$$<br>\begin{aligned}<br>\alpha_2^{(new, unc)}(K_{11}+K_{22}-2K_{12})y_2=&amp;\alpha_2^{(new, unc)}Ky_2 \\<br>=&amp;y_2-sy_2+(K_{11}-K_{12})sy_2\gamma+y_2^2(v_1-v_2) \\<br>=&amp;y_2-y_1+(K_{11}-K_{12})y_1\gamma+\left(f(\mathbf x_1)-\sum_{j=1}^2y_i\alpha_iK_{1j}\right)-\left(f(\mathbf x_2)-\sum_{j=1}^2y_j\alpha_jK_{2j}\right)<br>\end{aligned}<br>$$</p>
+<p>其中</p>
+<p>$$<br>\sum_{j=1}^2y_j\alpha_jK_{2j}-\sum_{j=1}^2y_i\alpha_iK_{1j}=y_1\alpha_1K_{21}+y_2\alpha_2K_{22}-y_1\alpha_1K_{11}+y_2\alpha_2K_{12} \\<br>y_1\gamma=y_1(\alpha_1+\alpha_2)=y_1\alpha_1+y_2\alpha_2<br>$$</p>
+<p>所以:</p>
+<p>$$<br>\begin{aligned}<br>\alpha_2^{(new, unc)}Ky_2&amp;=y_2-y_1+(K_{11}-K_{12})(\alpha_1y_1+\alpha_2y_2)+y_1\alpha_1K_{21} \\<br>&amp;+y_2\alpha_2K_{22}-y_1\alpha_1K_{11}+y_2\alpha_2K_{12}+f(\mathbf x_1)-f(\mathbf x_2) \\<br>&amp;=y_2-y_1+f(\mathbf x_1)-f(\mathbf x_2)+y_2\alpha_2K_{11}-y_2\alpha_2K_{12} \\<br>&amp;+y_2\alpha_2K_{22}-y_2\alpha_2K_{12} \\<br>&amp;=y_2\alpha_2K+\left(f(\mathbf x_1)-y_1\right)-\left(f(\mathbf x_2)-y_2\right)<br>\end{aligned}<br>$$</p>
+<p>因此，可以得到</p>
+<p>$$<br>\begin{aligned}<br>\alpha_2^{new}&amp;=\alpha_2^{old} + \frac{\left(f(\mathbf x_1)-y_1\right)-\left(f(\mathbf x_2)-y_2\right)}{y_2K}\\<br>&amp;=\alpha^{old} + \frac{E_1-E_2}{y_2K}\\<br>&amp;=\alpha^{old} + \frac{y_2(E_1-E_2)}{K}, y_2^2=1<br>\end{aligned}<br>$$</p>
+<p>其中 $E_i=f(\mathbf x_i)-y_i$，$K=K_{11}+K_{22}-2K_{12}$。</p>
+<p>再考虑限制条件$0\leqslant \alpha_{i}\leqslant C， (\alpha_{1},\alpha_{2})$的取值只能为直线 $\alpha_{1}y_{1}+\alpha_{2}y_{2}=\gamma$落在 $[0,C]\times [0,C]$矩形中的部分。因此，具体的SMO算法需要检查 $\alpha_{2}^{new}$的值以确认这个值落在约束区间之内。 </p>
+<p><strong>算法框架</strong></p>
+<p>SMO算法是一个迭代优化算法。在每一个迭代步骤中，算法首先选取两个待更新的向量，此后分别计算它们的误差项，并根据上述结果计算出 $\alpha_{2}^{new}$和$\alpha_{1}^{new}$。最后再根据SVM的定义计算出偏移量$\mathbf {b}$ 。对于误差项而言，可以根据$\alpha_{1}^{new}$、 $\alpha_{2}^{new}$和$b$的增量进行调整，而无需每次重新计算。具体的算法如下：</p>
+<ol>
+<li><p>随机数初始化向量权重$\alpha_i$，并计算偏移b</p>
+</li>
+<li><p>初始化误差项$E_i$</p>
+</li>
+<li><p>选取两个向量作为需要调整的点</p>
+</li>
+<li><p>令$\alpha_{2}^{new}=\alpha_{2}^{old}+{\frac {y_{2}(E_{1}-E_{2})}{K}}$</p>
+</li>
+<li><p>如果$\alpha_{2}^{new}&gt;V$</p>
+</li>
+<li><p>&emsp; 令$\alpha_{2}^{new}=V$</p>
+</li>
+<li><p>如果$\alpha_{2}^{new}&lt;U$</p>
+</li>
+<li><p>&emsp; 令$\alpha_{2}^{new}=U$</p>
+</li>
+<li><p>令$\alpha_{1}^{new}=\alpha_{1}^{old}+y_{1}y_{2}(\alpha_{2}^{old}-\alpha_{2}^{new})$</p>
+</li>
+<li><p>利用更新的$\alpha_{1}^{new}$和$\alpha_{2}^{new}$修改$E_{i}$和b的值</p>
+</li>
+<li><p>如果达到终止条件，则停止算法，否则转3</p>
+</li>
+</ol>
+<p>其中， U和 V为 $\alpha_{2}^{new}$的下界和上界。特别地，有</p>
+<p>$$<br>U=<br>\begin{cases}<br>\max \{0,\alpha_2^{old}-\alpha_1^{old}\} &amp; y_1y_2=-1\\<br>\max \{0,\alpha_1^{old}+\alpha_2^{old}-C\} &amp; y_1y_2=1<br>\end{cases}<br>,V=<br>\begin{cases}<br>\min \{C,C+\alpha_2^{old}-\alpha_1^{old}\} &amp; y_1y_2=-1\\<br>\min \{C,\alpha_2^{old}+\alpha_1^{old}\} &amp; y_1y_2=1<br>\end{cases}<br>$$</p>
+<p>这一约束的意义在于使得 $\alpha_{1}^{new}$和 $\alpha_{2}^{new}$均位于矩形域 $[0,C]\times [0,C]$中。</p>
+<p><strong>优化向量选择方法</strong></p>
+<p>可以采用启发式的方法选择每次迭代中需要优化的向量。第一个向量可以选取不满足支持向量机KKT条件的向量，亦即不满足</p>
+<p>$$<br>y_i f(\mathbf x_i)<br>\begin{cases}<br>\gt 1 &amp; \alpha_i=0 \\<br>=1 &amp; 0 \lt \alpha_i \lt C \\<br>\lt 1 &amp; \alpha_i=C<br>\end{cases}<br>$$</p>
+<p>的向量。而第二个向量可以选择使得$\vert E_1 - E_2 \vert$最大的向量。</p>
+<p><strong>终止条件</strong></p>
+<p>SMO算法的终止条件可以为KKT条件对所有向量均满足，或者目标函数$W(\alpha )$增长率小于某个阈值，即</p>
+<p>$$<br>{\frac {W(\alpha ^{t+1})-W(\alpha ^{t})}{W(\alpha ^{t})}}&lt;T<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_blobs, make_circles, make_moons</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SMOModel</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Container object for the model used for sequential minimal optimization.&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, X, y, C, kernel, alphas, b, errors</span>):</span></span><br><span class="line">        self.X = X               <span class="comment"># training data vector</span></span><br><span class="line">        self.y = y               <span class="comment"># class label vector</span></span><br><span class="line">        self.C = C               <span class="comment"># regularization parameter</span></span><br><span class="line">        self.kernel = kernel     <span class="comment"># kernel function</span></span><br><span class="line">        self.alphas = alphas     <span class="comment"># lagrange multiplier vector</span></span><br><span class="line">        self.b = b               <span class="comment"># scalar bias term</span></span><br><span class="line">        self.errors = errors     <span class="comment"># error cache</span></span><br><span class="line">        self._obj = []           <span class="comment"># record of objective function value</span></span><br><span class="line">        self.m = <span class="built_in">len</span>(self.X)     <span class="comment"># store size of training set</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>线性核函数</strong></p>
+<p>$$<br>K(x, z)=x^Tz+b<br>$$</p>
+<p>例如训练集是(100,5)的数据，测试数据集是(10, 5)，输出应该是(100, 10)。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">linear_kernel</span>(<span class="params">x, y, b=<span class="number">1</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Returns the linear combination of arrays `x` and `y` with</span></span><br><span class="line"><span class="string">    the optional bias term `b` (set to 1 by default).&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> x @ y.T + b <span class="comment"># @ same as x.dot(y.T)</span></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linear_kernel(np.random.rand(<span class="number">100</span>, <span class="number">5</span>), np.random.rand(<span class="number">3</span>, <span class="number">5</span>)).shape</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(100, 3)
+</code></pre>
+<p><strong>高斯核函数</strong></p>
+<p>$$<br>K(x, z)=exp\left(\frac{-|x-z|^2}{2\sigma^2}\right)<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gaussian_kernel</span>(<span class="params">x, y, sigma=<span class="number">1</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Returns the gaussian similarity of arrays `x` and `y` with</span></span><br><span class="line"><span class="string">    kernel width parameter `sigma` (set to 1 by default).&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> np.ndim(x) == <span class="number">1</span> <span class="keyword">and</span> np.ndim(y) == <span class="number">1</span>:</span><br><span class="line">        result = np.exp(- (np.linalg.norm(x - y, <span class="number">2</span>)) ** <span class="number">2</span> / (<span class="number">2</span> * sigma ** <span class="number">2</span>))</span><br><span class="line">    <span class="keyword">elif</span> (np.ndim(x) &gt; <span class="number">1</span> <span class="keyword">and</span> np.ndim(y) == <span class="number">1</span>) <span class="keyword">or</span> (np.ndim(x) == <span class="number">1</span> <span class="keyword">and</span> np.ndim(y) &gt; <span class="number">1</span>):</span><br><span class="line">        result = np.exp(- (np.linalg.norm(x - y, <span class="number">2</span>, axis=<span class="number">1</span>) ** <span class="number">2</span>) / (<span class="number">2</span> * sigma ** <span class="number">2</span>))</span><br><span class="line">    <span class="keyword">elif</span> np.ndim(x) &gt; <span class="number">1</span> <span class="keyword">and</span> np.ndim(y) &gt; <span class="number">1</span>:</span><br><span class="line">        result = np.exp(- (np.linalg.norm(x[:, np.newaxis] - y[np.newaxis, :], <span class="number">2</span>, axis=<span class="number">2</span>) ** <span class="number">2</span>) / (<span class="number">2</span> * sigma ** <span class="number">2</span>))</span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x_len, y_len = <span class="number">5</span>, <span class="number">10</span></span><br><span class="line">gaussian_kernel(np.random.rand(x_len, <span class="number">1</span>), np.random.rand(y_len, <span class="number">1</span>)).shape == (x_len, y_len)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>True
+</code></pre>
+<p>其中高斯分布$X \sim \mathcal N(\mu, \sigma^2)$</p>
+<p>$$<br>f(x; \mu, \sigma) = \frac{1}{\sigma\sqrt{2\pi}}exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)<br>$$</p>
+<p>np.linalg.norm求范数，</p>
+<p>$$<br>np.linalg.norm(x, 2) = \sqrt{x_1^2+x_2^2+\cdots+x_N^2}<br>$$</p>
+<p><strong>目标函数</strong><br>$$<br>\max_a\ W(\alpha)=\sum_{i=1}^N\alpha_i-\frac{1}{2}\sum_{i=1}^N\sum_{j=1}^Ny^{(i)}y^{(j)}\alpha_i\alpha_j\langle x^{(i)}, x^{(j)} \rangle<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Objective function to optimize</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">objective_function</span>(<span class="params">alphas, target, kernel, X_train</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Returns the SVM objective function based in the input model defined by:</span></span><br><span class="line"><span class="string">    `alphas`: vector of Lagrange multipliers</span></span><br><span class="line"><span class="string">    `target`: vector of class labels (-1 or 1) for training data</span></span><br><span class="line"><span class="string">    `kernel`: kernel function</span></span><br><span class="line"><span class="string">    `X_train`: training data for model.&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> np.<span class="built_in">sum</span>(alphas) - <span class="number">0.5</span> * np.<span class="built_in">sum</span>((target[:, <span class="literal">None</span>] * target[<span class="literal">None</span>, :]) * kernel(X_train, X_train) * (alphas[:, <span class="literal">None</span>] * alphas[<span class="literal">None</span>, :]))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">alphas = np.random.rand(<span class="number">20</span>)</span><br><span class="line">target = np.random.rand(<span class="number">20</span>)</span><br><span class="line">X = np.random.rand(<span class="number">20</span>, <span class="number">5</span>)</span><br><span class="line">objective_function(alphas, target, linear_kernel, X)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>-25.764835576568593
+</code></pre>
+<p><strong>决策函数</strong></p>
+<p>$$<br>f(\mathbf x)=sign(\mathbf w^T \mathbf x+b)=sign\left(\sum_{i=1}^N\alpha_iy^{(i)}\langle \mathbf x^{(i)}, \mathbf x \rangle + b\right)<br>$$</p>
+<p>训练集X的大小是(N, M),测试集X1的大小是(N1, M)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">result = [<span class="number">0</span>]*N1</span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(N1)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">        result[j] += alphas[i]*y[i]*K(X[i], X1[j])</span><br><span class="line">    result[j] = sign(result[j] + b)</span><br></pre></td></tr></table></figure>
+
+<p>其中K(X[i], X1[j])即kernel(X, X1)[i, j]</p>
+<p>等价于</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result = (alphas * target) @ kernel(X_train, x_test) + b</span><br></pre></td></tr></table></figure>
+
+<p>其中(alphas * target)是逐项相乘</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Decision function</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decision_function</span>(<span class="params">alphas, target, kernel, X_train, x_test, b</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Applies the SVM decision function to the input feature vectors in `x_test`.&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    result = (alphas * target) @ kernel(X_train, x_test) - b</span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alphas.shape, target.shape, linear_kernel(X, X).shape</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>((20,), (20,), (20, 20))
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">decision_function(alphas, target, linear_kernel, X, X, b=<span class="number">0.1</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([12.06596314,  9.41543067, 15.91496547, 11.53239363, 13.17924019,
+       10.86277723, 15.35606404, 11.64231312,  8.53266444, 13.44606315,
+       12.62904726, 14.61473544, 14.61449726, 11.77478955, 11.68060824,
+       12.00244728, 10.72568919, 14.74945744, 14.76062648, 14.01304355])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_decision_boundary</span>(<span class="params">model, ax, resolution=<span class="number">100</span>, colors=(<span class="params"><span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;k&#x27;</span>, <span class="string">&#x27;r&#x27;</span></span>), levels=(<span class="params">-<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span></span>)</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Plots the model&#x27;s decision boundary on the input axes object.</span></span><br><span class="line"><span class="string">    Range of decision boundary grid is determined by the training data.</span></span><br><span class="line"><span class="string">    Returns decision boundary grid and axes object (`grid`, `ax`).&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Generate coordinate grid of shape [resolution x resolution]</span></span><br><span class="line">    <span class="comment"># and evaluate the model over the entire space</span></span><br><span class="line">    xrange = np.linspace(model.X[:, <span class="number">0</span>].<span class="built_in">min</span>(), model.X[:, <span class="number">0</span>].<span class="built_in">max</span>(), resolution)</span><br><span class="line">    yrange = np.linspace(model.X[:, <span class="number">1</span>].<span class="built_in">min</span>(), model.X[:, <span class="number">1</span>].<span class="built_in">max</span>(), resolution)</span><br><span class="line">    grid = [[decision_function(model.alphas, model.y,</span><br><span class="line">                               model.kernel, model.X,</span><br><span class="line">                               np.array([xr, yr]), model.b) <span class="keyword">for</span> xr <span class="keyword">in</span> xrange] <span class="keyword">for</span> yr <span class="keyword">in</span> yrange]</span><br><span class="line">    grid = np.array(grid).reshape(<span class="built_in">len</span>(xrange), <span class="built_in">len</span>(yrange))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Plot decision contours using grid and</span></span><br><span class="line">    <span class="comment"># make a scatter plot of training data</span></span><br><span class="line">    ax.contour(xrange, yrange, grid, levels=levels, linewidths=(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">               linestyles=(<span class="string">&#x27;--&#x27;</span>, <span class="string">&#x27;-&#x27;</span>, <span class="string">&#x27;--&#x27;</span>), colors=colors)</span><br><span class="line">    ax.scatter(model.X[:, <span class="number">0</span>], model.X[:, <span class="number">1</span>],</span><br><span class="line">               c=model.y, cmap=plt.cm.viridis, lw=<span class="number">0</span>, alpha=<span class="number">0.25</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Plot support vectors (non-zero alphas)</span></span><br><span class="line">    <span class="comment"># as circled points (linewidth &gt; 0)</span></span><br><span class="line">    mask = np.<span class="built_in">round</span>(model.alphas, decimals=<span class="number">2</span>) != <span class="number">0.0</span></span><br><span class="line">    ax.scatter(model.X[mask, <span class="number">0</span>], model.X[mask, <span class="number">1</span>],</span><br><span class="line">               c=model.y[mask], cmap=plt.cm.viridis, lw=<span class="number">1</span>, edgecolors=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> grid, ax</span><br></pre></td></tr></table></figure>
+
+<p>SMO每次选择两个$\alpha$进行优化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">find outer alpha1:</span><br><span class="line">    find alpha2:</span><br><span class="line">        optimize alpha1 <span class="keyword">and</span> alpha2</span><br><span class="line">        </span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">take_step</span>(<span class="params">i1, i2, model</span>):</span></span><br><span class="line">    <span class="comment"># Skip if chosen alphas are the same</span></span><br><span class="line">    <span class="keyword">if</span> i1 == i2:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>, model</span><br><span class="line">    </span><br><span class="line">    alph1 = model.alphas[i1]</span><br><span class="line">    alph2 = model.alphas[i2]</span><br><span class="line">    y1 = model.y[i1]</span><br><span class="line">    y2 = model.y[i2]</span><br><span class="line">    E1 = model.errors[i1]</span><br><span class="line">    E2 = model.errors[i2]</span><br><span class="line">    s = y1 * y2</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Compute L &amp; H, the bounds on new possible alpha values</span></span><br><span class="line">    <span class="keyword">if</span> (y1 != y2):</span><br><span class="line">        L = <span class="built_in">max</span>(<span class="number">0</span>, alph2 - alph1)</span><br><span class="line">        H = <span class="built_in">min</span>(model.C, model.C + alph2 - alph1)</span><br><span class="line">    <span class="keyword">elif</span> (y1 == y2):</span><br><span class="line">        L = <span class="built_in">max</span>(<span class="number">0</span>, alph1 + alph2 - model.C)</span><br><span class="line">        H = <span class="built_in">min</span>(model.C, alph1 + alph2)</span><br><span class="line">    <span class="keyword">if</span> (L == H):</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>, model</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Compute kernel &amp; 2nd derivative eta</span></span><br><span class="line">    k11 = model.kernel(model.X[i1], model.X[i1])</span><br><span class="line">    k12 = model.kernel(model.X[i1], model.X[i2])</span><br><span class="line">    k22 = model.kernel(model.X[i2], model.X[i2])</span><br><span class="line">    eta = <span class="number">2</span> * k12 - k11 - k22</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Compute new alpha 2 (a2) if eta is negative</span></span><br><span class="line">    <span class="keyword">if</span> (eta &lt; <span class="number">0</span>):</span><br><span class="line">        a2 = alph2 - y2 * (E1 - E2) / eta</span><br><span class="line">        <span class="comment"># Clip a2 based on bounds L &amp; H</span></span><br><span class="line">        <span class="keyword">if</span> L &lt; a2 &lt; H:</span><br><span class="line">            a2 = a2</span><br><span class="line">        <span class="keyword">elif</span> (a2 &lt;= L):</span><br><span class="line">            a2 = L</span><br><span class="line">        <span class="keyword">elif</span> (a2 &gt;= H):</span><br><span class="line">            a2 = H</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># If eta is non-negative, move new a2 to bound with greater objective function value</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        alphas_adj = model.alphas.copy()</span><br><span class="line">        alphas_adj[i2] = L</span><br><span class="line">        <span class="comment"># objective function output with a2 = L</span></span><br><span class="line">        Lobj = objective_function(alphas_adj, model.y, model.kernel, model.X)</span><br><span class="line">        alphas_adj[i2] = H</span><br><span class="line">        <span class="comment"># objective function output with a2 = H</span></span><br><span class="line">        Hobj = objective_function(alphas_adj, model.y, model.kernel, model.X)</span><br><span class="line">        <span class="keyword">if</span> Lobj &gt; (Hobj + eps):</span><br><span class="line">            a2 = L</span><br><span class="line">        <span class="keyword">elif</span> Lobj &lt; (Hobj - eps):</span><br><span class="line">            a2 = H</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            a2 = alph2</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Push a2 to 0 or C if very close</span></span><br><span class="line">    <span class="keyword">if</span> a2 &lt; <span class="number">1e-8</span>:</span><br><span class="line">        a2 = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">elif</span> a2 &gt; (model.C - <span class="number">1e-8</span>):</span><br><span class="line">        a2 = model.C</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># If examples can&#x27;t be optimized within epsilon (eps), skip this pair</span></span><br><span class="line">    <span class="keyword">if</span> (np.<span class="built_in">abs</span>(a2 - alph2) &lt; eps * (a2 + alph2 + eps)):</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>, model</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Calculate new alpha 1 (a1)</span></span><br><span class="line">    a1 = alph1 + s * (alph2 - a2)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Update threshold b to reflect newly calculated alphas</span></span><br><span class="line">    <span class="comment"># Calculate both possible thresholds</span></span><br><span class="line">    b1 = E1 + y1 * (a1 - alph1) * k11 + y2 * (a2 - alph2) * k12 + model.b</span><br><span class="line">    b2 = E2 + y1 * (a1 - alph1) * k12 + y2 * (a2 - alph2) * k22 + model.b</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Set new threshold based on if a1 or a2 is bound by L and/or H</span></span><br><span class="line">    <span class="keyword">if</span> <span class="number">0</span> &lt; a1 <span class="keyword">and</span> a1 &lt; C:</span><br><span class="line">        b_new = b1</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">0</span> &lt; a2 <span class="keyword">and</span> a2 &lt; C:</span><br><span class="line">        b_new = b2</span><br><span class="line">    <span class="comment"># Average thresholds if both are bound</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        b_new = (b1 + b2) * <span class="number">0.5</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Update model object with new alphas &amp; threshold</span></span><br><span class="line">    model.alphas[i1] = a1</span><br><span class="line">    model.alphas[i2] = a2</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Update error cache</span></span><br><span class="line">    <span class="comment"># Error cache for optimized alphas is set to 0 if they&#x27;re unbound</span></span><br><span class="line">    <span class="keyword">for</span> index, alph <span class="keyword">in</span> <span class="built_in">zip</span>([i1, i2], [a1, a2]):</span><br><span class="line">        <span class="keyword">if</span> <span class="number">0.0</span> &lt; alph &lt; model.C:</span><br><span class="line">            model.errors[index] = <span class="number">0.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Set non-optimized errors based on equation 12.11 in Platt&#x27;s book</span></span><br><span class="line">    non_opt = [n <span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(model.m) <span class="keyword">if</span> (n != i1 <span class="keyword">and</span> n != i2)]</span><br><span class="line">    model.errors[non_opt] = model.errors[non_opt] + \</span><br><span class="line">                            y1 * (a1 - alph1) * model.kernel(model.X[i1], model.X[non_opt]) + \</span><br><span class="line">                            y2 * (a2 - alph2) * model.kernel(model.X[i2], model.X[non_opt]) + model.b - b_new</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Update model threshold</span></span><br><span class="line">    model.b = b_new</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>, model</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">examine_example</span>(<span class="params">i2, model, tol</span>):</span></span><br><span class="line">    y2 = model.y[i2]</span><br><span class="line">    alph2 = model.alphas[i2]</span><br><span class="line">    E2 = model.errors[i2]</span><br><span class="line">    r2 = E2 * y2</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Proceed if error is within specified tolerance (tol)</span></span><br><span class="line">    <span class="keyword">if</span> ((r2 &lt; -tol <span class="keyword">and</span> alph2 &lt; model.C) <span class="keyword">or</span> (r2 &gt; tol <span class="keyword">and</span> alph2 &gt; <span class="number">0</span>)):</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(model.alphas[(model.alphas != <span class="number">0</span>) &amp; (model.alphas != model.C)]) &gt; <span class="number">1</span>:</span><br><span class="line">            <span class="comment"># Use 2nd choice heuristic is choose max difference in error</span></span><br><span class="line">            <span class="keyword">if</span> model.errors[i2] &gt; <span class="number">0</span>:</span><br><span class="line">                i1 = np.argmin(model.errors)</span><br><span class="line">            <span class="keyword">elif</span> model.errors[i2] &lt;= <span class="number">0</span>:</span><br><span class="line">                i1 = np.argmax(model.errors)</span><br><span class="line">            step_result, model = take_step_to_optimize(i1, i2, model)</span><br><span class="line">            <span class="keyword">if</span> step_result:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span>, model</span><br><span class="line">            </span><br><span class="line">        <span class="comment"># Loop through non-zero and non-C alphas, starting at a random point</span></span><br><span class="line">        <span class="keyword">for</span> i1 <span class="keyword">in</span> np.roll(np.where((model.alphas != <span class="number">0</span>) &amp; (model.alphas != model.C))[<span class="number">0</span>],</span><br><span class="line">                          np.random.choice(np.arange(model.m))):</span><br><span class="line">            step_result, model = take_step_to_optimize(i1, i2, model)</span><br><span class="line">            <span class="keyword">if</span> step_result:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span>, model</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># loop through all alphas, starting at a random point</span></span><br><span class="line">        <span class="keyword">for</span> i1 <span class="keyword">in</span> np.roll(np.arange(model.m), np.random.choice(np.arange(model.m))):</span><br><span class="line">            step_result, model = take_step_to_optimize(i1, i2, model)</span><br><span class="line">            <span class="keyword">if</span> step_result:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span>, model</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span>, model</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">model, tol=<span class="number">0.01</span></span>):</span></span><br><span class="line">    </span><br><span class="line">    numChanged = <span class="number">0</span></span><br><span class="line">    examineAll = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(numChanged &gt; <span class="number">0</span>) <span class="keyword">or</span> (examineAll):</span><br><span class="line">        numChanged = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> examineAll:</span><br><span class="line">            <span class="comment"># loop over all training examples</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(model.alphas.shape[<span class="number">0</span>]):</span><br><span class="line">                examine_result, model = examine_example(i, model, tol)</span><br><span class="line">                numChanged += examine_result</span><br><span class="line">                <span class="keyword">if</span> examine_result:</span><br><span class="line">                    obj_result = objective_function(model.alphas, model.y, model.kernel, model.X)</span><br><span class="line">                    model._obj.append(obj_result)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># loop over examples where alphas are not already at their limits</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> np.where((model.alphas != <span class="number">0</span>) &amp; (model.alphas != model.C))[<span class="number">0</span>]:</span><br><span class="line">                examine_result, model = examine_example(i, model, tol)</span><br><span class="line">                numChanged += examine_result</span><br><span class="line">                <span class="keyword">if</span> examine_result:</span><br><span class="line">                    obj_result = objective_function(model.alphas, model.y, model.kernel, model.X)</span><br><span class="line">                    model._obj.append(obj_result)</span><br><span class="line">        </span><br><span class="line">        examineAll = <span class="keyword">not</span> examineAll</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_blobs</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line">X_train, y = make_blobs(n_samples=<span class="number">1000</span>, centers=<span class="number">2</span>,</span><br><span class="line">                        n_features=<span class="number">2</span>, random_state=<span class="number">1</span>)</span><br><span class="line">scaler = StandardScaler()</span><br><span class="line">X_train_scaled = scaler.fit_transform(X_train, y)</span><br><span class="line">y[y == <span class="number">0</span>] = -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Set model parameters and initial values</span></span><br><span class="line">C = <span class="number">1000.0</span></span><br><span class="line">m = <span class="built_in">len</span>(X_train_scaled)</span><br><span class="line">initial_alphas = np.zeros(m)</span><br><span class="line">initial_b = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Set tolerances</span></span><br><span class="line">tol = <span class="number">0.01</span> <span class="comment"># error tolerance</span></span><br><span class="line">eps = <span class="number">0.01</span> <span class="comment"># alpha tolerance</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Instantiate model</span></span><br><span class="line">model = SMOModel(X_train_scaled, y, C, linear_kernel,</span><br><span class="line">                 initial_alphas, initial_b, np.zeros(m))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize error cache</span></span><br><span class="line">initial_error = decision_function(model.alphas, model.y, model.kernel,</span><br><span class="line">                                  model.X, model.X, model.b) - model.y</span><br><span class="line">model.errors = initial_error</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">np.random.seed(<span class="number">0</span>)</span><br><span class="line">output = train(model)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots()</span><br><span class="line">grid, ax = plot_decision_boundary(output, ax)</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/08/15/nndl-smo/output_39_0.png" class="">
+
+<p>下面验证有离群点的情况</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Add an outlier</span></span><br><span class="line">X_outlier = np.append(X_train_scaled, [<span class="number">0.1</span>, <span class="number">0.1</span>])</span><br><span class="line">X_outlier = X_outlier.reshape(X_train.shape[<span class="number">0</span>]+<span class="number">1</span>, X_train.shape[<span class="number">1</span>])</span><br><span class="line">y_outlier = np.append(y, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Set model parameters and initial values</span></span><br><span class="line">figure = plt.figure(figsize=(<span class="number">12</span>, <span class="number">10</span>))</span><br><span class="line"><span class="keyword">for</span> i, C <span class="keyword">in</span> <span class="built_in">enumerate</span>([<span class="number">0.1</span>, <span class="number">1.0</span>, <span class="number">10</span>, <span class="number">100</span>]):</span><br><span class="line">    m = <span class="built_in">len</span>(X_outlier)</span><br><span class="line">    initial_alphas = np.zeros(m)</span><br><span class="line">    initial_b = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Instantiate model</span></span><br><span class="line">    model = SMOModel(X_outlier, y_outlier, C, linear_kernel,</span><br><span class="line">                     initial_alphas, initial_b, np.zeros(m))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Initialize error cache</span></span><br><span class="line">    initial_error = decision_function(model.alphas, model.y, model.kernel,</span><br><span class="line">                                      model.X, model.X, model.b) - model.y</span><br><span class="line">    model.errors = initial_error</span><br><span class="line">    </span><br><span class="line">    output = train(model)</span><br><span class="line">    ax = plt.subplot(<span class="number">221</span>+i)</span><br><span class="line">    ax.set_title(<span class="string">&#x27;C=&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(C))</span><br><span class="line">    grid, ax = plot_decision_boundary(output, ax)</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/08/15/nndl-smo/output_42_0.png" class="">
+
+<p>可以看到$C$越大，对误差容忍越小。</p>
+<p>下面尝试高斯核</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_circles</span><br><span class="line"></span><br><span class="line">X_train, y = make_circles(n_samples=<span class="number">500</span>, noise=<span class="number">0.1</span>,</span><br><span class="line">                          factor=<span class="number">0.1</span>,</span><br><span class="line">                          random_state=<span class="number">1</span>)</span><br><span class="line">scaler = StandardScaler()</span><br><span class="line">X_train_scaled = scaler.fit_transform(X_train, y)</span><br><span class="line">y[y == <span class="number">0</span>] = -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">figure = plt.figure(figsize=(<span class="number">12</span>, <span class="number">10</span>))</span><br><span class="line"><span class="keyword">for</span> i, C <span class="keyword">in</span> <span class="built_in">enumerate</span>([<span class="number">0.1</span>, <span class="number">1.0</span>, <span class="number">10</span>, <span class="number">100</span>]):</span><br><span class="line">    <span class="comment"># Set model parameters and initial values</span></span><br><span class="line">    m = <span class="built_in">len</span>(X_train_scaled)</span><br><span class="line">    initial_alphas = np.zeros(m)</span><br><span class="line">    initial_b = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Instantiate model</span></span><br><span class="line">    model = SMOModel(X_train_scaled, y, C, gaussian_kernel,</span><br><span class="line">                     initial_alphas, initial_b, np.zeros(m))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Initialize error cache</span></span><br><span class="line">    initial_error = decision_function(model.alphas, model.y, model.kernel,</span><br><span class="line">                                      model.X, model.X, model.b) - model.y</span><br><span class="line">    model.errors = initial_error</span><br><span class="line">    </span><br><span class="line">    output = train(model)</span><br><span class="line">    ax = plt.subplot(<span class="number">221</span>+i)</span><br><span class="line">    ax.set_title(<span class="string">&#x27;C=&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(C))</span><br><span class="line">    grid, ax = plot_decision_boundary(output, ax)</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/08/15/nndl-smo/output_44_0.png" class="">
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">X_train, y = make_moons(n_samples=<span class="number">500</span>, noise=<span class="number">0.1</span>,</span><br><span class="line">                        random_state=<span class="number">1</span>)</span><br><span class="line">scaler = StandardScaler()</span><br><span class="line">X_train_scaled = scaler.fit_transform(X_train, y)</span><br><span class="line">y[y == <span class="number">0</span>] = -<span class="number">1</span></span><br><span class="line">figure = plt.figure(figsize=(<span class="number">12</span>, <span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, C <span class="keyword">in</span> <span class="built_in">enumerate</span>([<span class="number">0.1</span>, <span class="number">1.0</span>, <span class="number">10</span>, <span class="number">100</span>]):</span><br><span class="line">    <span class="comment"># Set model parameters and initial values</span></span><br><span class="line">    m = <span class="built_in">len</span>(X_train_scaled)</span><br><span class="line">    initial_alphas = np.zeros(m)</span><br><span class="line">    initial_b = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Instantiate model</span></span><br><span class="line">    model = SMOModel(X_train_scaled, y, C, <span class="keyword">lambda</span> x, y: gaussian_kernel(x, y, sigma=<span class="number">0.5</span>),</span><br><span class="line">                     initial_alphas, initial_b, np.zeros(m))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Initialize error cache</span></span><br><span class="line">    initial_error = decision_function(model.alphas, model.y, model.kernel,</span><br><span class="line">                                      model.X, model.X, model.b) - model.y</span><br><span class="line">    model.errors = initial_error</span><br><span class="line">    </span><br><span class="line">    output = train(model)</span><br><span class="line">    ax = plt.subplot(<span class="number">221</span>+i)</span><br><span class="line">    ax.set_title(<span class="string">&#x27;C=&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(C))</span><br><span class="line">    grid, ax = plot_decision_boundary(output, ax)    </span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/08/15/nndl-smo/output_45_0.png" class="">
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/14/nndl-svm/" rel="next" title="支持向量机">
+                <i class="fa fa-chevron-left"></i> 支持向量机
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/18/Locally-Weighted-Linear-Regression/" rel="prev" title="Locally Weighted Linear Regression">
+                Locally Weighted Linear Regression <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

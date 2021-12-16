@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1．分类决策树模型是表示基于特征对实例进行分类的树形结构。决策树可以转换成一个if-then规则的集合，也可以看作是定义在特征空间划分上的类的条件概率分布。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Decision Tree">
+<meta property="og:url" content="http://yoursite.com/2019/08/26/decision-tree/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="1．分类决策树模型是表示基于特征对实例进行分类的树形结构。决策树可以转换成一个if-then规则的集合，也可以看作是定义在特征空间划分上的类的条件概率分布。">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2019/08/26/decision-tree/output_9_0.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/26/decision-tree/output_13_0.png">
+<meta property="article:published_time" content="2019-08-26T08:28:36.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.776Z">
+<meta property="article:author" content="Firepaw">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/26/decision-tree/output_9_0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/26/decision-tree/"/>
+
+
+
+
+
+  <title>Decision Tree | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/26/decision-tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Decision Tree</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-26T16:28:36+08:00">
+                2019-08-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>1．分类决策树模型是表示基于特征对实例进行分类的树形结构。决策树可以转换成一个if-then规则的集合，也可以看作是定义在特征空间划分上的类的条件概率分布。</p>
+<span id="more"></span>
+
+<p>2．决策树学习旨在构建一个与训练数据拟合很好，并且复杂度小的决策树。因为从可能的决策树中直接选取最优决策树是NP完全问题。现实中采用启发式方法学习次优的决策树。</p>
+<p>决策树学习算法包括3部分：特征选择、树的生成和树的剪枝。常用的算法有ID3、 C4.5和CART。</p>
+<p>3．特征选择的目的在于选取对训练数据能够分类的特征。特征选择的关键是其准则。常用的准则如下：</p>
+<p>（1）样本集合$D$对特征$A$的信息增益（ID3）</p>
+<p>$$g(D, A)=H(D)-H(D|A)$$$$H(D)=-\sum_{k=1}^{K} \frac{\left|C_{k}\right|}{|D|} \log <em>{2} \frac{\left|C</em>{k}\right|}{|D|}$$$$H(D | A)=\sum_{i=1}^{n} \frac{\left|D_{i}\right|}{|D|} H\left(D_{i}\right)$$<br>其中，$H(D)$是数据集$D$的熵，$H(D_i)$是数据集$D_i$的熵，$H(D|A)$是数据集$D$对特征$A$的条件熵。  $D_i$是$D$中特征$A$取第$i$个值的样本子集，$C_k$是$D$中属于第$k$类的样本子集。$n$是特征$A$取 值的个数，$K$是类的个数。</p>
+<p>（2）样本集合$D$对特征$A$的信息增益比（C4.5）</p>
+<p>$$g_{R}(D, A)=\frac{g(D, A)}{H(D)}$$<br>其中，$g(D,A)$是信息增益，$H(D)$是数据集$D$的熵。</p>
+<p>（3）样本集合$D$的基尼指数（CART）</p>
+<p>$$\operatorname{Gini}(D)=1-\sum_{k=1}^{K}\left(\frac{\left|C_{k}\right|}{|D|}\right)^{2}$$<br>特征$A$条件下集合$D$的基尼指数：</p>
+<p>$$\operatorname{Gini}(D, A)=\frac{\left|D_{1}\right|}{|D|} \operatorname{Gini}\left(D_{1}\right)+\frac{\left|D_{2}\right|}{|D|} \operatorname{Gini}\left(D_{2}\right)$$</p>
+<p>4．决策树的生成。通常使用信息增益最大、信息增益比最大或基尼指数最小作为特征选择的准则。决策树的生成往往通过计算信息增益或其他指标，从根结点开始，递归地产生决策树。这相当于用信息增益或其他准则不断地选取局部最优的特征，或将训练集分割为能够基本正确分类的子集。</p>
+<p>5．决策树的剪枝。由于生成的决策树存在过拟合问题，需要对它进行剪枝，以简化学到的决策树。决策树的剪枝，往往从已生成的树上剪掉一些叶结点或叶结点以上的子树，并将其父结点或根结点作为新的叶结点，从而简化生成的决策树。</p>
+<p>以上来自<a target="_blank" rel="noopener" href="https://github.com/fengdu78/lihang-code/blob/master/%E7%AC%AC05%E7%AB%A0%20%E5%86%B3%E7%AD%96%E6%A0%91/5.DecisonTree.ipynb">github lihang-code</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_blobs, make_multilabel_classification</span><br><span class="line"><span class="keyword">import</span> networkx <span class="keyword">as</span> nx</span><br><span class="line"><span class="keyword">from</span> networkx.drawing.nx_agraph <span class="keyword">import</span> graphviz_layout</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> collections</span><br><span class="line"><span class="keyword">import</span> pydotplus</span><br><span class="line"><span class="keyword">from</span> pydotplus.graphviz <span class="keyword">import</span> Graph, Node, Edge</span><br><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> Image</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+
+<p>计算熵:</p>
+<p>$$<br>H = \sum_{i=1}^Nlog(p)*p<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">entropy</span>(<span class="params">labels</span>):</span></span><br><span class="line">    labels = labels.flatten()</span><br><span class="line">    vals = np.unique(labels)</span><br><span class="line">    probs = [(labels==v).<span class="built_in">sum</span>()/labels.size <span class="keyword">for</span> v <span class="keyword">in</span> vals]</span><br><span class="line">    ans = -<span class="built_in">sum</span>([np.log2(p)/p <span class="keyword">for</span> p <span class="keyword">in</span> probs])</span><br><span class="line">    <span class="keyword">return</span> ans</span><br><span class="line"></span><br><span class="line">x = np.random.randint(<span class="number">1</span>, <span class="number">5</span>, <span class="number">20</span>)</span><br><span class="line">x, entropy(x)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(array([3, 3, 4, 3, 3, 1, 4, 3, 1, 1, 4, 4, 3, 2, 2, 4, 1, 3, 2, 2]),
+ 35.546632871244356)
+</code></pre>
+<p>计算特征A的条件熵，按照特征A划分为K类，每个类的熵乘以这个类所占的比例，再求和</p>
+<p>$$<br>H(D|A) = \sum_{i=1}^K\frac{|D_i|}{|D|}H(D_i) = \sum_{i=1}^Np(D_i)H(D_i)<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">entropy_by_feature</span>(<span class="params">X, y, feature_index</span>):</span></span><br><span class="line">    x = X.iloc[:, feature_index].values</span><br><span class="line">    uniq_x = np.unique(x)</span><br><span class="line">    ans = <span class="built_in">sum</span>([(x==v).<span class="built_in">sum</span>()/x.size * entropy(y.iloc[:, <span class="number">0</span>][x==v].values) <span class="keyword">for</span> v <span class="keyword">in</span> uniq_x])</span><br><span class="line">    method = [<span class="string">&#x27;&#123;&#125;=&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(X.columns[feature_index], v) <span class="keyword">for</span> v <span class="keyword">in</span> uniq_x]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">f</span>(<span class="params">d, v</span>):</span></span><br><span class="line">        <span class="keyword">return</span> d[d==v]</span><br><span class="line">    </span><br><span class="line">    filters = <span class="keyword">lambda</span> data, fname, val, opindex: data[data[fname]==val]</span><br><span class="line">    split_func = <span class="keyword">lambda</span> data, findex: np.where(uniq_x==data[findex])[<span class="number">0</span>][<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ans, method, uniq_x, filters, split_func</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_data</span>():</span></span><br><span class="line">    datasets = [[<span class="string">&#x27;青年&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;一般&#x27;</span>, <span class="string">&#x27;否&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;青年&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;好&#x27;</span>, <span class="string">&#x27;否&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;青年&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;好&#x27;</span>, <span class="string">&#x27;是&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;青年&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;一般&#x27;</span>, <span class="string">&#x27;是&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;青年&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;一般&#x27;</span>, <span class="string">&#x27;否&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;中年&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;一般&#x27;</span>, <span class="string">&#x27;否&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;中年&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;好&#x27;</span>, <span class="string">&#x27;否&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;中年&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;好&#x27;</span>, <span class="string">&#x27;是&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;中年&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;非常好&#x27;</span>, <span class="string">&#x27;是&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;中年&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;非常好&#x27;</span>, <span class="string">&#x27;是&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;老年&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;非常好&#x27;</span>, <span class="string">&#x27;是&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;老年&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;好&#x27;</span>, <span class="string">&#x27;是&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;老年&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;好&#x27;</span>, <span class="string">&#x27;是&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;老年&#x27;</span>, <span class="string">&#x27;是&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;非常好&#x27;</span>, <span class="string">&#x27;是&#x27;</span>],</span><br><span class="line">               [<span class="string">&#x27;老年&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;否&#x27;</span>, <span class="string">&#x27;一般&#x27;</span>, <span class="string">&#x27;否&#x27;</span>],</span><br><span class="line">               ]</span><br><span class="line">    labels = [<span class="string">u&#x27;年龄&#x27;</span>, <span class="string">u&#x27;有工作&#x27;</span>, <span class="string">u&#x27;有自己的房子&#x27;</span>, <span class="string">u&#x27;信贷情况&#x27;</span>, <span class="string">u&#x27;类别&#x27;</span>]</span><br><span class="line">    <span class="comment"># 返回数据集和每个维度的名称</span></span><br><span class="line">    <span class="keyword">return</span> datasets, labels</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">data, columns = create_data()</span><br><span class="line"></span><br><span class="line">df = pd.DataFrame(data, columns=columns)</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+<pre><code>.dataframe tbody tr th &#123;
+    vertical-align: top;
+&#125;
+
+.dataframe thead th &#123;
+    text-align: right;
+&#125;
+</code></pre>
+<p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>年龄</th>
+      <th>有工作</th>
+      <th>有自己的房子</th>
+      <th>信贷情况</th>
+      <th>类别</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>青年</td>
+      <td>否</td>
+      <td>否</td>
+      <td>一般</td>
+      <td>否</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>青年</td>
+      <td>否</td>
+      <td>否</td>
+      <td>好</td>
+      <td>否</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>青年</td>
+      <td>是</td>
+      <td>否</td>
+      <td>好</td>
+      <td>是</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>青年</td>
+      <td>是</td>
+      <td>是</td>
+      <td>一般</td>
+      <td>是</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>青年</td>
+      <td>否</td>
+      <td>否</td>
+      <td>一般</td>
+      <td>否</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[entropy_by_feature(df.iloc[:, :-<span class="number">1</span>], df.iloc[:, [-<span class="number">1</span>]], i)[:<span class="number">2</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(df.shape[<span class="number">1</span>]-<span class="number">1</span>)], entropy(df.iloc[:, -<span class="number">1</span>].values)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>([(7.026081016012281, [&#39;年龄=中年&#39;, &#39;年龄=老年&#39;, &#39;年龄=青年&#39;]),
+  (3.0220641516636104, [&#39;有工作=否&#39;, &#39;有工作=是&#39;]),
+  (3.379398751947122, [&#39;有自己的房子=否&#39;, &#39;有自己的房子=是&#39;]),
+  (6.2569493656467525, [&#39;信贷情况=一般&#39;, &#39;信贷情况=好&#39;, &#39;信贷情况=非常好&#39;])],
+ 4.533096227495416)
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Id3TreeNode</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, </span>):</span></span><br><span class="line">        self.feature_index = <span class="number">0</span></span><br><span class="line">        self.feature_name = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        self.feature_val = <span class="literal">None</span></span><br><span class="line">        self.y = <span class="number">0</span></span><br><span class="line">        self.entropy = <span class="number">0</span></span><br><span class="line">        self.label = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        self.children = []</span><br><span class="line">        self.sample_size = []</span><br><span class="line">        self.split_method = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        self.feature_range = <span class="literal">None</span></span><br><span class="line">        self.percent = <span class="number">0</span></span><br><span class="line">        self.split_func = <span class="keyword">lambda</span> x, fi: <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        fi = self.feature_index</span><br><span class="line">        i = self.split_func(x, fi)</span><br><span class="line">        <span class="keyword">if</span> self.children <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">and</span> <span class="built_in">len</span>(self.children) &gt; i:</span><br><span class="line">            <span class="keyword">return</span> self.children[i].predict(x)</span><br><span class="line">        <span class="keyword">return</span> self.y</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build_id3</span>(<span class="params">data, fv, enc_func, verbose=<span class="literal">False</span>, eps=<span class="number">0</span></span>):</span></span><br><span class="line">    <span class="keyword">if</span> data.empty <span class="keyword">or</span> data.shape[<span class="number">1</span>] &lt;= <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    node = Id3TreeNode()</span><br><span class="line">    node.feature_val = fv</span><br><span class="line">    </span><br><span class="line">    y = data.iloc[:, -<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">if</span> np.unique(y).size == <span class="number">1</span>:</span><br><span class="line">        node.y = y[<span class="number">0</span>]</span><br><span class="line">        node.sample_size = data.shape[<span class="number">0</span>]</span><br><span class="line">        node.feature_name = data.columns[<span class="number">0</span>]</span><br><span class="line">        node.label = <span class="string">&#x27;&#123;&#125;_&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(node.y, fv)</span><br><span class="line">        node.feature_range = [np.<span class="built_in">min</span>(data[node.feature_name]), np.<span class="built_in">max</span>(data[node.feature_name])]</span><br><span class="line">        node.percent = <span class="number">1.0</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> node</span><br><span class="line"></span><br><span class="line">    node.entropy = entropy(y.values)</span><br><span class="line">    ycount = y.value_counts().sort_values(ascending=<span class="literal">False</span>)</span><br><span class="line">    node.y = ycount.index[<span class="number">0</span>]</span><br><span class="line">    node.percent = ycount.iloc[<span class="number">0</span>]/y.size</span><br><span class="line">    </span><br><span class="line">    node.sample_size = data.shape[<span class="number">0</span>]</span><br><span class="line">    node.label = <span class="string">&#x27;&#123;&#125;_&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(node.y, fv)</span><br><span class="line">    <span class="comment"># 计算信息增益，因为每个(条件熵-熵)再比较大小，和不减一样，所以直接比较条件熵</span></span><br><span class="line">    es_m_v = [enc_func(data.iloc[:, :-<span class="number">1</span>], data.iloc[:, [-<span class="number">1</span>]], i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(data.shape[<span class="number">1</span>]-<span class="number">1</span>)]</span><br><span class="line">    es = [v[<span class="number">0</span>] <span class="keyword">for</span> v <span class="keyword">in</span> es_m_v]</span><br><span class="line">    feature_index = np.argmin(es)</span><br><span class="line">    feature_name = data.columns[feature_index]</span><br><span class="line">    node.feature_name = feature_name</span><br><span class="line">    node.feature_index = feature_index</span><br><span class="line">    node.feature_range = [np.<span class="built_in">min</span>(data[feature_name]), np.<span class="built_in">max</span>(data[feature_name])]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> es[feature_index] &lt; eps:</span><br><span class="line">        <span class="keyword">return</span> node</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> verbose:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;=&#x27;</span>*<span class="number">40</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;split by &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(feature_name))</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> data.shape[<span class="number">1</span>] &gt; <span class="number">2</span>: </span><br><span class="line">        children = []</span><br><span class="line">        node.split_func = es_m_v[feature_index][<span class="number">4</span>] </span><br><span class="line">        <span class="keyword">for</span> iv, v <span class="keyword">in</span> <span class="built_in">enumerate</span>(es_m_v[feature_index][<span class="number">2</span>]):</span><br><span class="line">            d = es_m_v[feature_index][<span class="number">3</span>](data, feature_name, v, iv).copy()</span><br><span class="line">            d.reset_index(inplace=<span class="literal">True</span>, drop=<span class="literal">True</span>)</span><br><span class="line">            d.drop(columns=[feature_name], inplace=<span class="literal">True</span>)</span><br><span class="line">            <span class="keyword">if</span> verbose:</span><br><span class="line">                <span class="built_in">print</span>(feature_name, v)</span><br><span class="line">                <span class="built_in">print</span>(d)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> d.empty:</span><br><span class="line">                c = build_id3(d, v, enc_func)</span><br><span class="line">                c.split_method = es_m_v[feature_index][<span class="number">1</span>][iv]</span><br><span class="line">                children.append(c)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                children.append(<span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">if</span> verbose:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;=&#x27;</span>*<span class="number">40</span>)</span><br><span class="line">        node.children = children</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> node</span><br><span class="line"></span><br><span class="line">tree = build_id3(df, <span class="number">0</span>, entropy_by_feature)</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">nodeindex = <span class="number">0</span></span><br><span class="line">edge_labels = &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_tree</span>(<span class="params">tree, colors</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># G = nx.DiGraph()</span></span><br><span class="line"></span><br><span class="line">    G = Graph()</span><br><span class="line">    <span class="comment"># https://www.graphviz.org/doc/info/colors.html</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">build_graph</span>(<span class="params">treeNode, colors</span>):</span></span><br><span class="line">        <span class="keyword">if</span> treeNode <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">global</span> nodeindex</span><br><span class="line">        <span class="keyword">global</span> edge_labels</span><br><span class="line"></span><br><span class="line">        nodeindex += <span class="number">1</span></span><br><span class="line">        currindex = nodeindex</span><br><span class="line">        label = <span class="string">&#x27;label=&#123;&#125;\npercent=&#123;:.2f&#125;\nsamples=&#123;&#125;\nentropy=&#123;:.2f&#125;\n&#123;&#125;=&#123;&#125;\n&#123;&#125;_range=&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(</span><br><span class="line">            treeNode.y, treeNode.percent, treeNode.sample_size, treeNode.entropy, treeNode.feature_name, </span><br><span class="line">            treeNode.feature_val, treeNode.feature_name, treeNode.feature_range)</span><br><span class="line">        G.add_node(Node(currindex, label=label, shape=<span class="string">&#x27;box&#x27;</span>, style=<span class="string">&#x27;filled&#x27;</span>, color=colors[treeNode.y]))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> treeNode.children:</span><br><span class="line">            <span class="keyword">if</span> node <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                cindex = build_graph(node, colors)</span><br><span class="line">                G.add_edge(Edge(currindex, cindex, label=<span class="string">&#x27;&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(node.split_method)))</span><br><span class="line">                edge_labels[(currindex, cindex)] = <span class="string">&#x27;&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(node.split_method)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> currindex</span><br><span class="line"></span><br><span class="line">    build_graph(tree, colors)</span><br><span class="line"></span><br><span class="line">    graph = pydotplus.graph_from_dot_data(G.to_string())  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Image(graph.create_png())</span><br><span class="line"></span><br><span class="line"><span class="comment">#     colors = [&#x27;azure&#x27;, &#x27;bisque&#x27;, &#x27;palegreen&#x27;]</span></span><br><span class="line">plot_tree(tree, &#123;<span class="string">u&#x27;是&#x27;</span>: <span class="string">&#x27;azure&#x27;</span>, <span class="string">u&#x27;否&#x27;</span>: <span class="string">&#x27;bisque&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<img src="/2019/08/26/decision-tree/output_9_0.png" class="">
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x = df.iloc[<span class="number">0</span>][:-<span class="number">1</span>]</span><br><span class="line">x, tree.predict(x)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(年龄        青年
+ 有工作        否
+ 有自己的房子     否
+ 信贷情况      一般
+ Name: 0, dtype: object, &#39;否&#39;)
+</code></pre>
+<p>如何处理连续值？</p>
+<p>假设特征的取值是$[x_1, x_2, \ldots, x_n]^T$，</p>
+<p>分别取${x_0|x_0 \in {(x_1+x_2)/2, (x_2+x_3)/, \ldots, (x_{n-1}+x_n)/2}}$作为切分点</p>
+<p>把特征分为$x \leq x_0$和$x \gt x_0$两部分，再求熵。</p>
+<p>取最小的作为分割点。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">entropy_by_continous_feature</span>(<span class="params">X, y, feature_index</span>):</span></span><br><span class="line">    x = X.iloc[:, feature_index]</span><br><span class="line">    sx = x.copy().values</span><br><span class="line">    sx.sort()</span><br><span class="line">    y = y.values</span><br><span class="line">    es = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(sx)-<span class="number">1</span>):</span><br><span class="line">        mid = (sx[i] + sx[i+<span class="number">1</span>]) / <span class="number">2</span></span><br><span class="line">        p1 = (x &lt;= mid).<span class="built_in">sum</span>()/x.size</span><br><span class="line">        e = p1 * entropy(y[x &lt;= mid]) + (<span class="number">1</span>-p1)*entropy(y[x &gt; mid])</span><br><span class="line">        es.append((e, mid, i))</span><br><span class="line">    e, s, i = es[np.argmin(es, axis=<span class="number">0</span>)[<span class="number">0</span>]]</span><br><span class="line">    methods = [<span class="string">&#x27;&#123;&#125; &#123;&#125; &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(X.columns[feature_index], op, s) <span class="keyword">for</span> op <span class="keyword">in</span> [<span class="string">&#x27;&lt;=&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>]]</span><br><span class="line">    vals = [s, s]</span><br><span class="line">    filters = <span class="keyword">lambda</span> data, findex, val, opindex: data[data[findex] &lt;= val] <span class="keyword">if</span> opindex == <span class="number">0</span> <span class="keyword">else</span> data[data[findex] &gt; val]</span><br><span class="line">    split_fuc = <span class="keyword">lambda</span> x, findex: <span class="number">0</span> <span class="keyword">if</span> x[findex] &lt;= s <span class="keyword">else</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> e, methods, vals, filters, split_fuc</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">X, y = make_multilabel_classification(n_classes=<span class="number">2</span>, n_labels=<span class="number">1</span>, allow_unlabeled=<span class="literal">False</span>, random_state=<span class="number">1</span>)</span><br><span class="line">y = np.argmax(y, axis=<span class="number">1</span>)</span><br><span class="line">df = pd.DataFrame(np.c_[X, y], columns=[<span class="string">&#x27;feature_&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(i+<span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(X.shape[<span class="number">1</span>])] + [<span class="string">&#x27;label&#x27;</span>])</span><br><span class="line">[entropy_by_continous_feature(df.iloc[:, :-<span class="number">1</span>], df.iloc[:, [-<span class="number">1</span>]], i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(df.shape[<span class="number">1</span>]-<span class="number">1</span>)], entropy(df.iloc[:, -<span class="number">1</span>].values)</span><br><span class="line">tree = build_id3(df, <span class="number">0</span>, entropy_by_continous_feature)</span><br><span class="line">plot_tree(tree, &#123;<span class="number">1</span>: <span class="string">&#x27;azure&#x27;</span>, <span class="number">0</span>:<span class="string">&#x27;bisque&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<img src="/2019/08/26/decision-tree/output_13_0.png" class="">
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x=df.iloc[<span class="number">0</span>, :-<span class="number">1</span>]</span><br><span class="line">x, tree.predict(x)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(feature_1     3.0
+ feature_2     0.0
+ feature_3     2.0
+ feature_4     1.0
+ feature_5     6.0
+ feature_6     2.0
+ feature_7     3.0
+ feature_8     4.0
+ feature_9     0.0
+ feature_10    6.0
+ feature_11    2.0
+ feature_12    7.0
+ feature_13    0.0
+ feature_14    7.0
+ feature_15    3.0
+ feature_16    3.0
+ feature_17    0.0
+ feature_18    1.0
+ feature_19    8.0
+ feature_20    3.0
+ Name: 0, dtype: float64, 0.0)
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_classification</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">X, y = make_classification(n_samples=<span class="number">100</span>, n_features=<span class="number">2</span>, n_informative=<span class="number">2</span>, n_redundant=<span class="number">0</span>, </span><br><span class="line">                           n_repeated=<span class="number">0</span>, n_classes=<span class="number">2</span>, n_clusters_per_class=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y)</span><br><span class="line">df = pd.DataFrame(np.c_[X_train, y_train], columns=[<span class="string">&#x27;feature_1&#x27;</span>, <span class="string">&#x27;feature_2&#x27;</span>, <span class="string">&#x27;label&#x27;</span>])</span><br><span class="line"></span><br><span class="line">plt.scatter(X_train[:, <span class="number">0</span>], X_train[:, <span class="number">1</span>], c=y_train)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x1a186192e8&gt;
+</code></pre>
+<p>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/25/logistic-regression/" rel="next" title="Logistic 回归">
+                <i class="fa fa-chevron-left"></i> Logistic 回归
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/04/nndl-4/" rel="prev" title="前馈神经网络">
+                前馈神经网络 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

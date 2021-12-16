@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Backend, spring," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091929394959697989910010110210">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring ioc">
+<meta property="og:url" content="http://yoursite.com/2018/09/20/spring-ioc/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091929394959697989910010110210">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-09-20T02:06:47.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.835Z">
+<meta property="article:author" content="Firepaw">
+<meta property="article:tag" content="Backend, spring">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/20/spring-ioc/"/>
+
+
+
+
+
+  <title>spring ioc | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/20/spring-ioc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">spring ioc</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-20T10:06:47+08:00">
+                2018-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">IOC --&gt; Configuration</span><br><span class="line">IOC --&gt; ConfigLoad[Load Configuration]</span><br><span class="line">IOC --&gt; Instantiating</span><br><span class="line">IOC --&gt; Bean</span><br><span class="line">IOC --&gt; Use</span><br><span class="line">IOC --&gt; Advantage[&quot;好处&quot;]</span><br><span class="line">IOC --&gt; CGLIB</span><br><span class="line">IOC --&gt; CEP[&quot;Container Extension Points&quot;]</span><br><span class="line">IOC --&gt; iocbf[BeanFactory]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Configuration --&gt; Annotation</span><br><span class="line">Configuration --&gt; ConfJava[Java Based Configuration]</span><br><span class="line">Configuration --&gt; XMLC[XML]</span><br><span class="line"></span><br><span class="line">Bean --&gt; BeanDefMethod[Bean定义方式]</span><br><span class="line">Bean --&gt; BeanInstantiating[&quot;创建Bean的方式&quot;]</span><br><span class="line"></span><br><span class="line">BeanDefMethod --&gt; XMLBD[XML]</span><br><span class="line">BeanDefMethod --&gt; Groovy[Groovy Bean Definition DSL]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">BeanInstantiating --&gt; BeanDef[Bean Definition]</span><br><span class="line">BeanInstantiating --&gt; BeanInitOuter[&quot;容器外创建再注册&quot;]</span><br><span class="line"></span><br><span class="line">BeanDef --&gt; bdcaprocess[&quot;DI process&quot;]</span><br><span class="line">BeanDef --&gt; bdClass[Class, 实例化Bean]</span><br><span class="line">BeanDef --&gt; bdName[Name]</span><br><span class="line">BeanDef --&gt; bdScope[Scope]</span><br><span class="line">BeanDef --&gt; bdca[&quot;Construct Based DI&quot;]</span><br><span class="line">BeanDef --&gt; bdprops[&quot;Setter/Method based DI&quot;]</span><br><span class="line">BeanDef --&gt; bdaw[Autowire Mode]</span><br><span class="line">BeanDef --&gt; bdli[Lazy-initialization Mode]</span><br><span class="line">BeanDef --&gt; bdim[Initialization Method]</span><br><span class="line">BeanDef --&gt; bddm[Destruction Method]</span><br><span class="line">BeanDef --&gt; bdls[&quot;Life Cycle&quot;]</span><br><span class="line">BeanDef --&gt; bdih[&quot;Inheritance&quot;]</span><br><span class="line">BeanDef --&gt; bdan[&quot;Annotation Based Config&quot;]</span><br><span class="line"></span><br><span class="line">BeanInitOuter --&gt; Bium[&quot;getBeanFactory =&gt; DefaultListableBeanFactory, registerSingleton,registerBeanDefinition&quot;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ConfigLoad --&gt; CLInit[&quot;配置文件路径传入Conext构造函数&quot;]</span><br><span class="line">ConfigLoad --&gt; CLload[&quot;Context实例化之后调用loadBeanDefinitions和refresh&quot;]</span><br><span class="line"></span><br><span class="line">bdName --&gt; bdNameId[ID]</span><br><span class="line">bdName --&gt; bdNameName[&quot;Name, ref需要&quot;]</span><br><span class="line">bdName --&gt; bdNameAlias[Alias]</span><br><span class="line">bdName --&gt; bdNameDft[&quot;不指定，容器会自动生成，用于inner beans 和 autowiring collaborators&quot;]</span><br><span class="line"></span><br><span class="line">bdClass --&gt; bdClassDesc1[&quot;用于创建对象不可缺少&quot;]</span><br><span class="line">bdClass --&gt; bdClassDesc2[&quot;例外是使用工厂方法创建对象，以及Bean definition inheritance&quot;]</span><br><span class="line">bdClass --&gt; bdClassDesc3[&quot;BeanDefinition的Class属性&quot;]</span><br><span class="line">bdClass --&gt; bdClassDesc4[&quot;Inner Class: com.example.Foo$Bar&quot;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Advantage --&gt; bdcawhy1[&quot;代码更简洁&quot;]</span><br><span class="line">Advantage --&gt; bdcawhy2[&quot;解耦&quot;]</span><br><span class="line">Advantage --&gt; bdcawhy3[&quot;不需要知道有哪些依赖以及他们的位置&quot;]</span><br><span class="line">Advantage --&gt; bdcawhy4[&quot;容易测试，特别是针对接口可以容易的使用stub&quot;]</span><br><span class="line"></span><br><span class="line">bdca --&gt; bdcacst1[&quot;constructor-arg&quot;]</span><br><span class="line">bdca --&gt; bdcacst2[&quot;@ConstructorProperties 自定义配置中的参数名&quot;]</span><br><span class="line">bdca --&gt; bdcacst3[&quot;建议使用，保证依赖不是null，返回的是以及初始化好的对象，不可变性&quot;]</span><br><span class="line">bdca --&gt; bdcastt4[&quot;用于可选注入或有默认值，好处是可重新注入&quot;]</span><br><span class="line">bdca --&gt; bdcastt5[&quot;depends on&quot;]</span><br><span class="line">bdca --&gt; bdcastt6[&quot;lazy initialize&quot;]</span><br><span class="line"></span><br><span class="line">bdcaprocess --&gt; bdcaprocess1[&quot;创建ApplicationContext，配置来自XML, Java code, or annotations&quot;]</span><br><span class="line">bdcaprocess --&gt; bdcaprocess2[&quot;依赖用properties, constructor arguments, or arguments to the static-factory method描述&quot;]</span><br><span class="line">bdcaprocess --&gt; bdcaprocess3[&quot;循环依赖导致BeanCurrentlyInCreationException&quot;]</span><br><span class="line"></span><br><span class="line">bdaw --&gt; bdcaawno[&quot;default is no, 需要通过ref指定&quot;]</span><br><span class="line">bdaw --&gt; bdcaawname[&quot;byName&quot;]</span><br><span class="line">bdaw --&gt; bdcaawtype[&quot;byType，多个类满足条件会抛出异常&quot;]</span><br><span class="line">bdaw --&gt; bdcaawcst[&quot;constructor，类似于byType，找不到会出错&quot;]</span><br><span class="line">bdaw --&gt; bdcaawdf[&quot;缺点&quot;]</span><br><span class="line"></span><br><span class="line">bdcaawdf --&gt; bdcaawdf1[&quot;最好项目全局使用，如果只是少数Bean使用Autowire会让人困惑&quot;]</span><br><span class="line">bdcaawdf --&gt; bdcaawdf2[&quot;显式定义的property和constructor-arg会覆盖Autowire&quot;]</span><br><span class="line">bdcaawdf --&gt; bdcaawdf3[&quot;不能Autowire简单类型如primitives, Strings, and Classes&quot;]</span><br><span class="line">bdcaawdf --&gt; bdcaawdf4[&quot;Spring不会为对象之间的关系创建显式的文档&quot;]</span><br><span class="line">bdcaawdf --&gt; bdcaawdf5[&quot;Wire信息可能对某些工具不可见&quot;]</span><br><span class="line">bdcaawdf --&gt; bdcaawdf6[&quot;多个Bean定义满足要求时会异常&quot;]</span><br><span class="line"></span><br><span class="line">bdcaawdf6 --&gt; bdcaawdf61[&quot;不使用Autowire&quot;]</span><br><span class="line">bdcaawdf6 --&gt; bdcaawdf62[&quot;Bean定义的autowire-candidate 设置成false&quot;]</span><br><span class="line">bdcaawdf6 --&gt; bdcaawdf63[&quot;Bean定义的primary 设置成true&quot;]</span><br><span class="line">bdcaawdf6 --&gt; bdcaawdf64[&quot;annotation-based configuration&quot;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bdprops --&gt; bdprops1[&quot;Bean默认是singleton&quot;]</span><br><span class="line">bdprops --&gt; bdprops2[&quot;Singleton Bean 依赖 Non-Singleton Bean 要怎么办?  Scoped beans as dependencies&quot;]</span><br><span class="line"></span><br><span class="line">bdprops2 --&gt; methodinjection[&quot;Method Inject&quot;]</span><br><span class="line">methodinjection --&gt; methodinjection1[&quot;通过CGLIB重写Bean的abstract getter方法返回需要的Bean&quot;]</span><br><span class="line">methodinjection --&gt; methodinjection2[&quot;Bean XML定义中的lookup-method 标签或者class的注解@Lookup&quot;]</span><br><span class="line">methodinjection --&gt; methodinjection3[&quot;要重写的Bean和方法不能是final的&quot;]</span><br><span class="line">methodinjection --&gt; methodinjection4[&quot;单元测试需要自己提供abstract方法的实现&quot;]</span><br><span class="line">methodinjection --&gt; methodinjection5[&quot;不能和工厂方法同时使用&quot;]</span><br><span class="line"></span><br><span class="line">bdprops2 --&gt; objectprovider[&quot;ObjectFactory/ Provider &quot;]</span><br><span class="line">bdprops2 --&gt; methodreplace[&quot;replaced-method 标签替换任意方法&quot;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bdScope --&gt; bdScopesg[&quot;Singleton, 默认，在一个容器里只有一个实例, 用于Stateless Bean&quot;]</span><br><span class="line">bdScope --&gt; bdScopept[&quot;Prototype, 用于Statefull Bean，容器不管理lifecycle&quot;]</span><br><span class="line">bdScope --&gt; bdScopecst[&quot;Custom Scope&quot;]</span><br><span class="line">bdScope --&gt; bdScopeweb[&quot;Web Context如XmlWebApplicationContext&quot;]</span><br><span class="line">bdScope --&gt; bdScopetd[&quot;Thread&quot;]</span><br><span class="line">bdScope --&gt; bdScopepx[&quot;aop:scoped-proxy &quot;]</span><br><span class="line"></span><br><span class="line">bdScopeweb --&gt; bdScopewebcat[&quot;种类&quot;]</span><br><span class="line">bdScopeweb --&gt; bdScopewebinit[&quot;初始化&quot;]</span><br><span class="line"></span><br><span class="line">bdScopewebinit --&gt; bdScopewebinitsp[&quot;Spring MVC使用DispatcherServlet，不需要额外配置&quot;]</span><br><span class="line">bdScopewebinit --&gt; bdScopewebinit25[&quot;Spring2.5搭配Structs等框架需要监听RequestContextListener ServletRequestListener&quot;]</span><br><span class="line">bdScopewebinit --&gt; bdScopewebinit30[&quot;Servlet3.0+需要WebApplicationInitializer，老的Web容器需要web.xml&quot;]</span><br><span class="line"></span><br><span class="line">bdScopewebcat --&gt; bdScoperq[&quot;Request, @RequestScope&quot;]</span><br><span class="line">bdScopewebcat --&gt; bdScopess[&quot;Session, @SessionScope&quot;]</span><br><span class="line">bdScopewebcat --&gt; bdScopeapp[&quot;Application, @ApplicationScope, per ServletContext vs per Container(Singleton)&quot;]</span><br><span class="line">bdScopewebcat --&gt; bdScopews[&quot;WebSocket&quot;]</span><br><span class="line"></span><br><span class="line">bdScopepx --&gt; bdScopepx1[&quot;Singleton 引用session bean时候，session bean配置成proxy，每次都会得到当前会话的bean&quot;]</span><br><span class="line">bdScopepx --&gt; bdScopepx2[&quot;proxy-target-class=true 用CGLIB生成代理类，不能代理私有方法；false使用JDK的接口代理&quot;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bdls --&gt; bdlscb[&quot;Callbaks&quot;]</span><br><span class="line">bdls --&gt; bdlsaw[&quot;Aware&quot;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bdlscb --&gt; bdlscbi[&quot;Initialize callbacks&quot;]</span><br><span class="line">bdlscb --&gt; bdlscbd[&quot;Destruction callbacks&quot;]</span><br><span class="line">bdlscb --&gt; bdlscbd[&quot;Container shutdown callbacks&quot;]</span><br><span class="line"></span><br><span class="line">bdlscbi --&gt; bdlscbi1[&quot;实现InitializingBean接口，不建议使用&quot;]</span><br><span class="line">bdlscbi --&gt; bdlscbi2[&quot;@PostConstruct&quot;]</span><br><span class="line">bdlscbi --&gt; bdlscbi3[&quot;xml init-method&quot;]</span><br><span class="line">bdlscbi --&gt; bdlscbi4[&quot;@Bean的initMethod&quot;]</span><br><span class="line"></span><br><span class="line">bdlscbd --&gt; bdlscbd1[&quot;@PreDestroy&quot;]</span><br><span class="line">bdlscbd --&gt; bdlscbd2[&quot;destroy-method&quot;]</span><br><span class="line">bdlscbd --&gt; bdlscbd3[&quot;destroyMethod of @Bean&quot;]</span><br><span class="line"></span><br><span class="line">bdlsaw --&gt; bdlsaw1[&quot;ApplicationContextAware, Bean可以引用Context，使得Bean依赖于Context，违反了IoC，不推荐使用&quot;]</span><br><span class="line">bdlsaw --&gt; bdlsaw2[BeanNameAware]</span><br><span class="line">bdlsaw --&gt; bdlsaw3[Others]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">CEP --&gt; cep1[&quot;使用插件扩展Context&quot;]</span><br><span class="line">CEP --&gt; cep2[&quot;BeanPostProcessor&quot;]</span><br><span class="line">CEP --&gt; cep3[&quot;BeanFactoryPostProcessor&quot;]</span><br><span class="line">CEP --&gt; cepfb[&quot;FactoryBean&quot;]</span><br><span class="line"></span><br><span class="line">cepfb --&gt; cepfb1[&quot;实现FactoryBean接口的类都是factories&quot;]</span><br><span class="line">cepfb --&gt; cepfb2[&quot;用于复杂的初始化逻辑，使用XML配置会很麻烦&quot;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bdan --&gt; bdan1[&quot;@Required&quot;]</span><br><span class="line">bdan --&gt; bdan2[&quot;@Autowired&quot;]</span><br><span class="line">bdan --&gt; bdan3[&quot;@Primary&quot;]</span><br><span class="line">bdan --&gt; bdan4[&quot;@Resource&quot;]</span><br><span class="line">bdan --&gt; bdan5[&quot;@PostConstruct&quot;]</span><br><span class="line">bdan --&gt; bdan6[&quot;@PreDestroy&quot;]</span><br><span class="line">bdan --&gt; jsr330[&quot;JSR330&quot;]</span><br><span class="line">jsr330 --&gt; jsr3301[&quot;@Inject and @Named = @Autowire&quot;]</span><br><span class="line">jsr330 --&gt; jsr3302[&quot;@Named and @ManagedBean = @Componen&quot;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ConfJava --&gt; ConfJava1[&quot;@Configuration&quot;]</span><br><span class="line">ConfJava --&gt; ConfJava2[&quot;@EnableLoadTimeWeaving&quot;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">iocbf --&gt; iocbf1[&quot;IoC的基础功能&quot;]</span><br><span class="line">iocbf --&gt; iocbf2[&quot;默认实现DefaultListableBeanFactory&quot;]</span><br><span class="line">iocbf --&gt; iocbf3[&quot;尽量用ApplicationContext而不使用BeanFactory&quot;]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@startuml</span><br><span class="line"></span><br><span class="line">interface BeanFactory</span><br><span class="line">interface ApplicationContext</span><br><span class="line">class ClassPathXmlApplicationContext</span><br><span class="line">class FileSystemXmlApplicationContext</span><br><span class="line">class GenericGroovyApplicationContext</span><br><span class="line">class Bean</span><br><span class="line"></span><br><span class="line">BeanFactory &lt;|-- ApplicationContext</span><br><span class="line">ApplicationContext &lt;|-- ClassPathXmlApplicationContext</span><br><span class="line">ApplicationContext &lt;|-- FileSystemXmlApplicationContext</span><br><span class="line">ApplicationContext &lt;|-- GenericGroovyApplicationContext</span><br><span class="line"></span><br><span class="line">ApplicationContext --&gt; Bean: &quot;创建、配置、组装&quot;</span><br><span class="line"></span><br><span class="line">@enduml</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>BeanFactory提供了配置框架和基本的功能。<br>ApplicationContext添加了更多的企业级功能包括：更容易和AOP集成，消息资源处理、事件发布、应用层Context比如WebApplicationContext。<br>大多数情况下不需要用户写代码来实例化Container，例如在Web应用中只需要在web.xml中加入如下的配置就可以</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;context-param&gt;</span><br><span class="line">    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</span><br><span class="line">    &lt;param-value&gt;/WEB-INF/daoContext.xml /WEB-INF/applicationContext.xml&lt;/param-value&gt;</span><br><span class="line">&lt;/context-param&gt;</span><br><span class="line"></span><br><span class="line">&lt;listener&gt;</span><br><span class="line">    &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;</span><br><span class="line">&lt;/listener&gt;</span><br></pre></td></tr></table></figure>
+
+
+<p>Bean 定义的例子</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br><span class="line">    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans</span><br><span class="line">        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;bean id=&quot;...&quot; class=&quot;...&quot;&gt;</span><br><span class="line">        &lt;!-- collaborators and configuration for this bean go here --&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line"></span><br><span class="line">    &lt;bean id=&quot;...&quot; class=&quot;...&quot;&gt;</span><br><span class="line">        &lt;!-- collaborators and configuration for this bean go here --&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- more bean definitions go here --&gt;</span><br><span class="line"></span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用IoC"><a href="#使用IoC" class="headerlink" title="使用IoC"></a>使用IoC</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/ create and configure beans</span><br><span class="line">ApplicationContext context = new ClassPathXmlApplicationContext(&quot;services.xml&quot;, &quot;daos.xml&quot;);</span><br><span class="line"></span><br><span class="line">// retrieve configured instance</span><br><span class="line">PetStoreService service = context.getBean(&quot;petStore&quot;, PetStoreService.class);</span><br><span class="line"></span><br><span class="line">// use configured instance</span><br><span class="line">List&lt;String&gt; userList = service.getUsernameList();</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Backend-spring/" rel="tag"># Backend, spring</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/19/json-api/" rel="next" title="json api">
+                <i class="fa fa-chevron-left"></i> json api
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/20/plan/" rel="prev" title="plan">
+                plan <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8IoC"><span class="nav-number">1.</span> <span class="nav-text">使用IoC</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

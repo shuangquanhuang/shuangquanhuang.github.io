@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最大似然估计 MLE模型已定，参数未知。找出一组参数，使得模型产生出观测数据的概率最大：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MLE">
+<meta property="og:url" content="http://yoursite.com/2019/07/23/MLE/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="最大似然估计 MLE模型已定，参数未知。找出一组参数，使得模型产生出观测数据的概率最大：">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-07-23T06:31:00.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.771Z">
+<meta property="article:author" content="Firepaw">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/23/MLE/"/>
+
+
+
+
+
+  <title>MLE | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/23/MLE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MLE</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-23T14:31:00+08:00">
+                2019-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="最大似然估计-MLE"><a href="#最大似然估计-MLE" class="headerlink" title="最大似然估计 MLE"></a>最大似然估计 MLE</h2><p>模型已定，参数未知。找出一组参数，使得模型产生出观测数据的概率最大：</p>
+<span id="more"></span>
+
+<p>$$<br>\underset{\mu}{\arg \max}\ \rho(X;\mu)<br>$$</p>
+<p>其中$\rho(X;\mu)$就是似然函数，表示参数是$\mu$的情况下出现观测数据$X$的概率。我们假设每个观测数据是独立的，就有：</p>
+<p>$$<br>\rho(x_1, x_2, \ldots, x_n; \mu) = \prod_{i=1}^n{\rho(x_i; \mu)}<br>$$<br>为了求导方便，我们一般对目标函数取对数，最优化似然函数等同于最优化对数似然函数：</p>
+<p>$$<br>\underset{\mu}{\arg \max}\ log\  \rho(X;\mu)<br>$$</p>
+<p>举个抛硬币的例子，记正面朝上为$H$，反面朝上为$T$，抛10次结果如下：</p>
+<p>$$<br>T, T, T, H, T, T, T, H, T, T<br>$$</p>
+<p>求这个硬币正面朝上的概率有多大？<br>最可能得结果显然是0.2。我们知道每次抛硬币都是一次二次分布，设正面朝上的概率是$\mu$，那么似然函数为：</p>
+<p>$$<br>\rho(X;\mu)=\prod_{i=1}^n{\rho(x_i;u)}=\prod_{i=1}^n{\mu^{x_i}(1-\mu)^{1-x_i}}<br>$$</p>
+<p>$x=1$表示正面朝上，$x=0$表示方面朝上。那么有：</p>
+<p>$$<br>\begin{aligned}<br>log\ \rho(X; \mu) &amp;= log\prod_{i=1}^n{\mu^{x_i}(1-\mu)^{1-x_i}}<br>\\&amp;= \sum_{i=1}^n{log{\mu^{x_i}(1-\mu)^{1-x_i}}}<br>\\&amp;= \sum_{i=1}^n{[log\mu^{x_i} + log(1-\mu)^{1-x_i}]}<br>\\&amp;= \sum_{i=1}^n{[x_ilog\mu + (1-x_i)log(1-\mu)]}<br>\end{aligned}<br>$$</p>
+<p>求导：</p>
+<p>$$<br>\begin{aligned}<br>\frac{\partial}{\partial\mu}log\ \rho(X;\mu) &amp;= \sum_{i=1}^n\frac{\partial}{\partial\mu}[x_ilog\mu+(1-x_i)log(1-\mu)]<br>\\&amp;=\sum_{i-1}^nx_i\frac{\partial}{\partial\mu}log\mu+\sum_{i=1}^n(1-x_i)\frac{\partial}{\partial\mu}log(1-\mu)<br>\\&amp;=\frac{1}{\mu}\sum_{i=1}^nx_i-\frac{1}{1-\mu}\sum_{i=1}^n(1-x_i)<br>\end{aligned}<br>$$<br>令导数等于0，得到：</p>
+<p>$$<br>\begin{aligned}<br>&amp;\frac{1}{\mu}\sum_{i=1}^nx_i=\frac{1}{1-\mu}\sum_{i=1}^n(1-x_i) \\<br>&amp;\Rightarrow \hat\mu_{ML} = \frac{1}{n}\sum_{i=1}^nx_i<br>\end{aligned}<br>$$</p>
+<h2 id="最大后验概率MAP"><a href="#最大后验概率MAP" class="headerlink" title="最大后验概率MAP"></a>最大后验概率MAP</h2><p>以上MLE求的是找出一组能够使似然函数最大的参数，即$\underset{\mu}{\arg \max}\ \rho(X;\mu)$。 现在问题稍微复杂一点点，假如这个参数$\mu$有一个先验概率呢？比如说，在上面抛硬币的例子，假如我们的经验告诉我们，硬币一般都是匀称的，也就是$\mu=0.5$的可能性最大，$\mu=0.2$的可能性比较小，那么参数该怎么估计呢？这就是MAP要考虑的问题。 MAP优化的是一个后验概率，即给定了观测值$\mu$后使概率最大：</p>
+<p>$$<br>\hat\mu_{MAP}=\underset{\mu}{\arg \max} \rho(\mu|X)<br>$$<br>上式根据贝叶斯公式展开：</p>
+<p>$$<br>\begin{aligned}<br>\hat\mu_{MAP} &amp;= \underset{\mu}{\arg \max}\frac{\rho(X|\mu)\rho(\mu)}{\rho(X)}<br>\\ &amp;= \underset{\mu}{\arg \max} \rho(X|\mu)\rho(\mu)<br>\end{aligned}<br>$$</p>
+<p>可以看出第一项就是似然函数$\rho(X|\mu) == \rho(X;\mu)$，第二项$\rho(\mu)$就是参数的先验知识。取对数之后得到：</p>
+<p>$$<br>\begin{aligned}<br>\mathcal L = \underset{\mu}{\arg \max}\ Pr(\mu|X)&amp;=\underset{\mu}{\arg \max}\ log\ Pr(\mu|X)<br>\\&amp;=\underset{\mu}{\arg \max}\ log\ {\prod_{x_i \in X}\ Pr(x_i|\mu)} \cdot Pr(\mu)<br>\\ &amp;= \underset{\mu}{\arg \max}\ \sum_{x_i \in X}{log \ Pr(x_i|\mu)} + log \ Pr(\mu)<br>\end{aligned}<br>$$</p>
+<p>回到抛硬币的例子，假设参数$\mu$有一个先验估计，它服从$Beta$分布，即：</p>
+<p>$$<br>Pr(\mu)=Beta(\mu|\alpha, \beta)=\frac{1}{B(\alpha, \beta)}\cdot\mu^{\alpha-1}(1-\mu)^{\beta-1}<br>$$<br>对目标函数求导：</p>
+<p>$$<br>\frac{\partial}{\partial\mu}L=\sum_i\frac{\partial}{\partial\mu}\log\ Pr(x_i|\mu)+\frac{\partial}{\partial\mu}log\ Beta(\mu|\alpha, \beta)<br>$$</p>
+<p>第一项在MLE中已经求出，第二项为：</p>
+<p> $$<br> \begin{aligned}<br> \frac{\partial}{\partial\mu}log\ Beta(\mu|\alpha, \beta) &amp;= \frac{\partial}{\partial\mu}log\ { \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\cdot\Gamma(\beta)}\cdot\mu^{\alpha-1}(1-\mu)^{\beta-1} }<br> \\ &amp;= \frac{\partial}{\partial\mu}log\ \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\cdot\Gamma(\beta)}+\frac{\partial}{\partial\mu}log\ \mu^{\alpha-1}(1-\mu)^{\beta-1}<br> \\ &amp;= 0 + \frac{\partial}{\partial\mu}\log\ \mu^{\alpha-1}(1-\mu)^{\beta-1}<br> \\ &amp;= (\alpha-1)\frac{\partial}{\partial\mu}log\ \mu+(\beta-1)\frac{\partial}{\partial\mu}(1-\mu)<br> \\ &amp;= \frac{\alpha-1}{\mu}-\frac{\beta-1}{1-\mu}<br> \end{aligned}<br> $$<br> 令导数为$0$，求解为：</p>
+<p> $$<br> \begin{aligned}<br> &amp; \frac{1}{\mu}\sum_{i=1}^nx_i-\frac{1}{1-\mu}\sum_{i=1}^n(1-x_i) + \frac{\alpha-1}{\mu}-\frac{\beta-1}{1-\mu} = 0<br> \\ \Rightarrow &amp; (1-\mu)\sum_{i=1}^nx_i-\mu\sum_{i=1}^n(1-x_i)+(1-\mu)(\alpha-1)-\mu(\beta-1)= 0<br> \\ \Rightarrow &amp; (1-\mu)n_H-\mu n+\mu n_H+(1-\mu)(\alpha-1)-\mu(\beta-1)= 0<br> \\ \Rightarrow &amp; \mu(-n_H-n+n_H+1-\alpha+1-\beta)+n_H+\alpha-1 = 0<br> \\ \Rightarrow &amp; \mu(n+\alpha+\beta-2)= n_H+\alpha-1<br> \\ \Rightarrow &amp; \hat\mu_{MAP} = \frac{n_H+\alpha-1}{n+\alpha+\beta-2}<br> \end{aligned}<br> $$<br> 其中$n_H$表示正面朝上的次数。MAP于MLE的不同之处在于MAP的结果多了一些先验分布的参数。</p>
+<h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><p>假设$X$是一随机变量（random variable）， $x$是它的一个实现（realization）。</p>
+<p>$P(x; \theta)$ （密度函数）：参数为$\theta$时  出现的概率。这里的$\theta$是一个参数（parameter），是确定的，但是可能已知也可能未知。</p>
+<p>$P(X|\theta)$ （条件概率）：随机变量$\Theta$为$\theta$时，$x$出现的概率。这里$\theta$是随机变量$\Theta$的一个实现。随机变量$\Theta$是不确定的，服从一个概率分布。</p>
+<p>$P(x, \theta)$ 联合概率）：随机变量$\Theta$为$\theta$且随机变量$X$为$x$的概率。</p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sylvanas2012/p/5058065.html">最大似然估计（MLE）和 最大后验概率（MAP）</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/20/%E5%8F%AF%E5%B9%B6%E5%A0%86/" rel="next" title="可并堆">
+                <i class="fa fa-chevron-left"></i> 可并堆
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/07/nndl-notebook/" rel="prev" title="神经网络与深度学习笔记">
+                神经网络与深度学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1-MLE"><span class="nav-number">1.</span> <span class="nav-text">最大似然估计 MLE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E5%90%8E%E9%AA%8C%E6%A6%82%E7%8E%87MAP"><span class="nav-number">2.</span> <span class="nav-text">最大后验概率MAP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7"><span class="nav-number">3.</span> <span class="nav-text">符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">引用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

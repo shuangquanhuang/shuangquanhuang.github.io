@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="神经元SigmoidSigmoid 型函数是指一类 S 型曲线函数，为两端饱和函数。常用的 Sigmoid 型函数有 Logistic 函数和 Tanh 函数。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前馈神经网络">
+<meta property="og:url" content="http://yoursite.com/2019/09/04/nndl-4/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="神经元SigmoidSigmoid 型函数是指一类 S 型曲线函数，为两端饱和函数。常用的 Sigmoid 型函数有 Logistic 函数和 Tanh 函数。">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2019/09/04/nndl-4/output_1_0.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/04/nndl-4/output_3_0.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/04/nndl-4/output_5_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/04/nndl-4/output_7_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/04/nndl-4/output_9_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/04/nndl-4/output_12_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/04/nndl-4/output_22_0.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/04/nndl-4/output_22_1.png">
+<meta property="article:published_time" content="2019-09-04T09:43:01.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.796Z">
+<meta property="article:author" content="Firepaw">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/09/04/nndl-4/output_1_0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/09/04/nndl-4/"/>
+
+
+
+
+
+  <title>前馈神经网络 | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/04/nndl-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">前馈神经网络</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-04T17:43:01+08:00">
+                2019-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="神经元"><a href="#神经元" class="headerlink" title="神经元"></a>神经元</h1><h2 id="Sigmoid"><a href="#Sigmoid" class="headerlink" title="Sigmoid"></a>Sigmoid</h2><p>Sigmoid 型函数是指一类 S 型曲线函数，为两端饱和函数。常用的 Sigmoid 型<br>函数有 Logistic 函数和 Tanh 函数。</p>
+<span id="more"></span>
+
+<p><strong>Logistic函数</strong><br>$$<br>\sigma(x)=\frac{1}{1+exp(-x)}<br>$$</p>
+<p><strong>Tanh函数</strong></p>
+<p>$$<br>tanh(x)=\frac{exp(x)-exp(-x)}{exp(x)+exp(-x)}<br>$$</p>
+<p>Tanh可以看做是放大并平移的Logistic函数。</p>
+<p>$$<br>tanh(x) = 2\sigma(2x) − 1<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">x = np.linspace(-<span class="number">5</span>, <span class="number">5</span>, <span class="number">1000</span>)</span><br><span class="line">logistic_y = <span class="number">1</span>/(<span class="number">1</span>+np.exp(-x))</span><br><span class="line">tanh_y = (np.exp(x)-np.exp(-x))/(np.exp(x)+np.exp(-x))</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">8</span>, <span class="number">6</span>))</span><br><span class="line">plt.plot(x, logistic_y, label=<span class="string">&#x27;logistic&#x27;</span>)</span><br><span class="line">plt.plot(x, tanh_y, linestyle=<span class="string">&#x27;--&#x27;</span>, label=<span class="string">&#x27;tanh&#x27;</span>)</span><br><span class="line">plt.plot([-<span class="number">5</span>, <span class="number">5</span>], [<span class="number">0</span>, <span class="number">0</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">0</span>], [-<span class="number">1</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">plt.arrow(<span class="number">5</span>, <span class="number">0</span>, <span class="number">0.2</span>, <span class="number">0</span>, length_includes_head=<span class="literal">True</span>, head_width=<span class="number">0.1</span>, head_length=<span class="number">0.3</span>, fc=<span class="string">&#x27;k&#x27;</span>, ec=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">plt.arrow(<span class="number">0</span>, <span class="number">0.85</span>, <span class="number">0</span>, <span class="number">0.2</span>, length_includes_head=<span class="literal">True</span>, head_width=<span class="number">0.3</span>, head_length=<span class="number">0.1</span>, fc=<span class="string">&#x27;k&#x27;</span>, ec=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.grid(<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/09/04/nndl-4/output_1_0.png" class="">
+
+
+<p>Logistic和Tanh计算开销大，可以使用分段函数代替。</p>
+<p><strong>hard-logistic</strong></p>
+<p>Logistic 在$0$附件的泰勒展开式为:<br>$$<br>\begin{aligned}<br>g_l(x) &amp;\approx \sigma(0) + x \times \sigma′(0) \\<br>&amp;= 0.25x + 0.5<br>\end{aligned}<br>$$<br>所以：<br>$$<br>\begin{aligned}<br>hard-logistic(x)&amp;=<br>\begin{cases}<br>1 &amp; g_l(x)\leq 1\\<br>g_l &amp; 0 \lt g_l(x) \lt 1 \\<br>0 &amp; g_l(x) \leq 0<br>\end{cases} \\<br>&amp;= \max(\min(g_l(x), 1), 0) \\<br>&amp;= \max(\min(0.25x + 0.5, 1), 0)<br>\end{aligned}<br>$$</p>
+<p><strong>hard-tanh</strong></p>
+<p>tanh在$0$附件的泰勒展开式为:<br>$$<br>\begin{aligned}<br>gt(x) &amp;\approx tanh(0) + x times tanh′(0) \\<br>&amp;= x<br>\end{aligned}<br>$$</p>
+<p>所以</p>
+<p>$$<br>\begin{aligned}<br>hard-tanh(x) &amp;= \max(\min(g_t(x), 1), −1) \\<br>&amp;= \max(\min(x, 1), −1)<br>\end{aligned}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">x = np.linspace(-<span class="number">5</span>, <span class="number">5</span>, <span class="number">1000</span>)</span><br><span class="line">logistic_y = <span class="number">1</span>/(<span class="number">1</span>+np.exp(-x))</span><br><span class="line">tanh_y = (np.exp(x)-np.exp(-x))/(np.exp(x)+np.exp(-x))</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">16</span>, <span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">glx = <span class="number">0.25</span> * x + <span class="number">0.5</span></span><br><span class="line">hard_logistic_y = np.<span class="built_in">max</span>(np.c_[np.<span class="built_in">min</span>(np.c_[glx, np.ones_like(glx)], axis=<span class="number">1</span>), np.zeros_like(glx)], axis=<span class="number">1</span>)</span><br><span class="line">hard_tanh_y = np.<span class="built_in">max</span>(np.c_[np.<span class="built_in">min</span>(np.c_[x, np.ones_like(x)], axis=<span class="number">1</span>), np.full_like(x, -<span class="number">1</span>)], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(<span class="number">121</span>)</span><br><span class="line">plt.plot(x, logistic_y, label=<span class="string">&#x27;logistic&#x27;</span>)</span><br><span class="line">plt.plot(x, hard_logistic_y, linestyle=<span class="string">&#x27;--&#x27;</span>, label=<span class="string">&#x27;tanh&#x27;</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.grid(<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(<span class="number">122</span>)</span><br><span class="line">plt.plot(x, tanh_y, label=<span class="string">&#x27;logistic&#x27;</span>)</span><br><span class="line">plt.plot(x, hard_tanh_y, linestyle=<span class="string">&#x27;--&#x27;</span>, label=<span class="string">&#x27;tanh&#x27;</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.grid(<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/09/04/nndl-4/output_3_0.png" class="">
+
+
+<h2 id="线性修正单元-Rectifier-函数"><a href="#线性修正单元-Rectifier-函数" class="headerlink" title="线性修正单元(Rectifier 函数)"></a>线性修正单元(Rectifier 函数)</h2><p>$ReLU(x) = \max(0, x)$，只需要加、乘、比较操作，比较高效。具有比较好的生物解释性（单侧抑制、宽兴奋边界）和稀疏性（少数被激活）。</p>
+<p>相比于Sigmoid的两端饱和，ReLU为左饱和函数，且$x \gt 1$时导数为$1$，缓解了梯度消失问题，加速了梯度下降的收敛速度。</p>
+<p><strong>缺点</strong></p>
+<ol>
+<li><p>输出是非零中心化的，给后一层网络引入了偏置偏移，影响梯度下降的效率。</p>
+</li>
+<li><p>ReLU 神经元在训练时比较容易“死亡”。在训练 时，如果参数在一次不恰当的更新后，第一个隐藏层中的某个 ReLU 神经元在 所有的训练数据上都不能被激活，那么这个神经元自身参数的梯度永远都会是 0，在以后的训练过程中永远不能被激活。这种现象称为<span style="color:salmon">死亡 ReLU</span> 问题(Dying ReLU Problem)，并且也有可能会发生在其它隐藏层。</p>
+</li>
+</ol>
+<p>为了避免上述问题而引入了ReLU的几种变种：</p>
+<h3 id="带泄露的ReLU-Leaky-ReLU"><a href="#带泄露的ReLU-Leaky-ReLU" class="headerlink" title="带泄露的ReLU(Leaky ReLU)"></a>带泄露的ReLU(Leaky ReLU)</h3><p>在输入$x \lt 0$时，保持一个很小的梯度$\lambda$。这 样当神经元非激活时也能有一个非零的梯度可以更新参数，避免永远不能被激活。</p>
+<p>$$<br>\begin{aligned}<br>LeakyReLU(x) &amp;=<br>\begin{cases}<br>x &amp; if x \gt 0 \\<br>\lambda x &amp; if x \leq 0<br>\end{cases} \\<br>&amp;= \max(0, x)+\lambda \min(0, x) \\<br>&amp;= max(x, \lambda x) \ 当\lambda \gt 1时<br>\end{aligned}<br>$$</p>
+<h3 id="带参数的ReLU-Parametric-ReLU，PReLU"><a href="#带参数的ReLU-Parametric-ReLU，PReLU" class="headerlink" title="带参数的ReLU(Parametric ReLU，PReLU)"></a>带参数的ReLU(Parametric ReLU，PReLU)</h3><p>不同神经元可以有不同的参数。对于第$i$个神经元，其PReLU的定义为:</p>
+<p>$$<br>PReLU_i(x)=<br>\begin{cases}<br>x &amp; if\ x \gt 0 \\<br>\gamma_i x &amp; if\ x \leq 0<br>\end{cases}<br>$$</p>
+<p>其中$\gamma_i$为$x \leq 0$时函数的斜率。因此，PReLU是非饱和函数。如果$\gamma_i = 0$，那么PReLU就退化为ReLU。如果$\gamma_i$为一个很小的常数，则PReLU可以看作带泄露的ReLU。PReLU可以允许不同神经元具有不同的参数，也可以一组神经元共享一个参数。</p>
+<h3 id="指数线性单元-Exponential-Linear-Unit，ELU"><a href="#指数线性单元-Exponential-Linear-Unit，ELU" class="headerlink" title="指数线性单元(Exponential Linear Unit，ELU)"></a>指数线性单元(Exponential Linear Unit，ELU)</h3><p>是个近似的零中心化的非线性函数</p>
+<p>$$<br>(x)=<br>\begin{cases}<br>x &amp; if\ x \gt 0 \\<br>\gamma(exp(x)-1)&amp; if\ x \leq 0<br>\end{cases}<br>$$</p>
+<p>其中$\gamma \geq 0$是一个超参数，决定$x \leq 0$时的饱和曲线，并调整输出均值在0附近。</p>
+<h3 id="Softplus-函数"><a href="#Softplus-函数" class="headerlink" title="Softplus 函数"></a>Softplus 函数</h3><p>可以看作是Rectifier函数的平滑版本，Softplus 函数其导数刚好是 Logistic 函数。Softplus 函数虽然也有具有单侧抑制、宽兴奋边界的特性，却没有稀疏激活性。</p>
+<p>$$<br>Softplus(x) = log(1 + exp(x))<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">x = np.linspace(-<span class="number">4</span>, <span class="number">4</span>, <span class="number">1000</span>)</span><br><span class="line">relu = np.<span class="built_in">max</span>(np.c_[x, np.zeros_like(x)], axis=<span class="number">1</span>)</span><br><span class="line">leaky_relu = np.array([v <span class="keyword">if</span> v &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">0.1</span>*v <span class="keyword">for</span> v <span class="keyword">in</span> x])</span><br><span class="line">prelu = np.array([v <span class="keyword">if</span> v &gt; <span class="number">0</span> <span class="keyword">else</span> np.random.rand()*v/<span class="number">100</span> <span class="keyword">for</span> v <span class="keyword">in</span> x])</span><br><span class="line">elu = np.array([v <span class="keyword">if</span> v &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">0.1</span>*(np.exp(v)-<span class="number">1</span>) <span class="keyword">for</span> v <span class="keyword">in</span> x])</span><br><span class="line">softplus = np.log(<span class="number">1</span>+np.exp(x))</span><br><span class="line"></span><br><span class="line">plt.plot(x, relu, label=<span class="string">&#x27;relu&#x27;</span>)</span><br><span class="line">plt.plot(x, leaky_relu, label=<span class="string">&#x27;leaky_relu&#x27;</span>, linestyle=<span class="string">&#x27;:&#x27;</span>)</span><br><span class="line">plt.plot(x, prelu, label=<span class="string">&#x27;prelu&#x27;</span>, linestyle=<span class="string">&#x27;-.&#x27;</span>)</span><br><span class="line">plt.plot(x, elu, label=<span class="string">&#x27;elu&#x27;</span>, linestyle=<span class="string">&#x27;--&#x27;</span>)</span><br><span class="line">plt.plot(x, softplus, label=<span class="string">&#x27;softplus&#x27;</span>, linestyle=<span class="string">&#x27;--&#x27;</span>)</span><br><span class="line">plt.legend()</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.legend.Legend at 0x11b4a7da0&gt;
+</code></pre>
+<img src="/2019/09/04/nndl-4/output_5_1.png" class="">
+
+
+<h2 id="Swish-函数"><a href="#Swish-函数" class="headerlink" title="Swish 函数"></a>Swish 函数</h2><p>Swish函数是一种自门控</p>
+<p>$$<br>swish(x)=x\sigma(\beta x)<br>$$</p>
+<p>其中$\sigma(·)$为Logistic函数，$\beta$为可学习的参数或一个固定超参数。$\sigma(·) \in (0,1)$可 以看作是一种软性的门控机制。当 $\sigma(\beta x)$ 接近于 $1$ 时，门处于“开”状态，激活函数的输出近似于 $x$ 本身;当 $\sigma(\beta x)$ 接近于 $0$ 时，门的状态为“关”，激活函数的输出 近似于 $0$。</p>
+<p>当$\beta = 0$时，Swish函数变成线性函数$x/2$。 当$\beta = 1$时，Swish函数在$x \gt 0$时近似线性，在$x \lt 0$时近似饱和，同时具有一定的非单调性。当$\beta \rightarrow +\infty$时，$\sigma(\beta x)$趋向于离散的$0-1$函数，Swish函数近似为 ReLU 函数。因此，Swish 函数可以看作是线性函数和 ReLU 函数之间的非线性插 值函数，其程度由参数 $\beta$ 控制。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = np.linspace(-<span class="number">4</span>, <span class="number">4</span>, <span class="number">1000</span>)</span><br><span class="line"><span class="keyword">for</span> beta, linestyle <span class="keyword">in</span> <span class="built_in">zip</span>([<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">1</span>, <span class="number">100</span>], [<span class="string">&#x27;:&#x27;</span>, <span class="string">&#x27;--&#x27;</span>, <span class="string">&#x27;-.&#x27;</span>, <span class="string">&#x27;-&#x27;</span>]):</span><br><span class="line">    y = x * <span class="number">1</span>/ (<span class="number">1</span>+np.exp(-(beta * x)))</span><br><span class="line">    plt.plot(x, y, label=<span class="string">r&#x27;$\beta=&#123;&#125;$&#x27;</span>.<span class="built_in">format</span>(beta), linestyle=linestyle)</span><br><span class="line">plt.legend()</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.legend.Legend at 0x11b63a400&gt;
+</code></pre>
+<img src="/2019/09/04/nndl-4/output_7_1.png" class="">
+
+
+<h2 id="高斯误差线性单元-Gaussian-Error-Linear-Unit，GELU"><a href="#高斯误差线性单元-Gaussian-Error-Linear-Unit，GELU" class="headerlink" title="高斯误差线性单元(Gaussian Error Linear Unit，GELU)"></a>高斯误差线性单元(Gaussian Error Linear Unit，GELU)</h2><p>和Swish函数比较类似，也是一种通过门控机制来调整其输出值的激活函数。</p>
+<p>$$<br>GELU(x) = xP (X \leq x)<br>$$</p>
+<p>其中$P(X \leq x)$是高斯分布$N(\mu,\sigma^2)$的累积分布函数，其中$\mu, \sigma$为超参数，一般 设$\mu = 0, \sigma = 1$即可。由于高斯分布的累积分布函数为S型函数，因此GELU可 以用 Tanh 函数或 Logistic 函数来近似，当使用 Logistic 函数来近似时，GELU 相当于一种特殊的 Swish 函数。</p>
+<p>$$<br>GELU(x) \approx 0.5x\left( 1 + tanh(\sqrt{\frac{2}{\pi}}(x+0.044715x^3)) \right)<br>$$</p>
+<p>或</p>
+<p>$$<br>GELU(x) \approx x\sigma(1.702x)<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scipy.stats <span class="keyword">import</span> norm</span><br><span class="line">x = np.linspace(-<span class="number">4</span>, <span class="number">4</span>, <span class="number">1000</span>)</span><br><span class="line">cdf = norm.cdf(x)</span><br><span class="line">gelu = x*cdf</span><br><span class="line"></span><br><span class="line">x2 = np.sqrt(<span class="number">2</span>/np.pi)*(x+<span class="number">0.044715</span>*x**<span class="number">3</span>)</span><br><span class="line">tanh_x2 = (np.exp(x2)-np.exp(-x2)) / (np.exp(x2)+np.exp(-x2))</span><br><span class="line">gelu2 = <span class="number">0.5</span>*x*(<span class="number">1</span>+tanh_x2)</span><br><span class="line"></span><br><span class="line">gelu3 = x/(<span class="number">1</span>+np.exp(-<span class="number">1.702</span>*x))</span><br><span class="line"></span><br><span class="line">plt.plot(x, cdf, label=<span class="string">&#x27;cdf&#x27;</span>)</span><br><span class="line">plt.plot(x, gelu, label=<span class="string">&#x27;gelu&#x27;</span>)</span><br><span class="line">plt.plot(x, gelu2, label=<span class="string">&#x27;gelu2&#x27;</span>, linestyle=<span class="string">&#x27;--&#x27;</span>)</span><br><span class="line">plt.plot(x, gelu3, label=<span class="string">&#x27;gelu3&#x27;</span>, linestyle=<span class="string">&#x27;:&#x27;</span>)</span><br><span class="line"></span><br><span class="line">plt.legend()</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.legend.Legend at 0x1a1daec668&gt;
+</code></pre>
+<img src="/2019/09/04/nndl-4/output_9_1.png" class="">
+
+
+<h2 id="Maxout-单元"><a href="#Maxout-单元" class="headerlink" title="Maxout 单元"></a>Maxout 单元</h2><p>Maxout单元也是一种分段线性函数。Sigmoid型函数、ReLU 等激活函数的输入是神经元的净输入$z$，是一个标量。而 Maxout 单元 的输入是上一层神经元的全部原始输出，是一个向量$\mathbf x = [x_1 ; x_2 ; \cdots ; x_d ]$。<br>每个Maxout单元有$K$个权重向量$w_k \in R^d$和偏置$b_k (1 \leq k \leq K)$。对于输入$\mathbf x$，可以得到$K$个净输入$z_k,1 \leq k \leq K$。采用Maxout单元的神经网 络也就做Maxout网络。<br>$$<br>  z_k = \mathbf w_k^T \mathbf x + b_k<br>$$<br>其中$w_k = [w_{k,1}, \cdots ,w_{k,d}]^T $为第$k$个权重向量。<br>Maxout 单元的非线性函数定义为<br>$$<br>maxout(\mathbf x) = \underset {k \in [1, k]}{\max} (z_k )<br>$$<br>Maxout 单元不单是净输入到输出之间的非线性映射，而是整体学习输入到输出之间的非线性映射关系。Maxout 激活函数可以看作任意凸函数的分段线性近似，并且在有限的点上是不可微的。</p>
+<h2 id="习题4-1"><a href="#习题4-1" class="headerlink" title="习题4-1"></a>习题4-1</h2><p>对于一个神经元$\sigma(\mathbf w^T \mathbf x+b)$，并使用梯度下降优化参数$\mathbf w$时，如果输入$\mathbf x$ 恒大于 $0$，其收敛速度会比零均值化的输入更慢。</p>
+<p>$$<br>\mathbf y = \mathbf x \mathbf w + b<br>$$</p>
+<p>最小化</p>
+<p>$$<br>\mathcal L(\mathbf w, b) = \frac{1}{2}(\mathbf x \mathbf w + b - \mathbf y)^2<br>$$</p>
+<p>求导</p>
+<p>$$<br>\mathbf w_{k+1} = \mathbf w_k + \alpha \mathbf x^T(\mathbf x \mathbf w_k - \mathbf y)<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">X, y, max_iter=<span class="number">100</span>, alpha=<span class="number">0.01</span></span>):</span></span><br><span class="line">    costs = []</span><br><span class="line">    w = np.ones((X.shape[<span class="number">1</span>], <span class="number">1</span>))</span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(max_iter):</span><br><span class="line">        cost = <span class="number">1.0</span>/<span class="number">2</span> * np.linalg.norm(X@w-y, <span class="number">2</span>)</span><br><span class="line">        costs.append(cost)</span><br><span class="line">        dw = X.T@(X@w-y)</span><br><span class="line">        w += -alpha*dw</span><br><span class="line">    <span class="keyword">return</span> w, costs</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">feature_num = <span class="number">5</span></span><br><span class="line">sample_num = <span class="number">100</span></span><br><span class="line">w0 = np.random.rand(feature_num, <span class="number">1</span>)</span><br><span class="line">b0 = np.random.rand()</span><br><span class="line"></span><br><span class="line">X = np.random.rand(sample_num, feature_num)</span><br><span class="line">y = X@w0 + np.random.randn(sample_num, <span class="number">1</span>) / <span class="number">100</span></span><br><span class="line"></span><br><span class="line">X2 = np.random.randn(sample_num, feature_num)</span><br><span class="line">y2 = X2@w0 + np.random.randn(sample_num, <span class="number">1</span>) / <span class="number">100</span></span><br><span class="line"></span><br><span class="line">w, costs = train(X, y)</span><br><span class="line">w2, costs2 = train(X2, y2)</span><br><span class="line"></span><br><span class="line">plt.plot([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(costs))], costs, label=<span class="string">&#x27;x &gt; 0&#x27;</span>)</span><br><span class="line">plt.plot([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(costs2))], costs2, label=<span class="string">&#x27;E(x)=0&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;w=&#123;&#125;\nw2=&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(w.flatten(), w2.flatten()))</span><br><span class="line">plt.legend()</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.legend.Legend at 0x1a1db71fd0&gt;
+</code></pre>
+<img src="/2019/09/04/nndl-4/output_12_1.png" class="">
+
+
+<h2 id="习题4-2"><a href="#习题4-2" class="headerlink" title="习题4-2"></a>习题4-2</h2><p>试设计一个前馈神经网络(Feedforward Neural Network，FNN)来解决XOR问题，要求该前馈神经网 络具有两个隐藏神经元和一个输出神经元，并使用 ReLU 作为激活函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">active_func</span>(<span class="params">z</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> z &lt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line">w11, b11 = np.array([<span class="number">1</span>, <span class="number">1</span>]).reshape(-<span class="number">1</span>, <span class="number">1</span>), -<span class="number">3</span>/<span class="number">2</span></span><br><span class="line">w12, b12 = np.array([<span class="number">1</span>, <span class="number">1</span>]).reshape(-<span class="number">1</span>, <span class="number">1</span>), -<span class="number">1</span>/<span class="number">2</span></span><br><span class="line">w2, b2 = np.array([-<span class="number">2</span>, <span class="number">1</span>]).reshape(-<span class="number">1</span>, <span class="number">1</span>), -<span class="number">1</span>/<span class="number">2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">0</span>, <span class="number">0</span>], [<span class="number">1</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">0</span>]])</span><br><span class="line">y = []</span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> X:</span><br><span class="line">    z11, z12 = active_func((x@w11+b11).item(<span class="number">0</span>)), active_func((x@w12+b12).item(<span class="number">0</span>))</span><br><span class="line">    <span class="built_in">print</span>(z11, z12)</span><br><span class="line">    z2 = (np.array([z11, z12])@w2+b2).item(<span class="number">0</span>)</span><br><span class="line">    y.append(active_func(z2))</span><br><span class="line">    </span><br><span class="line"><span class="built_in">print</span>(y)</span><br></pre></td></tr></table></figure>
+
+<pre><code>0 0
+1 1
+0 1
+0 1
+[0, 0, 1, 1]
+</code></pre>
+<h2 id="习题4-3"><a href="#习题4-3" class="headerlink" title="习题4-3"></a>习题4-3</h2><p>试举例说明“死亡ReLU问题”，并提出解决方法。</p>
+<p>Relu的输入是$z_n=\sum_{i=0}^k w_i a^n_i$，其中$a^n_i$是前一层输出的$x_n$通过激活函数后的值。误差$error = ReLU - y$，梯度:</p>
+<p>$$<br>\frac{\partial error}{\partial z_n} = \delta_n =<br>\begin{cases}<br>1 &amp; z_n \geq 0\\<br>0 &amp; z_n &lt; 0<br>\end{cases}<br>$$</p>
+<p>梯度变成$0$之后$w$无法更新。</p>
+<h2 id="习题4-4"><a href="#习题4-4" class="headerlink" title="习题4-4"></a>习题4-4</h2><p>计算Swish函数$swish(x) = x\sigma(\beta x)$的导数。</p>
+<p>$$<br>\begin{aligned}<br>\frac{\partial swish(x)}{\partial x} &amp;= x’ \sigma(\beta x) + x \sigma’(\beta x) \\<br>&amp;= \sigma(\beta x) + x \left(\sigma(\beta x) (1 - \sigma(\beta x)) (\beta x)’\right) \\<br>&amp;= \sigma(\beta x) + \beta x \left(\sigma(\beta x) (1 - \sigma(\beta x)) \right) \\<br>&amp;= (\beta x + 1)\sigma(\beta x)-\beta x \sigma(\beta x)^2<br>\end{aligned}<br>$$</p>
+<h2 id="习题4-5"><a href="#习题4-5" class="headerlink" title="习题4-5"></a>习题4-5</h2><p>如果限制一个神经网络的总神经数量为$N$，层数为$L$，每个隐藏层的神经元数量为 $\frac{N −1}{L−1}$ ，试分析参数数量和层数 $L$ 的关系。 </p>
+<p>每个节点的参数数量是上一层的神经元个数，所以一层有$\frac{N −1}{L−1}\times \frac{N −1}{L−1}$个参数，隐藏层总共有$N-1$个神经元，最后输出层一个神经元</p>
+<p>$$<br>(L-1)\frac{N −1}{L−1}\times \frac{N −1}{L−1} + \frac{N −1}{L−1} = \frac{(N −1)^2+N-1}{L-1} = \frac{N(N-1)}{L-1}<br>$$</p>
+<h2 id="习题4-7"><a href="#习题4-7" class="headerlink" title="习题4-7"></a>习题4-7</h2><p>为什么在神经网络模型的结构化风险函数中不对偏置$b$进行正则化?</p>
+<p>偏置和过拟合无关</p>
+<h2 id="习题4-8"><a href="#习题4-8" class="headerlink" title="习题4-8"></a>习题4-8</h2><p>为什么在用反向传播算法进行参数学习时要采用随机参数初始化的方式而不是直接令$W =0,b=0$?</p>
+<ol>
+<li>都初始化为$0$容易落到局部最优点</li>
+<li>所有的cell的初始权重一样，会使得他们按照同样的梯度更新，最后得到一样的权重。</li>
+</ol>
+<h2 id="习题4-9"><a href="#习题4-9" class="headerlink" title="习题4-9"></a>习题4-9</h2><p>梯度消失问题是否可以通过增加学习率来缓解?</p>
+<p>不能</p>
+<h2 id="FNN-实现"><a href="#FNN-实现" class="headerlink" title="FNN 实现"></a>FNN 实现</h2><p>第$l$层的权重$\mathbf w^{(l)}$的梯度:</p>
+<p>$$<br>\frac{\partial \mathcal L}{\partial \mathbf w^{(l)}} = \delta^{(l)}(\mathbf x^{(l-1)})^T<br>$$</p>
+<p>第$l$层的偏置$b^{(l)}$的梯度:</p>
+<p>$$<br>\frac{\partial \mathcal L}{\partial b{(l)}} = \delta^{(l)}<br>$$</p>
+<p>其中$\mathbf x^{(l)}$是第$l$层的输入，$\mathbf z^{(l)}$是第$l$层的输出。</p>
+<p>$$<br>\delta^{(l)}=f’_l(\mathbf z^{(l)})\odot\left((\mathbf w^{(l+1)})^T\delta^{(l+1)}\right)<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> linear_model, datasets</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cell</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, input_dim, activator, grad_act</span>):</span></span><br><span class="line">        self.w = np.random.rand(input_dim, <span class="number">1</span>)</span><br><span class="line">        self.b = np.random.rand()</span><br><span class="line">        self.activator = activator</span><br><span class="line">        self.grad_act = grad_act</span><br><span class="line">        self.x = <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">output</span>(<span class="params">self, X</span>):</span></span><br><span class="line">        self.x = X</span><br><span class="line">        self.o = self.activator((X @ self.w + self.b).item(<span class="number">0</span>))</span><br><span class="line">        <span class="keyword">return</span> self.o</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">gradient</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.grad_act(self.o)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FNN</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, input_dim, activator, grad_act</span>):</span></span><br><span class="line">        self.layers = [[Cell(<span class="number">1</span>, activator, grad_act) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(input_dim)]]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_layer</span>(<span class="params">self, size, activator, grad_act</span>):</span></span><br><span class="line">        input_dim = <span class="built_in">len</span>(self.layers[-<span class="number">1</span>])</span><br><span class="line">        self.layers.append([Cell(input_dim, activator, grad_act) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(size)])</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">self, X, Y, max_iter=<span class="number">100</span>, alpha=<span class="number">0.01</span>, batch_size=<span class="number">30</span></span>):</span></span><br><span class="line">        N, M = X.shape[<span class="number">0</span>], X.shape[<span class="number">1</span>]</span><br><span class="line">        costs = []</span><br><span class="line">        <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(max_iter):</span><br><span class="line">            index = np.arange(N)</span><br><span class="line">            np.random.shuffle(index)</span><br><span class="line">            X, Y = X[index], Y[index]</span><br><span class="line">            cost = <span class="number">0</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">                x, y = X[i], Y[i]</span><br><span class="line">                ypred = self._forward(x)</span><br><span class="line">                cost += <span class="number">0.5</span>*(y-ypred)**<span class="number">2</span> / N</span><br><span class="line">                self._back_progation(ypred, y, alpha)</span><br><span class="line">            costs.append(cost)</span><br><span class="line">                </span><br><span class="line">        <span class="keyword">return</span> costs</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span>(<span class="params">self, X</span>):</span></span><br><span class="line">        <span class="keyword">return</span> np.array([self._forward(x) <span class="keyword">for</span> x <span class="keyword">in</span> X])</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_back_progation</span>(<span class="params">self, ypred, y, alpha</span>):</span></span><br><span class="line">        d = ypred-y</span><br><span class="line">        <span class="keyword">for</span> layer <span class="keyword">in</span> <span class="built_in">reversed</span>(self.layers):</span><br><span class="line">            <span class="keyword">for</span> cell <span class="keyword">in</span> layer:</span><br><span class="line">                <span class="comment"># d_l = d_l * f&#x27;(z_l)</span></span><br><span class="line">                <span class="comment"># dw = d_l * x.T</span></span><br><span class="line">                dw = d*cell.gradient()*cell.x</span><br><span class="line">                cell.w -= alpha * dw.T</span><br><span class="line">                cell.b -= alpha * d</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># d_l = w.T@d_&#123;l+1&#125;</span></span><br><span class="line">            d = np.<span class="built_in">sum</span>([cell.w * d <span class="keyword">for</span> cell <span class="keyword">in</span> layer])</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        o = x.reshape(<span class="number">1</span>, -<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span> layer <span class="keyword">in</span> self.layers:</span><br><span class="line">            o = np.array([c.output(o) <span class="keyword">for</span> c <span class="keyword">in</span> layer]).reshape(<span class="number">1</span>, -<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> o.item(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">relu</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(<span class="number">0</span>, x)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">grad_relu</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">if</span> x &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>/(<span class="number">1</span>+np.exp(-x))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">grad_sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> x*(<span class="number">1</span>-x)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_data</span>():</span></span><br><span class="line">    X = np.linspace(-<span class="number">1</span>, <span class="number">1</span>, <span class="number">200</span>)</span><br><span class="line">    np.random.shuffle(X)  <span class="comment"># randomize the data</span></span><br><span class="line">    y = <span class="number">0.5</span> * X + <span class="number">2</span> + np.random.normal(<span class="number">0</span>, <span class="number">0.05</span>, (<span class="number">200</span>,))</span><br><span class="line">    <span class="keyword">return</span> X.reshape(-<span class="number">1</span>, <span class="number">1</span>), y.reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">            </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_fnn</span>():</span></span><br><span class="line">    X, y = make_data()</span><br><span class="line">    fnn = FNN(<span class="number">1</span>, relu, grad_relu)</span><br><span class="line">    fnn.add_layer(<span class="number">2</span>, relu, grad_relu)</span><br><span class="line">    fnn.add_layer(<span class="number">1</span>, relu, grad_relu)</span><br><span class="line">    costs = fnn.train(X, y)</span><br><span class="line">    </span><br><span class="line">    plt.figure()</span><br><span class="line">    plt.title(<span class="string">&#x27;loss&#x27;</span>)</span><br><span class="line">    plt.plot([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(costs))], costs)</span><br><span class="line">    plt.show()</span><br><span class="line">    </span><br><span class="line">    X_test = np.linspace(-<span class="number">1</span>, <span class="number">1</span>, <span class="number">100</span>)</span><br><span class="line">    y_test = fnn.predict(X_test)</span><br><span class="line">    </span><br><span class="line">    plt.figure()</span><br><span class="line">    plt.scatter(X, y, s=<span class="number">10</span>, fc=<span class="string">&#x27;c&#x27;</span>)</span><br><span class="line">    plt.plot(X_test, y_test, c=<span class="string">&#x27;m&#x27;</span>, lw=<span class="number">3</span>)</span><br><span class="line">    plt.show()        </span><br><span class="line">        </span><br><span class="line">test_fnn()        </span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/09/04/nndl-4/output_22_0.png" class="">
+
+
+
+<img src="/2019/09/04/nndl-4/output_22_1.png" class="">
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/26/decision-tree/" rel="next" title="Decision Tree">
+                <i class="fa fa-chevron-left"></i> Decision Tree
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/04/game-theory/" rel="prev" title="Game Theory">
+                Game Theory <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E5%85%83"><span class="nav-number">1.</span> <span class="nav-text">神经元</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sigmoid"><span class="nav-number">1.1.</span> <span class="nav-text">Sigmoid</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E4%BF%AE%E6%AD%A3%E5%8D%95%E5%85%83-Rectifier-%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">线性修正单元(Rectifier 函数)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A6%E6%B3%84%E9%9C%B2%E7%9A%84ReLU-Leaky-ReLU"><span class="nav-number">1.2.1.</span> <span class="nav-text">带泄露的ReLU(Leaky ReLU)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84ReLU-Parametric-ReLU%EF%BC%8CPReLU"><span class="nav-number">1.2.2.</span> <span class="nav-text">带参数的ReLU(Parametric ReLU，PReLU)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E6%95%B0%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83-Exponential-Linear-Unit%EF%BC%8CELU"><span class="nav-number">1.2.3.</span> <span class="nav-text">指数线性单元(Exponential Linear Unit，ELU)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Softplus-%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.4.</span> <span class="nav-text">Softplus 函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Swish-%E5%87%BD%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">Swish 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E6%96%AF%E8%AF%AF%E5%B7%AE%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83-Gaussian-Error-Linear-Unit%EF%BC%8CGELU"><span class="nav-number">1.4.</span> <span class="nav-text">高斯误差线性单元(Gaussian Error Linear Unit，GELU)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maxout-%E5%8D%95%E5%85%83"><span class="nav-number">1.5.</span> <span class="nav-text">Maxout 单元</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%A0%E9%A2%984-1"><span class="nav-number">1.6.</span> <span class="nav-text">习题4-1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%A0%E9%A2%984-2"><span class="nav-number">1.7.</span> <span class="nav-text">习题4-2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%A0%E9%A2%984-3"><span class="nav-number">1.8.</span> <span class="nav-text">习题4-3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%A0%E9%A2%984-4"><span class="nav-number">1.9.</span> <span class="nav-text">习题4-4</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%A0%E9%A2%984-5"><span class="nav-number">1.10.</span> <span class="nav-text">习题4-5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%A0%E9%A2%984-7"><span class="nav-number">1.11.</span> <span class="nav-text">习题4-7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%A0%E9%A2%984-8"><span class="nav-number">1.12.</span> <span class="nav-text">习题4-8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%A0%E9%A2%984-9"><span class="nav-number">1.13.</span> <span class="nav-text">习题4-9</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FNN-%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.14.</span> <span class="nav-text">FNN 实现</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

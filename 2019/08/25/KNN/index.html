@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="KNN的实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KNN">
+<meta property="og:url" content="http://yoursite.com/2019/08/25/KNN/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="KNN的实现">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2019/08/25/KNN/output_0_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/25/KNN/output_2_0.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/25/KNN/output_5_0.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/25/KNN/output_6_1.png">
+<meta property="article:published_time" content="2019-08-25T04:34:33.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.760Z">
+<meta property="article:author" content="Firepaw">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/25/KNN/output_0_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/25/KNN/"/>
+
+
+
+
+
+  <title>KNN | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/25/KNN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">KNN</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-25T12:34:33+08:00">
+                2019-08-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>KNN的实现</p>
+<span id="more"></span>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_blobs</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> collections</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> accuracy_score</span><br><span class="line"><span class="keyword">from</span> networkx <span class="keyword">import</span> nx</span><br><span class="line"></span><br><span class="line">%matplotlib inline</span><br><span class="line">n_samples = <span class="number">100</span></span><br><span class="line">n_bins = <span class="number">3</span>  <span class="comment"># use 3 bins for calibration_curve as we have 3 clusters here</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Generate 3 blobs with 2 classes where the second blob contains</span></span><br><span class="line"><span class="comment"># half positive samples and half negative samples. Probability in this</span></span><br><span class="line"><span class="comment"># blob is therefore 0.5.</span></span><br><span class="line">centers = [(-<span class="number">5</span>, -<span class="number">5</span>), (<span class="number">0</span>, <span class="number">0</span>), (<span class="number">5</span>, <span class="number">5</span>)]</span><br><span class="line">X, y = make_blobs(n_samples=n_samples, n_features=<span class="number">2</span>, cluster_std=<span class="number">1.0</span>,</span><br><span class="line">                  centers=centers, shuffle=<span class="literal">False</span>, random_state=<span class="number">42</span>)</span><br><span class="line">X = np.rint(X)</span><br><span class="line">X_train, X_test, y_train, y_test= train_test_split(X, y, test_size=<span class="number">0.9</span>, random_state=<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line">plt.scatter(X_train[:, <span class="number">0</span>],X_train[:, <span class="number">1</span>], s=<span class="number">10</span>, c=y_train)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x17ab4e78518&gt;
+</code></pre>
+<img src="/2019/08/25/KNN/output_0_1.png" class="">
+
+
+<p>直接暴力计算距离最近的K个点</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">12</span>, <span class="number">10</span>))</span><br><span class="line"><span class="keyword">for</span> i, K <span class="keyword">in</span> <span class="built_in">enumerate</span>([<span class="number">1</span>, <span class="number">10</span>, <span class="number">30</span>, <span class="number">100</span>]):</span><br><span class="line">    ypred = []</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> X_test:</span><br><span class="line">        neighbors = [(np.<span class="built_in">sum</span>(np.square(x0-x)), y0) <span class="keyword">for</span> x0, y0 <span class="keyword">in</span> <span class="built_in">zip</span>(X_train, y_train)]</span><br><span class="line">        neighbors.sort()</span><br><span class="line">        neighbors = neighbors[:K]</span><br><span class="line">        wc = collections.Counter([c <span class="keyword">for</span> v, c <span class="keyword">in</span> neighbors])</span><br><span class="line">        c = <span class="built_in">max</span>(wc.values())</span><br><span class="line">        w = [w <span class="keyword">for</span> w <span class="keyword">in</span> wc.keys() <span class="keyword">if</span> wc[w] == c][<span class="number">0</span>]</span><br><span class="line">        ypred.append(w)</span><br><span class="line"></span><br><span class="line">    acc = accuracy_score(ypred, y_test)</span><br><span class="line">    ax = plt.subplot(<span class="number">221</span>+i)</span><br><span class="line">    plt.title(<span class="string">&#x27;K=&#123;&#125;, acc=&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(K, acc))</span><br><span class="line">    plt.scatter(X_test[:, <span class="number">0</span>], X_test[:, <span class="number">1</span>], s=<span class="number">10</span>, c=ypred)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/08/25/KNN/output_2_0.png" class="">
+
+
+<p>使用KD树</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KdTreeNode</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, x, y, parent=<span class="literal">None</span>, split_by=<span class="literal">None</span>, split_feature_val_range=<span class="literal">None</span>, feature_max=<span class="literal">None</span>, feature_min=<span class="literal">None</span>, left=<span class="literal">None</span>, right=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.X = x</span><br><span class="line">        self.y = y</span><br><span class="line">        self.parent = parent</span><br><span class="line">        self.left = left</span><br><span class="line">        self.right = right</span><br><span class="line">        self.<span class="built_in">id</span> = <span class="string">&#x27;&#123;:.2f&#125;_&#123;:.2f&#125;_&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(x[<span class="number">0</span>], x[<span class="number">1</span>], y)</span><br><span class="line">        self.split_by = split_by</span><br><span class="line">        self.split_feature_val_range = split_feature_val_range</span><br><span class="line">        self.feature_max = feature_max</span><br><span class="line">        self.feature_min = feature_min</span><br><span class="line">        self.<span class="built_in">id</span> = -<span class="number">1</span></span><br><span class="line">        self.level = -<span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">label</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;pos=(&#123;:.2f&#125; ,&#123;:.2f&#125;) \n y=&#123;&#125; \n split_by=feature_&#123;&#125;\nsplit_feature_val_range=&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(self.X.item(<span class="number">0</span>), self.X.item(<span class="number">1</span>), self.y, self.split_by, self.split_feature_val_range)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__lt__</span>(<span class="params">self, other</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.<span class="built_in">id</span> &lt; other.<span class="built_in">id</span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build_kd_tree</span>(<span class="params">X, Y, feature_index</span>):</span></span><br><span class="line">    <span class="keyword">if</span> X.size == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 按照第fi 个特征的中位数划分</span></span><br><span class="line">    fi = feature_index % X.shape[<span class="number">1</span>]</span><br><span class="line">    feature_val = X[:, fi]</span><br><span class="line">    split_feature_val_range = <span class="string">&#x27;(&#123;:.2f&#125;,&#123;:.2f&#125;)&#x27;</span>.<span class="built_in">format</span>(np.<span class="built_in">min</span>(feature_val), np.<span class="built_in">max</span>(feature_val))</span><br><span class="line">    feature_max = np.<span class="built_in">max</span>(X, axis=<span class="number">0</span>)</span><br><span class="line">    feature_min = np.<span class="built_in">min</span>(X, axis=<span class="number">0</span>)</span><br><span class="line">    sorted_index = np.argsort(feature_val)</span><br><span class="line">    median_index = <span class="built_in">len</span>(sorted_index) // <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    x, y= X[sorted_index[median_index]], Y[sorted_index[median_index]]</span><br><span class="line">    node = KdTreeNode(x, y, split_by=fi, split_feature_val_range=split_feature_val_range, feature_max=feature_max,</span><br><span class="line">                      feature_min=feature_min)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 分别为小于和大于中位数的样本构建为左右子树</span></span><br><span class="line">    node.left = build_kd_tree(np.take(X, sorted_index[:median_index], axis=<span class="number">0</span>), np.take(Y, sorted_index[:median_index], axis=<span class="number">0</span>), </span><br><span class="line">                              feature_index + <span class="number">1</span>)</span><br><span class="line">    node.right = build_kd_tree(np.take(X, sorted_index[median_index + <span class="number">1</span>:], axis=<span class="number">0</span>), np.take(Y, sorted_index[median_index + <span class="number">1</span>:], axis=<span class="number">0</span>), </span><br><span class="line">                               feature_index + <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> node.left:</span><br><span class="line">        node.left.parent = node</span><br><span class="line">    <span class="keyword">if</span> node.right:</span><br><span class="line">        node.right.parent = node</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> node</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_node_id</span>(<span class="params">treeNode, start</span>):</span></span><br><span class="line">    q = [(treeNode, <span class="number">1</span>)]</span><br><span class="line">    <span class="keyword">while</span> q:</span><br><span class="line">        node, level = q[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">while</span> q <span class="keyword">and</span> q[<span class="number">0</span>][<span class="number">1</span>] == level:</span><br><span class="line">            node, _ = q.pop(<span class="number">0</span>)</span><br><span class="line">            node.<span class="built_in">id</span> = start</span><br><span class="line">            node.level = level</span><br><span class="line">            <span class="keyword">if</span> node.left:</span><br><span class="line">                q.append((node.left, level+<span class="number">1</span>))</span><br><span class="line">            <span class="keyword">if</span> node.right:</span><br><span class="line">                q.append((node.right, level+<span class="number">1</span>))</span><br><span class="line">            start += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> start</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">kdTree = build_kd_tree(X_train, y_train, <span class="number">0</span>)</span><br><span class="line">treeSize = set_node_id(kdTree, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> networkx.drawing.nx_agraph <span class="keyword">import</span> graphviz_layout</span><br><span class="line"></span><br><span class="line">G = nx.DiGraph()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build_graph</span>(<span class="params">root</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    </span><br><span class="line">    G.add_node(root.<span class="built_in">id</span>, label=root.label(), color=[<span class="string">&#x27;aquamarine&#x27;</span>, <span class="string">&#x27;lightcoral&#x27;</span>, <span class="string">&#x27;moccasin&#x27;</span>][root.y], y=root.y, s=<span class="string">&#x27;x&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> root.left:        </span><br><span class="line">        build_graph(root.left)</span><br><span class="line">        G.add_edge(root.<span class="built_in">id</span>, root.left.<span class="built_in">id</span>, label=<span class="string">&#x27;f_&#123;&#125;&lt;=&#123;:.2f&#125;&#x27;</span>.<span class="built_in">format</span>(root.split_by, root.X[root.split_by]))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> root.right:        </span><br><span class="line">        build_graph(root.right)</span><br><span class="line">        G.add_edge(root.<span class="built_in">id</span>, root.right.<span class="built_in">id</span>, label=<span class="string">&#x27;f_&#123;&#125;&gt;&#123;:.2f&#125;&#x27;</span>.<span class="built_in">format</span>(root.split_by, root.X[root.split_by]))</span><br><span class="line"></span><br><span class="line">build_graph(kdTree)</span><br><span class="line">fig = plt.figure(figsize=(<span class="number">25</span>,<span class="number">15</span>))</span><br><span class="line">plt.title(<span class="string">&#x27;draw_networkx&#x27;</span>)</span><br><span class="line">pos=graphviz_layout(G, prog=<span class="string">&#x27;dot&#x27;</span>, args=<span class="string">&#x27;-Nshape=box, -Nwidth=200, -Nheight=200&#x27;</span>)</span><br><span class="line">nx.draw(G, pos, with_labels=<span class="literal">True</span>, arrows=<span class="literal">True</span>, node_shape = <span class="string">&#x27;s&#x27;</span>, node_size=<span class="number">10000</span>, \</span><br><span class="line">        arrowstyle= <span class="string">&#x27;-|&gt;&#x27;</span>, width=<span class="number">1</span>, shape=<span class="string">&#x27;square&#x27;</span>, node_color=[n[<span class="number">1</span>] <span class="keyword">for</span> n <span class="keyword">in</span> G.nodes.data(<span class="string">&#x27;color&#x27;</span>)], \</span><br><span class="line">       labels = &#123;n[<span class="number">0</span>]:n[<span class="number">1</span>] <span class="keyword">for</span> n <span class="keyword">in</span> G.nodes.data(<span class="string">&#x27;label&#x27;</span>)&#125;)</span><br><span class="line">nx.draw_networkx_edge_labels(G, pos, edge_labels=&#123;(u[<span class="number">0</span>], u[<span class="number">1</span>]): u[<span class="number">2</span>] <span class="keyword">for</span> u <span class="keyword">in</span> G.edges.data(<span class="string">&#x27;label&#x27;</span>)&#125;, font_color=<span class="string">&#x27;red&#x27;</span>, font_size=<span class="number">15</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/08/25/KNN/output_5_0.png" class="">
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">12</span>, <span class="number">10</span>))</span><br><span class="line"></span><br><span class="line">cmap = plt.cm.rainbow</span><br><span class="line">norm = matplotlib.colors.Normalize(vmin=<span class="number">0</span>, vmax=treeSize+<span class="number">5</span>)</span><br><span class="line">target = np.random.randint(-<span class="number">5</span>, <span class="number">5</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_split</span>(<span class="params">tree_node</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> tree_node:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    </span><br><span class="line">    x0, x1 = tree_node.feature_min[<span class="number">0</span>], tree_node.feature_max[<span class="number">0</span>]</span><br><span class="line">    y0, y1 = tree_node.feature_min[<span class="number">1</span>], tree_node.feature_max[<span class="number">1</span>]</span><br><span class="line">    plt.plot([x0, x1], [y0, y0], c=cmap(norm(tree_node.<span class="built_in">id</span>)))</span><br><span class="line">    plt.plot([x0, x1], [y1, y1], c=cmap(norm(tree_node.<span class="built_in">id</span>)))</span><br><span class="line">    plt.plot([x0, x0], [y0, y1], c=cmap(norm(tree_node.<span class="built_in">id</span>)))</span><br><span class="line">    plt.plot([x1, x1], [y0, y1], c=cmap(norm(tree_node.<span class="built_in">id</span>)))</span><br><span class="line">    </span><br><span class="line">    plt.plot([tree_node.X[<span class="number">0</span>]], [tree_node.X[<span class="number">1</span>]], marker=<span class="string">&#x27;s&#x27;</span>, markersize=<span class="number">30</span>, c=cmap(norm(tree_node.<span class="built_in">id</span>)))</span><br><span class="line">    plt.text(tree_node.X.item(<span class="number">0</span>)-<span class="number">0.3</span>, tree_node.X.item(<span class="number">1</span>)-<span class="number">0.2</span>, <span class="string">&#x27;(&#123;&#125;_&#123;:.0f&#125;,&#123;:.0f&#125;)&#x27;</span>.<span class="built_in">format</span>(tree_node.<span class="built_in">id</span>, tree_node.X[<span class="number">0</span>], tree_node.X[<span class="number">1</span>]))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> x0 == x1 <span class="keyword">and</span> y0 == y1:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        plt.text((x0+x1)/<span class="number">3</span>, (y0+y1)/<span class="number">2</span>, <span class="string">&#x27;&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(tree_node.<span class="built_in">id</span>), c=cmap(norm(tree_node.<span class="built_in">id</span>)), fontsize=<span class="number">50</span>-<span class="number">5</span>*tree_node.level)</span><br><span class="line">    plot_split(tree_node.left)</span><br><span class="line">    plot_split(tree_node.right)</span><br><span class="line"></span><br><span class="line">plot_split(kdTree)</span><br><span class="line">plt.plot([target[<span class="number">0</span>]], [target[<span class="number">1</span>]], marker=<span class="string">&#x27;o&#x27;</span>, color=<span class="string">&#x27;r&#x27;</span>, markersize=<span class="number">40</span>)</span><br><span class="line">plt.text(target[<span class="number">0</span>]-<span class="number">0.5</span>, target[<span class="number">1</span>]-<span class="number">0.1</span>, <span class="string">&#x27;target(&#123;:.0f&#125;, &#123;:.0f&#125;)&#x27;</span>.<span class="built_in">format</span>(target[<span class="number">0</span>], target[<span class="number">1</span>]))</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>Text(-5.5, -1.1, &#39;target(-5, -1)&#39;)
+</code></pre>
+<img src="/2019/08/25/KNN/output_6_1.png" class="">
+
+
+<p><strong>搜索KD树</strong></p>
+<ol>
+<li>在KD树中找到包含目标节点的叶子节点:从根节点出发,递归地向下访问,若目标点x当前维的值小于切分点的值则移动到左子树,反之则移动到右子树,直到叶子节点为止.</li>
+<li>以此叶子节点为最近的点</li>
+<li>递归地向上回退,在每个结点做如下操作:<ol>
+<li>如果该点更近,则以该点为最近点</li>
+<li>检查该点的另外一个子结点的区间和以目标点为中心,当前最小距离为半径的圆是否有交点.检查目标点与该节点的分割超平面的距离即可.如果相交, 则搜索另一个子区间,否则回退.</li>
+<li>回退到根节点,算法结束.</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 找到以当前节点为根的子树中离target最近的叶子结点.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">search_leaf</span>(<span class="params">root, target</span>):</span></span><br><span class="line">    node = root</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> node.left <span class="keyword">and</span> <span class="keyword">not</span> node.right:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        fi = node.split_by</span><br><span class="line">        <span class="keyword">if</span> target[fi] &lt;= node.X[fi]:</span><br><span class="line">            <span class="keyword">if</span> node.left:</span><br><span class="line">                node = node.left</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                node = node.right</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> node.right:</span><br><span class="line">                node = node.right</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                node = node.left</span><br><span class="line">    <span class="keyword">return</span> node</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算距离</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dist</span>(<span class="params">a, b</span>):</span></span><br><span class="line">    <span class="keyword">return</span> np.linalg.norm(b - a, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 搜索离目标点最近的点</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">node, target</span>):</span></span><br><span class="line">    <span class="comment"># 找到叶子结点,作为当前最近的点</span></span><br><span class="line">    leaf = search_leaf(node, target)</span><br><span class="line">    ans = leaf</span><br><span class="line">    mindist = dist(leaf.X, target)</span><br><span class="line"></span><br><span class="line">    q = [leaf]</span><br><span class="line">    <span class="comment"># vis用于确保每个结点只入队列一次</span></span><br><span class="line">    vis = &#123;leaf.<span class="built_in">id</span>&#125;</span><br><span class="line">    <span class="keyword">while</span> q:</span><br><span class="line">        node = q.pop()</span><br><span class="line">        d = dist(node.X, target)</span><br><span class="line">        <span class="keyword">if</span> d &lt; mindist:</span><br><span class="line">            mindist = d</span><br><span class="line">            ans = node</span><br><span class="line"></span><br><span class="line">        parent = node.parent</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> parent:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 回退到父结点</span></span><br><span class="line">        <span class="keyword">if</span> parent.<span class="built_in">id</span> <span class="keyword">not</span> <span class="keyword">in</span> vis:</span><br><span class="line">            vis.add(parent.<span class="built_in">id</span>)</span><br><span class="line">            q.append(parent)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查兄弟结点</span></span><br><span class="line">        sib = parent.left <span class="keyword">if</span> node != parent.left <span class="keyword">else</span> parent.right</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> sib <span class="keyword">or</span> sib.<span class="built_in">id</span> <span class="keyword">in</span> vis:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        hyperplate = parent.split_by</span><br><span class="line">        <span class="comment"># 到超平面的距离, 因为分割平面只分割了某一个维度,所以距离是那个维度的坐标直接相减</span></span><br><span class="line">        hyperdist = <span class="built_in">abs</span>(parent.X[hyperplate] - target[hyperplate])</span><br><span class="line">        <span class="comment"># 到超平面的距离小于当前最小距离,那个兄弟结点所在的空间中可能存在更近的点,使兄弟结点入队列</span></span><br><span class="line">        <span class="keyword">if</span> hyperdist &lt; mindist:</span><br><span class="line">            sibleaf = search_leaf(sib, target)</span><br><span class="line">            <span class="keyword">if</span> sibleaf.<span class="built_in">id</span> <span class="keyword">not</span> <span class="keyword">in</span> vis:</span><br><span class="line">                vis.add(sibleaf.<span class="built_in">id</span>)</span><br><span class="line">                q.append(sibleaf)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ans, mindist</span><br><span class="line"></span><br><span class="line">ans, d = search(kdTree, target)</span><br><span class="line"><span class="built_in">print</span>(dist(ans.X, target))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;nearest to (&#123;:.2f&#125;,&#123;:.2f&#125;) is (&#123;:.2f&#125;, &#123;:.2f&#125;)), d=&#123;:.2f&#125;&#x27;</span>.<span class="built_in">format</span>(target[<span class="number">0</span>], target[<span class="number">1</span>], ans.X[<span class="number">0</span>], ans.X[<span class="number">1</span>], d))</span><br></pre></td></tr></table></figure>
+
+<pre><code>4.123105625617661
+nearest to (-5.00,-1.00) is (-6.00, -5.00)), d=4.12
+</code></pre>
+<p><strong>查找最近的K个点</strong></p>
+<p>保存一个最小堆即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> heapq</span><br><span class="line"></span><br><span class="line"><span class="comment"># 搜索离目标点最近的点</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">search_k</span>(<span class="params">node, target, k</span>):</span></span><br><span class="line">    <span class="comment"># 找到叶子结点,作为当前最近的点</span></span><br><span class="line">    leaf = search_leaf(node, target)</span><br><span class="line">    q = [leaf]</span><br><span class="line">    kmin = []</span><br><span class="line">    heapq.heapify(kmin)</span><br><span class="line">    <span class="comment"># vis用于确保每个结点只入队列一次</span></span><br><span class="line">    vis = &#123;leaf.<span class="built_in">id</span>&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> q:</span><br><span class="line">        node = q.pop()</span><br><span class="line">        d = dist(node.X, target)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(kmin) &lt; k:</span><br><span class="line">            heapq.heappush(kmin, (-d, node))</span><br><span class="line">        <span class="keyword">elif</span> d &lt; <span class="built_in">abs</span>(kmin[<span class="number">0</span>][<span class="number">0</span>]):</span><br><span class="line">            heapq.heappop(kmin)</span><br><span class="line">            heapq.heappush(kmin, (-d, node))</span><br><span class="line">        </span><br><span class="line">        parent = node.parent</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> parent:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 回退到父结点</span></span><br><span class="line">        <span class="keyword">if</span> parent.<span class="built_in">id</span> <span class="keyword">not</span> <span class="keyword">in</span> vis:</span><br><span class="line">            vis.add(parent.<span class="built_in">id</span>)</span><br><span class="line">            q.append(parent)</span><br><span class="line">            </span><br><span class="line">        <span class="comment"># 检查兄弟结点</span></span><br><span class="line">        sib = parent.left <span class="keyword">if</span> node != parent.left <span class="keyword">else</span> parent.right</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> sib <span class="keyword">or</span> sib.<span class="built_in">id</span> <span class="keyword">in</span> vis:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">            </span><br><span class="line">        hyperplate = parent.split_by</span><br><span class="line">        <span class="comment"># 到超平面的距离, 因为分割平面只分割了某一个维度,所以距离是那个维度的坐标直接相减</span></span><br><span class="line">        hyperdist = <span class="built_in">abs</span>(parent.X[hyperplate]-target[hyperplate])</span><br><span class="line">        <span class="comment"># 到超平面的距离小于当前最小距离,那个兄弟结点所在的空间中可能存在更近的点,使兄弟结点入队列</span></span><br><span class="line">        <span class="keyword">if</span> hyperdist &lt; <span class="built_in">abs</span>(kmin[<span class="number">0</span>][<span class="number">0</span>]):</span><br><span class="line">            sibleaf = search_leaf(sib, target) </span><br><span class="line">            <span class="keyword">if</span> sibleaf.<span class="built_in">id</span> <span class="keyword">not</span> <span class="keyword">in</span> vis:</span><br><span class="line">                vis.add(sibleaf.<span class="built_in">id</span>)</span><br><span class="line">                q.append(sibleaf)</span><br><span class="line">                </span><br><span class="line">    ans = []</span><br><span class="line">    <span class="keyword">while</span> kmin:</span><br><span class="line">        d, node = heapq.heappop(kmin)</span><br><span class="line">        ans.append((<span class="built_in">abs</span>(d), node))</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">list</span>(<span class="built_in">reversed</span>(ans))</span><br><span class="line"></span><br><span class="line">ans = search_k(kdTree, target, <span class="number">5</span>)</span><br><span class="line"><span class="built_in">print</span>([(v[<span class="number">0</span>], v[<span class="number">1</span>].X[<span class="number">0</span>], v[<span class="number">1</span>].X[<span class="number">1</span>]) <span class="keyword">for</span> v <span class="keyword">in</span> ans])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(<span class="built_in">sorted</span>([(dist(x, target), x[<span class="number">0</span>], x[<span class="number">1</span>]) <span class="keyword">for</span> x <span class="keyword">in</span> X_train])))</span><br></pre></td></tr></table></figure>
+
+<pre><code>[(4.123105625617661, -6.0, -5.0), (4.123105625617661, -4.0, -5.0), (5.0, -0.0, -1.0), (6.0, 1.0, -1.0), (10.0, 3.0, 5.0)]
+[(4.123105625617661, -6.0, -5.0), (4.123105625617661, -4.0, -5.0), (5.0, -0.0, -1.0), (6.0, 1.0, -1.0), (10.0, 3.0, 5.0), (10.816653826391969, 4.0, 5.0), (11.661903789690601, 5.0, 5.0), (12.206555615733702, 5.0, 6.0), (12.529964086141668, 6.0, 5.0), (12.529964086141668, 6.0, 5.0)]
+</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/20/svm-lagrange/" rel="next" title="拉格朗日对偶问题与SVM">
+                <i class="fa fa-chevron-left"></i> 拉格朗日对偶问题与SVM
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/25/naive-bayes/" rel="prev" title="朴素贝叶斯">
+                朴素贝叶斯 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

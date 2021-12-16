@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Logistic 回归sigmoid 函数: $$S(x)&#x3D;{\frac {1}{1+e^{-x}}}&#x3D;{\frac {e^{x}}{e^{x}+1}}$$ Logistic 回归模型的条件概率分布:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Logistic 回归">
+<meta property="og:url" content="http://yoursite.com/2019/08/25/logistic-regression/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="Logistic 回归sigmoid 函数: $$S(x)&#x3D;{\frac {1}{1+e^{-x}}}&#x3D;{\frac {e^{x}}{e^{x}+1}}$$ Logistic 回归模型的条件概率分布:">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2019/08/25/logistic-regression/output_3_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/25/logistic-regression/output_5_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/25/logistic-regression/output_9_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/25/logistic-regression/output_10_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/25/logistic-regression/output_12_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/25/logistic-regression/output_13_1.png">
+<meta property="article:published_time" content="2019-08-25T10:48:54.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.790Z">
+<meta property="article:author" content="Firepaw">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/25/logistic-regression/output_3_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/25/logistic-regression/"/>
+
+
+
+
+
+  <title>Logistic 回归 | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/25/logistic-regression/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Logistic 回归</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-25T18:48:54+08:00">
+                2019-08-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Logistic-回归"><a href="#Logistic-回归" class="headerlink" title="Logistic 回归"></a>Logistic 回归</h1><p>sigmoid 函数:</p>
+<p>$$<br>S(x)={\frac {1}{1+e^{-x}}}={\frac {e^{x}}{e^{x}+1}}<br>$$</p>
+<p>Logistic 回归模型的条件概率分布:</p>
+<span id="more"></span>
+
+<p>$$<br>P(Y=1|x)=\frac{exp(\mathbf w^T \mathbf x + b)}{1+exp(\mathbf w^T \mathbf x + b)} =\pi(\mathbf x)\\<br>P(Y=0|x)=\frac{1}{1+exp(\mathbf w^T \mathbf x + b)}=1-\pi(\mathbf x)<br>$$</p>
+<p>似然函数为:</p>
+<p>$$<br>\prod_{i=1}^N\left(\pi(\mathbf x_i\right)^{y_i}\left(1-\pi(x_i)\right)^{1-y_i}<br>$$</p>
+<p>对数似然函数为:</p>
+<p>$$<br>\begin{aligned}<br>\mathcal L(\mathbf w)&amp;=\sum_{i=1}^N{y_ilog\pi(\mathbf x_i)+(1-y_i)log(1-\pi(\mathbf x_i))} \\<br>&amp;=\sum_{i=1}^N{y_ilog\frac{\pi(\mathbf x_i)}{1-\pi(\mathbf x_i)} + log(1-\pi(\mathbf x_i))} \\<br>&amp;=\sum_{i=1}^N{y_i(\mathbf w^T\mathbf x_i)-log(1+exp(\mathbf w^T\mathbf x_i))}<br>\end{aligned}<br>$$</p>
+<p>求$\mathcal L(\mathbf w)$的最大值得到$\mathbf w^*$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_classification</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> accuracy_score</span><br><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"><span class="keyword">from</span> matplotlib.colors <span class="keyword">import</span> Normalize</span><br><span class="line"></span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">N, M = <span class="number">100</span>, <span class="number">2</span></span><br><span class="line">X, y = make_classification(n_samples=N, n_features=<span class="number">2</span>, n_repeated=<span class="number">0</span>, n_informative=<span class="number">2</span>, n_redundant=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">cmap = matplotlib.cm.Paired</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.2</span>)</span><br><span class="line">plt.scatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x26718bb27f0&gt;
+</code></pre>
+<img src="/2019/08/25/logistic-regression/output_3_1.png" class="">
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X_train = np.c_[X_train, np.ones((X_train.shape[<span class="number">0</span>], <span class="number">1</span>))]</span><br><span class="line">X_test = np.c_[X_test, np.ones((X_test.shape[<span class="number">0</span>], <span class="number">1</span>))]</span><br><span class="line"></span><br><span class="line">X_train[:<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[ 0.58159881, -1.06076439,  1.        ],
+       [ 1.60350739,  2.01923969,  1.        ]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>/(<span class="number">1</span>+np.exp(-x))</span><br><span class="line"></span><br><span class="line">sx = np.linspace(-<span class="number">10</span>, <span class="number">10</span>, <span class="number">1000</span>)</span><br><span class="line">sy = sigmoid(sx)</span><br><span class="line">plt.plot(sx, sy, lw=<span class="number">3</span>)</span><br><span class="line">plt.plot([-<span class="number">10</span>, <span class="number">10</span>], [<span class="number">0</span>, <span class="number">0</span>], c=<span class="string">&#x27;k&#x27;</span>, lw=<span class="number">1</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>, lw=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x26718c70470&gt;]
+</code></pre>
+<img src="/2019/08/25/logistic-regression/output_5_1.png" class="">
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">predict</span>(<span class="params">w, X</span>):</span></span><br><span class="line">    yhat = [<span class="number">1</span> <span class="keyword">if</span> v &lt; <span class="number">0.5</span> <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">for</span> v <span class="keyword">in</span> sigmoid(X@w)]</span><br><span class="line">    <span class="keyword">return</span> yhat</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cost</span>(<span class="params">w, X, y</span>):</span></span><br><span class="line">    yhat = predict(w, X)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>-accuracy_score(y, yhat)</span><br><span class="line"></span><br><span class="line">w = np.random.rand(X_train.shape[<span class="number">1</span>], <span class="number">1</span>)</span><br><span class="line">cost(w, X_train, y_train)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>0.75
+</code></pre>
+<p>使用梯度下降法求最佳参数</p>
+<p>令$\frac{\partial \mathcal L(\mathbf w)}{\partial \mathbf w} = 0$得到:</p>
+<p>$$<br>d \mathbf w = \sum_{i=1}^N\left(y_i-\frac{1}{1+exp(\mathbf w^T\mathbf x_i)}\right) \mathbf x_i<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">costs = []</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">X, y, maxiter=<span class="number">1000</span>, alpha=<span class="number">0.01</span></span>):</span></span><br><span class="line">    w = np.random.rand(X.shape[<span class="number">1</span>], <span class="number">1</span>)</span><br><span class="line">    y = y.reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(maxiter):</span><br><span class="line">        yhat = X@w</span><br><span class="line">        dw = X.T@(y - <span class="number">1</span>/(<span class="number">1</span>+np.exp(yhat)))</span><br><span class="line">        w -= alpha*dw</span><br><span class="line">        costs.append(cost(w, X, y))</span><br><span class="line">    <span class="keyword">return</span> w</span><br><span class="line"></span><br><span class="line">w = train(X_train, y_train)</span><br><span class="line">plt.plot([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(costs))], costs)</span><br><span class="line">ypred = predict(w, X_test)</span><br><span class="line">acc = accuracy_score(ypred, y_test)</span><br><span class="line">plt.title(<span class="string">&#x27;final acc = &#123;:.2f&#125;&#x27;</span>.<span class="built_in">format</span>(acc))</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>Text(0.5, 1.0, &#39;final acc = 0.85&#39;)
+</code></pre>
+<img src="/2019/08/25/logistic-regression/output_9_1.png" class="">
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">15</span>, <span class="number">10</span>))</span><br><span class="line">norm = Normalize(vmin=<span class="number">0</span>, vmax=<span class="number">1</span>)</span><br><span class="line">plt.scatter(X_train[:, <span class="number">0</span>], X_train[:, <span class="number">1</span>], cmap=cmap, c=y_train, s = <span class="number">20</span>)</span><br><span class="line">plt.scatter(X_test[:, <span class="number">0</span>], X_test[:, <span class="number">1</span>], marker=<span class="string">&#x27;o&#x27;</span>, fc=<span class="string">&#x27;w&#x27;</span>, s=<span class="number">100</span>, ec=[cmap(v) <span class="keyword">for</span> v <span class="keyword">in</span> norm(ypred)])</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x26718d52ac8&gt;
+</code></pre>
+<img src="/2019/08/25/logistic-regression/output_10_1.png" class="">
+
+
+<p>使用SGD求最佳参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">costs = []</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_sgd</span>(<span class="params">X, y, maxiter=<span class="number">10</span>, alpha=<span class="number">0.01</span></span>):</span></span><br><span class="line">    w = np.random.rand(X.shape[<span class="number">1</span>], <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(maxiter):</span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(X.shape[<span class="number">0</span>]):</span><br><span class="line">            i = np.random.randint(<span class="number">0</span>, X.shape[<span class="number">0</span>])</span><br><span class="line">            xi = X[i].reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">            yi = y[i]</span><br><span class="line">            yhat = (w.T@xi).item(<span class="number">0</span>)</span><br><span class="line">            dw = (yi-<span class="number">1</span>/(<span class="number">1</span>+math.exp(yhat)))*xi</span><br><span class="line">            w -= dw*alpha</span><br><span class="line">            costs.append(cost(w, X, y))</span><br><span class="line">    <span class="keyword">return</span> w</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">w = train(X_train, y_train)</span><br><span class="line">ypred = predict(w, X_test)</span><br><span class="line">acc = accuracy_score(ypred, y_test)</span><br><span class="line">plt.plot([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(costs))], costs)</span><br><span class="line">plt.title(<span class="string">&#x27;final acc = &#123;:.2f&#125;&#x27;</span>.<span class="built_in">format</span>(acc))</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>Text(0.5, 1.0, &#39;final acc = 0.85&#39;)
+</code></pre>
+<img src="/2019/08/25/logistic-regression/output_12_1.png" class="">
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">15</span>, <span class="number">10</span>))</span><br><span class="line">norm = Normalize(vmin=<span class="number">0</span>, vmax=<span class="number">1</span>)</span><br><span class="line">plt.scatter(X_train[:, <span class="number">0</span>], X_train[:, <span class="number">1</span>], cmap=cmap, c=y_train, s = <span class="number">20</span>)</span><br><span class="line">plt.scatter(X_test[:, <span class="number">0</span>], X_test[:, <span class="number">1</span>], marker=<span class="string">&#x27;o&#x27;</span>, fc=<span class="string">&#x27;w&#x27;</span>, s=<span class="number">100</span>, ec=[cmap(v) <span class="keyword">for</span> v <span class="keyword">in</span> norm(ypred)])</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x26718de19e8&gt;
+</code></pre>
+<img src="/2019/08/25/logistic-regression/output_13_1.png" class="">
+
+
+
+<h1 id="最大熵模型"><a href="#最大熵模型" class="headerlink" title="最大熵模型"></a>最大熵模型</h1><p>假设模型是概率分布$P(Y|X)$,给定训练集$T={(x_1, y_1), (x_2, y_2), \cdots, (x_n, y_n)}$的经验联合分布和经验边缘分布分别是:</p>
+<p>$$<br>\tilde P(X=x, Y=y)=\frac{count(X=x, Y=y)}{N} \\<br>\tilde P(X=x)=\frac{count(X=x)}{N}<br>$$</p>
+<p>用特征函数$f(x,y)$表示输入$x$和输出$y$之间的某一事实,其定义为:</p>
+<p>$$<br>f(x, y)=<br>\begin{cases}<br>1, &amp; x与y满足某一事实\\<br>0, &amp; otherwise<br>\end{cases}<br>$$</p>
+<p>特征函数$f(x, y)$关于经验分布$\tilde P(X,Y)$的期望值:</p>
+<p>$$<br>E_{\tilde P}(f) = \sum_{x, y}\tilde P(x, y)f(x, y)<br>$$</p>
+<p>特征函数$f(x, y)$关于模型$P(Y|X)$的期望值:</p>
+<p>$$<br>E_P(f)=\sum_{x, y}\tilde P(x)P(y|x)f(x, y)<br>$$</p>
+<p>假设两个期望相等,即:</p>
+<p>$$<br>E_P{f}=E_{\tilde P}(f)<br>$$</p>
+<p>或者</p>
+<p>$$<br>\sum_{x,y}\tilde P(x)P(y|x)f(x, y) = \sum_{x,y}\tilde P(x, y)f(x, y)<br>$$</p>
+<p>最大熵模型即在条件概率分布$P(Y|X)$上的条件熵最大:</p>
+<p>$$<br>\underset {P\in C} H(P)=-\sum_{x,y}\tilde P(x)P(y|x)log P(y|x) \\<br>s.t. E_P(f_i)=E_{\tilde P}(f_i), \\<br>\sum_y P(y|x)=1<br>$$</p>
+<p>其中$C$是所有满足约束条件的模型集合</p>
+<p>按照极大似然估计写成最大熵更一般的形式, 即是由以下条件概率分布表示的分类模型.可以用于二分类或者多分类:</p>
+<p>$$<br>P_w(y|x)=\frac{1}{Z_w(x)}exp\left(\sum_{i=1}^nw_if_i(x, y)\right)<br>$$</p>
+<p>其中,</p>
+<p>$$<br>Z_w(x)=\sum_y exp\left(\sum_{i=1}^nw_if_i(x, y)\right)<br>$$</p>
+<p>这里$x \in \mathcal R^n$为输入,$y \in {1, 2, \cdots, K}$为输出,$w \in \mathcal R^n$为权值向量,$f_i(x, y), i=1, 2, \ldots, n$为任意特征值函数.</p>
+<p>特征函数$f(x, y)$关于经验分布$\tilde P(Y|X)$</p>
+<h2 id="改进的尺度迭代法-improved-iterative-scaling-IIS"><a href="#改进的尺度迭代法-improved-iterative-scaling-IIS" class="headerlink" title="改进的尺度迭代法(improved iterative scaling, IIS)"></a>改进的尺度迭代法(improved iterative scaling, IIS)</h2><p>输入: 特征函数$f_1, f_2,\ldots, f_n$;经验分布$\tilde P(X, Y)$,模型$P_w(y|x)$</p>
+<p>输出: 最优参数$w^*$;最优模型$P_{w^*}$;</p>
+<ol>
+<li>初始化$w_i=0$</li>
+<li>对每个$i \in {1, 2, \ldots, n}$<ol>
+<li>令$\delta_i$ 是方程<br>$$<br>\sum_{x,y}\tilde P(x)P(y|x)f_i(x, y)exp(\delta_if^\sharp(x, y))=E_{\tilde P}(f_i) \<br>写成 g(\delta_i^*)=0<br>$$的解, 其中$f^\sharp(x,y)=\sum_{i=1}^nf_i(x, y)$</li>
+<li>更新$w_i$的值:$w_i = w_i+\delta_i$</li>
+</ol>
+</li>
+<li>如果不是所有的$w_i$都已经收敛,重复(2)</li>
+</ol>
+<p>如果$f^\sharp(x, y)$是常数$M$,因为$\delta_i$是$\sum_{x,y}\tilde P(x)P(y|x)f_i(x, y)exp(\delta_if^\sharp(x, y))-E_{\tilde P}(f_i)=0$的解，所以：</p>
+<p>$$<br>\begin{aligned}<br>&amp; \sum_{x,y}\tilde P(x)P(y|x)f_i(x, y)exp(\delta_if^\sharp(x, y))-E_{\tilde P}(f_i)=0 \\<br>&amp; \Rightarrow exp(\delta_if^\sharp(x, y))E_P(f_i)-E_{\tilde P}(f_i)=0 \\<br>&amp; \Rightarrow exp(\delta_if^\sharp(x, y)) = \frac{E_{\tilde P}(f_i)}{E_P(f_i)} \\<br>&amp; \Rightarrow \delta_if^\sharp(x, y)= log\frac{E_{\tilde P}(f_i)}{E_P(f_i)} \\<br>&amp; \Rightarrow \delta_i=\frac{1}{M}log\frac{E_{\tilde P}(f_i)}{E_P(f_i)}<br>\end{aligned}<br>$$</p>
+<p>否则通过牛顿法迭代求$\delta_i^*$,即:</p>
+<p>$$<br>\delta_i^{(k+1)} = \delta_i^{(k)}-\frac{g(\delta_i^{(k)})}{g’(\delta_i^{(k)})}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">dataset = [[<span class="string">&#x27;no&#x27;</span>, <span class="string">&#x27;sunny&#x27;</span>, <span class="string">&#x27;hot&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;no&#x27;</span>, <span class="string">&#x27;sunny&#x27;</span>, <span class="string">&#x27;hot&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;TRUE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;overcast&#x27;</span>, <span class="string">&#x27;hot&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;rainy&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;rainy&#x27;</span>, <span class="string">&#x27;cool&#x27;</span>, <span class="string">&#x27;normal&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;no&#x27;</span>, <span class="string">&#x27;rainy&#x27;</span>, <span class="string">&#x27;cool&#x27;</span>, <span class="string">&#x27;normal&#x27;</span>, <span class="string">&#x27;TRUE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;overcast&#x27;</span>, <span class="string">&#x27;cool&#x27;</span>, <span class="string">&#x27;normal&#x27;</span>, <span class="string">&#x27;TRUE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;no&#x27;</span>, <span class="string">&#x27;sunny&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;sunny&#x27;</span>, <span class="string">&#x27;cool&#x27;</span>, <span class="string">&#x27;normal&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;rainy&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;normal&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;sunny&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;normal&#x27;</span>, <span class="string">&#x27;TRUE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;overcast&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;TRUE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;overcast&#x27;</span>, <span class="string">&#x27;hot&#x27;</span>, <span class="string">&#x27;normal&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>],</span><br><span class="line">           [<span class="string">&#x27;no&#x27;</span>, <span class="string">&#x27;rainy&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;TRUE&#x27;</span>]]</span><br></pre></td></tr></table></figure>
+
+<p>MaxEntropy的EP是特征函数$f(x, y)$关于经验分布$\tilde P(X,Y)$的期望值:</p>
+<p>$$<br>E_{\tilde P}(f) = \sum_{x, y}\tilde P(x, y)f(x, y)<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MaxEntropy</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, EPS=<span class="number">0.001</span></span>):</span></span><br><span class="line">        self.samples = []</span><br><span class="line">        self.y = <span class="built_in">set</span>()</span><br><span class="line">        self.N = <span class="number">0</span> <span class="comment"># 样本数量</span></span><br><span class="line">        self.n = <span class="number">0</span> <span class="comment"># 不同的(x, y)的数量</span></span><br><span class="line">        self.w = [] <span class="comment"># parameter</span></span><br><span class="line">        self.eps = EPS</span><br><span class="line">        self.lastw = [] <span class="comment"># last parameter</span></span><br><span class="line">        self.countXy = collections.defaultdict(<span class="built_in">int</span>) <span class="comment"># count of (x, y)</span></span><br><span class="line">        self.xyId = &#123;&#125; <span class="comment"># id of (x, y)</span></span><br><span class="line">        self.idXy = &#123;&#125; <span class="comment"># (x, y) of id</span></span><br><span class="line">        self.EP = [] <span class="comment"># 样本分布的期望特征值</span></span><br><span class="line">        self.C = <span class="number">0</span> <span class="comment"># 最大特征数量</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">load_data</span>(<span class="params">self, dataset</span>):</span></span><br><span class="line">        self.samples = dataset.copy()</span><br><span class="line">        self.N = <span class="built_in">len</span>(dataset)</span><br><span class="line">        self.C = <span class="built_in">max</span>([<span class="built_in">len</span>(sample)-<span class="number">1</span> <span class="keyword">for</span> sample <span class="keyword">in</span> self.samples])</span><br><span class="line">        self.y = <span class="built_in">set</span>()</span><br><span class="line">        self.countXy = collections.defaultdict(<span class="built_in">int</span>)</span><br><span class="line">        self.xyId = &#123;&#125; <span class="comment"># id of (x, y)</span></span><br><span class="line">        self.idXy = &#123;&#125; <span class="comment"># (x, y) of id</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> items <span class="keyword">in</span> self.samples:</span><br><span class="line">            X, y = items[<span class="number">1</span>:], items[<span class="number">0</span>]</span><br><span class="line">            self.y.add(y)</span><br><span class="line">            <span class="keyword">for</span> x <span class="keyword">in</span> X:</span><br><span class="line">                self.countXy[(x, y)] += <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">        n = <span class="built_in">len</span>(self.countXy)</span><br><span class="line">        self.n = n</span><br><span class="line">        self.w = np.zeros(n)</span><br><span class="line">        self.lastw = np.ones(n)</span><br><span class="line">        </span><br><span class="line">        self.EP = np.zeros(n)</span><br><span class="line">        <span class="keyword">for</span> i, xyc <span class="keyword">in</span> <span class="built_in">enumerate</span>(self.countXy.items()):</span><br><span class="line">            xy, c = xyc</span><br><span class="line">            self.EP[i] = c/self.N</span><br><span class="line">            self.xyId[xy] = i</span><br><span class="line">            self.idXy[i] = xy</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">enc = MaxEntropy()</span><br><span class="line">enc.load_data(dataset)</span><br></pre></td></tr></table></figure>
+
+<p>计算$Z_w(x)=\sum_y exp\left(\sum_{i=1}^nw_if_i(x, y)\right)$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">zwx</span>(<span class="params">enc, X</span>):</span></span><br><span class="line">    zx = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> y <span class="keyword">in</span> enc.y:</span><br><span class="line">        ss = np.<span class="built_in">sum</span>([enc.w[enc.xyId[(x, y)]] <span class="keyword">for</span> x <span class="keyword">in</span> X <span class="keyword">if</span> enc.countXy[(x, y)]&gt;<span class="number">0</span>])</span><br><span class="line"><span class="comment">#         for x in X:</span></span><br><span class="line"><span class="comment">#             print(ss, enc.countXy[(x, y)], x,y)</span></span><br><span class="line">        zx += np.exp(ss)</span><br><span class="line">    <span class="keyword">return</span> zx</span><br><span class="line"></span><br><span class="line">zwx(enc, dataset[<span class="number">0</span>][<span class="number">1</span>:])</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>2.0
+</code></pre>
+<p>计算$P_w(y|x)=\frac{1}{Z_w(x)}exp\left(\sum_{i=1}^nw_if_i(x, y)\right)$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">model_pyx</span>(<span class="params">enc, y, X</span>):</span></span><br><span class="line">    zx = zwx(enc, X)</span><br><span class="line">    ss = np.<span class="built_in">sum</span>([enc.w[enc.xyId[(x, y)]] <span class="keyword">for</span> x <span class="keyword">in</span> X <span class="keyword">if</span> enc.countXy[(x, y)] &gt; <span class="number">0</span>])</span><br><span class="line">    <span class="keyword">return</span> np.exp(ss)/zx</span><br><span class="line"></span><br><span class="line">model_pyx(enc, dataset[<span class="number">0</span>][<span class="number">0</span>], dataset[<span class="number">0</span>][<span class="number">1</span>:])    </span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>0.5
+</code></pre>
+<p>特征函数$f(x, y)$关于模型$P(Y|X)$的期望值:</p>
+<p>$$<br>E_P(f)=\sum_{x, y}\tilde P(x)P(y|x)f(x, y)<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">model_ep</span>(<span class="params">enc, index</span>):</span></span><br><span class="line">    x, y = enc.idXy[index]</span><br><span class="line">    ep = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> sample <span class="keyword">in</span> enc.samples:</span><br><span class="line">        <span class="keyword">if</span> x <span class="keyword">not</span> <span class="keyword">in</span> sample:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        pyx = model_pyx(enc, y, sample)</span><br><span class="line">        ep += pyx/enc.N</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> ep</span><br><span class="line"></span><br><span class="line">model_ep(enc, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>0.17857142857142855
+</code></pre>
+<p>判断是否完全收敛</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">model_converge</span>(<span class="params">enc</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">all</span>([v &lt; enc.eps <span class="keyword">for</span> v <span class="keyword">in</span> enc.lastw-enc.w])</span><br><span class="line"></span><br><span class="line">model_converge(enc)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>False
+</code></pre>
+<p>训练模型</p>
+<p>如果$f^\sharp(x, y)$是常数,则$\delta_i$可表示为:</p>
+<p>$$<br>\delta_i=\frac{1}{M}log\frac{E_{\tilde P}(f_i)}{E_P(f_i)}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">enc, maxiter=<span class="number">1000</span></span>):</span></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(maxiter):</span><br><span class="line">        enc.lastw[:] = enc.w <span class="comment"># or enc.lastw = np.array(enc.w), can&#x27;t be enc.lastw = enc.w[:]</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(enc.n):</span><br><span class="line">            ep = model_ep(enc, i)</span><br><span class="line">            enc.w[i] += math.log(enc.EP[i]/ep)/enc.C</span><br><span class="line">        <span class="keyword">if</span> model_converge(enc):</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">train(enc)</span><br></pre></td></tr></table></figure>
+
+<p>$$<br>P_w(y|x) = \frac{1}{Z_w(x)}exp\left(\sum_{i=1}^nw_if_i(x, y)\right)<br>$$</p>
+<p>这里取<br>$$<br>f_i(x, y) = 1<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">predict</span>(<span class="params">enc, X</span>):</span></span><br><span class="line">    z = zwx(enc, X)</span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> y <span class="keyword">in</span> enc.y:</span><br><span class="line">        ss = np.<span class="built_in">sum</span>([enc.w[enc.xyId[(x, y)]] <span class="keyword">for</span> x <span class="keyword">in</span> X <span class="keyword">if</span> enc.countXy[(x, y)] &gt; <span class="number">0</span>])</span><br><span class="line">        pyx = math.exp(ss)/z</span><br><span class="line">        result[y] = pyx</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line">predict(enc, [<span class="string">&#x27;overcast&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&#123;&#39;no&#39;: 4.776792073973857e-07, &#39;yes&#39;: 0.9999995223207926&#125;
+</code></pre>
+<h2 id="梯度下降法"><a href="#梯度下降法" class="headerlink" title="梯度下降法"></a>梯度下降法</h2><p>$$<br>\frac{\partial f(w)}{\partial w_i} = \sum_{x,y}\tilde P(x)P_w(y|x)f_i(x, y)-E_{\tilde P}(f_i)=E_P(f_i)-E_{\tilde P}(f_i), i=1, 2, \ldots, n<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">enc, maxiter=<span class="number">1000</span></span>):</span></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(maxiter):</span><br><span class="line">        enc.lastw[:] = enc.w <span class="comment"># or enc.lastw = np.array(enc.w), can&#x27;t be enc.lastw = enc.w[:]</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(enc.n):</span><br><span class="line">            ep = model_ep(enc, i)</span><br><span class="line">            dw = ep - enc.EP[i]</span><br><span class="line">            enc.w[i] -= dw</span><br><span class="line"><span class="comment">#             enc.w[i] += math.log(enc.EP[i]/ep)/enc.C</span></span><br><span class="line">        <span class="keyword">if</span> model_converge(enc):</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">enc = MaxEntropy()</span><br><span class="line">enc.load_data(dataset)</span><br><span class="line">train(enc)</span><br><span class="line">predict(enc, [<span class="string">&#x27;overcast&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&#123;&#39;no&#39;: 1.4557100033893119e-06, &#39;yes&#39;: 0.9999985442899966&#125;
+</code></pre>
+<h2 id="牛顿法"><a href="#牛顿法" class="headerlink" title="牛顿法"></a>牛顿法</h2><p>$$<br>\delta_i^{(k+1)} = \delta_i^{(k)}-\frac{g(\delta_i^{(k)})}{g’(\delta_i^{(k)})}<br>$$</p>
+<p>其中：</p>
+<p>$$<br>g(\delta_i) = \sum_{x,y}\tilde P(x)P(y|x)f_i(x, y)exp(\delta_if^\sharp(x, y))-E_{\tilde P}(f_i)<br>$$</p>
+<p>$$<br>g’(\delta_i^{(k)}) = f^\sharp(x, y)\sum_{x,y}\tilde P(x)P(y|x)f_i(x, y)exp(\delta_if^\sharp(x, y))<br>$$</p>
+<p>$$<br>\begin{aligned}<br>\delta_i^{(k+1)} &amp;= \delta_i^{(k)}-\frac{g(\delta_i^{(k)})}{g’(\delta_i^{(k)})} \\<br>&amp;= \delta_i^{(k)}- \frac{\sum_{x,y}\tilde P(x)P(y|x)f_i(x, y)exp(\delta_if^\sharp(x, y))-E_{\tilde P}(f_i)}{f^\sharp(x, y)\sum_{x,y}\tilde P(x)P(y|x)f_i(x, y)exp(\delta_if^\sharp(x, y))} \\<br>&amp;= \delta_i^{(k)}- \frac{E_P(f_i)exp(\delta_if^\sharp(x, y))-E_{\tilde P(f_i)}}{f^\sharp(x, y)E_P(f_i)exp(\delta_if^\sharp(x, y))} \\<br>&amp;= \delta_i^{(k)}- \frac{E_P(f_i)exp(\delta_iM)-E_{\tilde P(f_i)}}{ME_P(f_i)exp(\delta_iM)} \\<br>&amp;= \delta_i^{(k)}- (\frac{1}{M}-\frac{E_{\tilde P(f_i)}}{ME_P(f_i)exp(\delta_iM)})<br>\end{aligned}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cal_delta</span>(<span class="params">enc, index, eps=<span class="number">0.0001</span></span>):</span></span><br><span class="line">    w = enc.w[index]</span><br><span class="line">    delta = <span class="number">1.0</span></span><br><span class="line">    p = model_ep(enc, index)</span><br><span class="line">    ep = enc.EP[index]</span><br><span class="line">    m = enc.C</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        delta_new = delta - (<span class="number">1</span>/m-ep/(m*p*math.exp(m*delta)))</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">abs</span>(delta_new-delta)&lt;eps:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        delta = delta_new</span><br><span class="line">    <span class="keyword">return</span> delta</span><br><span class="line"></span><br><span class="line">cal_delta(enc, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>0.0009073220320406916
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">enc, maxiter=<span class="number">1000</span>, eps=<span class="number">0.001</span></span>):</span></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(maxiter):</span><br><span class="line">        enc.lastw[:] = enc.w <span class="comment"># or enc.lastw = np.array(enc.w), can&#x27;t be enc.lastw = enc.w[:]</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(enc.n):            </span><br><span class="line">            enc.w[i] += cal_delta(enc, i)</span><br><span class="line">        <span class="keyword">if</span> model_converge(enc):</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;DONE!&#x27;</span>)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">enc = MaxEntropy()</span><br><span class="line">enc.load_data(dataset)</span><br><span class="line">train(enc)</span><br><span class="line"><span class="built_in">print</span>(enc.w)</span><br><span class="line">predict(enc, [<span class="string">&#x27;overcast&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+<pre><code>[  4.37272765   0.03265379   1.87946734  -5.11157897   2.07657925
+   6.0454921   -0.12463117  -2.56927295   1.70262214  -2.15920066
+   2.18199167  -1.44364207   1.96134872   3.37931552   4.46036501
+ -10.90910257  -2.15738619  -3.96211106  -6.48511167]
+
+
+
+
+
+&#123;&#39;no&#39;: 4.773307831028548e-07, &#39;yes&#39;: 0.999999522669217&#125;
+</code></pre>
+<h2 id="DFP-算法"><a href="#DFP-算法" class="headerlink" title="DFP 算法"></a>DFP 算法</h2><p>输入：目标函数$f(x)$，梯度$g(x)=\nabla f(x)$，精度要求$\epsilon$</p>
+<p>输出： $f(x)$的极小值点$x^\star$</p>
+<ol>
+<li>选定初始点$x^{(0)}$，取$G_0$为正定矩阵，置$k=0$</li>
+<li>计算$g_k=g(x^{(k)})$。若$\Vert g_k \Vert \lt \epsilon$，则停止计算，得近似解$x^\star = x^{(k)}$；否则转(3)。</li>
+<li>置$p_k=-G_kg_k$</li>
+<li>一维搜索，即搜索$\lambda_k=1,2,3,\cdots$，求$\lambda_k$使得<br>$$<br>f(x^{(k)}+\lambda_kp_k)=\underset{\lambda \geq 0}{\min}f(x^{(k)}+\lambda p_k)<br>$$</li>
+<li>置 $x^{(k+1)}=x^{(k)}+\lambda_kp_k$</li>
+<li>计算$g_{k+1}=g(x^{(k+1)})$，若$\Vert g_{k+1}\Vert \lt \epsilon$，则停止计算，得近似解$x^\star=x^{(k+1)}$；否则计算:<br>$$<br>G_{k+1}=G_k+\frac{\delta_k\delta_k^T}{\delta_k^Ty_k}-\frac{G_ky_ky_k^TG_k}{y_k^TG_ky_k}<br>$$<br>其中<br>$$<br>y_k = G_k\delta_k<br>$$</li>
+<li>置$k=k+1$，转(3)</li>
+</ol>
+<p>对最大熵模型而言：</p>
+<p>$$<br>P_w(y|x)=\frac{exp\left(\sum_{i=1}^n w_i f_i(x, y)\right)}{\sum_y exp\left(\sum_{i=1}^n w_i f_i(x, y)\right)}<br>$$</p>
+<p>目标函数：<br>$$<br>\underset{w\in R^n}{\min}\ f(w)=\sum_x \tilde P(x)log\ \sum_y exp\left(\sum_{i=1}^n w_i f_i(x, y)\right)-\sum_{x, y} \tilde P(x, y)\sum_{i=1}^n w_i f_w(x, y)<br>$$</p>
+<p>梯度：<br>$$<br>g(w)=\left(\frac{\partial f(w)}{\partial w_1}, \frac{\partial f(w)}{\partial w_2}, \cdots, \frac{\partial f(w)}{\partial w_n} \right)^T<br>$$</p>
+<p>其中：<br>$$<br>\frac{\partial f(w)}{\partial w_i}=\sum_{x, y}\tilde P(x)P_w(y|x)f_i(x, y)-E_{\tilde P}(f_i)=E_P(f_i)-E_{\tilde P}(f_i), i=1, 2, \cdots, n<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">target_fw</span>(<span class="params">enc</span>):</span></span><br><span class="line">    px_log_exp_wfxy = <span class="number">0</span></span><br><span class="line">    xycount = <span class="built_in">sum</span>(enc.countXy.values())</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> enc.x:</span><br><span class="line">        s = <span class="number">0</span></span><br><span class="line">        xc = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> y <span class="keyword">in</span> enc.y:</span><br><span class="line">            xy = (x, y)</span><br><span class="line">            <span class="keyword">if</span> xy <span class="keyword">not</span> <span class="keyword">in</span> enc.xyId:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">            i = enc.xyId[xy]</span><br><span class="line">            wi = enc.w[i]</span><br><span class="line">            fixy = enc.countXy[xy]</span><br><span class="line">            xc += fixy</span><br><span class="line">            s += np.exp(wi * fixy)</span><br><span class="line">        px = xc / xycount</span><br><span class="line">        px_log_exp_wfxy += px * np.log(s)</span><br><span class="line"></span><br><span class="line">    pxy_wfxy = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> enc.x:</span><br><span class="line">        <span class="keyword">for</span> y <span class="keyword">in</span> enc.y:</span><br><span class="line">            xy = (x, y)</span><br><span class="line">            <span class="keyword">if</span> xy <span class="keyword">not</span> <span class="keyword">in</span> enc.xyId:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            pxy = enc.countXy[xy] / xycount</span><br><span class="line">            i = enc.xyId[xy]</span><br><span class="line">            wi = enc.w[i]</span><br><span class="line">            fixy = enc.countXy[xy]</span><br><span class="line">            pxy_wfxy += pxy * wi * fixy</span><br><span class="line">    <span class="keyword">return</span> px_log_exp_wfxy - pxy_wfxy</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfp</span>(<span class="params">enc, eps=<span class="number">0.01</span></span>):</span></span><br><span class="line">    N = enc.n</span><br><span class="line">    G = np.diagflat(np.ones(N))</span><br><span class="line">    step = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        step += <span class="number">1</span></span><br><span class="line">        gw = np.array([model_ep(enc, i) - enc.EP[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N)]).reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> np.linalg.norm(gw, <span class="number">2</span>) &lt; eps:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        pk = -(G @ gw).reshape((-<span class="number">1</span>, ))</span><br><span class="line">        lambdak = <span class="number">1</span></span><br><span class="line">        oldw = enc.w</span><br><span class="line">        <span class="keyword">if</span> step % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;step: &#123;&#125; w: &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(step, oldw))</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            oldfw = target_fw(enc)</span><br><span class="line">            enc.w = enc.w + pk</span><br><span class="line">            newfw = target_fw(enc)</span><br><span class="line">            <span class="keyword">if</span> newfw &gt; oldfw:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            lambdak += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        deltak = (pk * lambdak).reshape(-<span class="number">1</span>, <span class="number">1</span>) <span class="comment"># = enc.w-oldw</span></span><br><span class="line">        yk = G @ deltak</span><br><span class="line">        G = G + (deltak @ deltak.T) / (deltak.T @ yk).item(<span class="number">0</span>) - (G @ yk @ yk.T @ G) / (yk.T @ G @ yk).item(<span class="number">0</span>)</span><br><span class="line">            </span><br><span class="line">enc = MaxEntropy()</span><br><span class="line">enc.load_data(dataset)</span><br><span class="line">dfp(enc)</span><br><span class="line"><span class="built_in">print</span>(enc.w)</span><br><span class="line">predict(enc, [<span class="string">&#x27;overcast&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>])    </span><br></pre></td></tr></table></figure>
+
+<pre><code>step: 10 w: [ 0.42442533  0.10723444  0.33320304 -0.4729843   0.20051219  0.8898315
+ -0.10723444 -0.33320304  0.4729843  -0.19293405  0.32545197  0.05425458
+  0.60567515  0.19293405 -0.05425458 -0.60567515 -0.20051219 -0.32545197
+ -0.42442533]
+step: 20 w: [ 0.66003386  0.1527472   0.47034397 -0.63353198  0.29652903  1.40165357
+ -0.1527472  -0.47034397  0.63353198 -0.40461676  0.54021481 -0.05046466
+  0.80734692  0.40461676  0.05046466 -0.80734692 -0.29652903 -0.54021481
+ -0.66003386]
+step: 30 w: [ 0.83739774  0.17504888  0.58287022 -0.75125711  0.36497257  1.76613463
+ -0.17504888 -0.58287022  0.75125711 -0.54245235  0.69585052 -0.1345171
+  0.96915476  0.54245235  0.1345171  -0.96915476 -0.36497257 -0.69585052
+ -0.83739774]
+step: 40 w: [ 0.98505779  0.18495995  0.68162855 -0.84855265  0.42205589  2.0499215
+ -0.18495995 -0.68162855  0.84855265 -0.63836694  0.81924597 -0.20778926
+  1.10812531  0.63836694  0.20778926 -1.10812531 -0.42205589 -0.81924597
+ -0.98505779]
+step: 50 w: [ 1.11325187  0.18778884  0.77077304 -0.9328195   0.47231838  2.28351247
+ -0.18778884 -0.77077304  0.9328195  -0.70975948  0.92326197 -0.27497201
+  1.23127416  0.70975948  0.27497201 -1.23127416 -0.47231838 -0.92326197
+ -1.11325187]
+step: 60 w: [ 1.22717501  0.18639024  0.8526861  -1.00782079  0.51777194  2.48303595
+ -0.18639024 -0.8526861   1.00782079 -0.76581208  1.01430416 -0.33786507
+  1.34273496  0.76581208  0.33786507 -1.34273496 -0.51777194 -1.01430416
+ -1.22717501]
+step: 70 w: [ 1.33003444  0.18240637  0.92883982 -1.07583913  0.55956839  2.65798051
+ -0.18240637 -0.92883982  1.07583913 -0.81167533  1.09591425 -0.39723714
+  1.44511056  0.81167533  0.39723714 -1.44511056 -0.55956839 -1.09591425
+ -1.33003444]
+step: 80 w: [ 1.42401909  0.17683531  1.00020483 -1.13837926  0.59845165  2.81437774
+ -0.17683531 -1.00020483  1.13837926 -0.85043104  1.17025005 -0.45348713
+  1.54013244  0.85043104  0.45348713 -1.54013244 -0.59845165 -1.17025005
+ -1.42401909]
+step: 90 w: [ 1.51070931  0.17030851  1.06746464 -1.19648568  0.63493473  2.95628957
+ -0.17030851 -1.06746464  1.19648568 -0.88402931  1.23873525 -0.50687579
+  1.62901559  0.88402931  0.50687579 -1.62901559 -0.63493473 -1.23873525
+ -1.51070931]
+step: 100 w: [ 1.59128909  0.16323685  1.13112942 -1.25091208  0.66938776  3.08657612
+ -0.16323685 -1.13112942  1.25091208 -0.91376271  1.30237035 -0.55760918
+  1.71265374  0.91376271  0.55760918 -1.71265374 -0.66938776 -1.30237035
+ -1.59128909]
+step: 110 w: [ 1.66667035  0.15589264  1.19159847 -1.30221995  0.70208769  3.20732383
+ -0.15589264 -1.19159847  1.30221995 -0.94052122  1.36189385 -0.60586895
+  1.79173074  0.94052122  0.60586895 -1.79173074 -0.70208769 -1.36189385
+ -1.66667035]
+step: 120 w: [ 1.73757118  0.14845824  1.24919581 -1.35083934  0.73324836  3.32009928
+ -0.14845824 -1.24919581  1.35083934 -0.96493712  1.41787211 -0.6518229
+  1.86678679  0.96493712  0.6518229  -1.86678679 -0.73324836 -1.41787211
+ -1.73757118]
+step: 130 w: [ 1.80456753  0.14105617  1.30419166 -1.39710759  0.76303947  3.42610722
+ -0.14105617 -1.30419166  1.39710759 -0.98747156  1.47075262 -0.69562832
+  1.93825978  0.98747156  0.69562832 -1.93825978 -0.76303947 -1.47075262
+ -1.80456753]
+step: 140 w: [ 1.86812867  0.1337684   1.356816   -1.44129497  0.79159889  3.52629313
+ -0.1337684  -1.356816    1.44129497 -1.00846838  1.52089733 -0.73743285
+  2.00651208  1.00846838  0.73743285 -2.00651208 -0.79159889 -1.52089733
+ -1.86812867]
+step: 150 w: [ 1.92864204  0.12664895  1.40726758 -1.48362204  0.81904101  3.621412
+ -0.12664895 -1.40726758  1.48362204 -1.02818893  1.56860454 -0.77737456
+  2.07184861  1.02818893  0.77737456 -2.07184861 -0.81904101 -1.56860454
+ -1.92864204]
+step: 160 w: [ 1.98643137  0.11973247  1.45572009 -1.52427176  0.84546236  3.71207592
+ -0.11973247 -1.45572009  1.52427176 -1.04683515  1.61412388 -0.81558201
+  2.13452949  1.04683515  0.81558201 -2.13452949 -0.84546236 -1.61412388
+ -1.98643137]
+step: 170 w: [ 2.04176987  0.11304003  1.50232675 -1.56339802  0.87094563  3.79878773
+ -0.11304003 -1.50232675  1.56339802 -1.06456547  1.65766685 -0.85217443
+  2.19477914  1.06456547  0.85217443 -2.19477914 -0.87094563 -1.65766685
+ -2.04176987]
+step: 180 w: [ 2.09489029  0.10658316  1.54722367 -1.60113189  0.89556254  3.88196541
+ -0.10658316 -1.54722367  1.60113189 -1.08150577  1.69941456 -0.88726205
+  2.25279302  1.08150577  0.88726205 -2.25279302 -0.89556254 -1.69941456
+ -2.09489029]
+step: 190 w: [ 2.14599249  0.10036667  1.59053247 -1.63758625  0.91937596  3.96196013
+ -0.10036667 -1.59053247  1.63758625 -1.09775735  1.73952346 -0.92094651
+  2.30874276  1.09775735  0.92094651 -2.30874276 -0.91937596 -1.73952346
+ -2.14599249]
+step: 200 w: [ 2.1952494   0.09439069  1.63236235 -1.67285918  0.94244146  4.03906969
+ -0.09439069 -1.63236235  1.67285918 -1.11340256  1.77812979 -0.95332138
+  2.36278007  1.11340256  0.95332138 -2.36278007 -0.94244146 -1.77812979
+ -2.1952494 ]
+step: 210 w: [ 2.24281163  0.08865208  1.67281175 -1.70703669  0.96480857  4.11354885
+ -0.08865208 -1.67281175  1.70703669 -1.1285091   1.81535296 -0.98447275
+  2.41503988  1.1285091   0.98447275 -2.41503988 -0.96480857 -1.81535296
+ -2.24281163]
+step: 220 w: [ 2.28881115  0.08314548  1.71196979 -1.74019473  0.98652169  4.18561728
+ -0.08314548 -1.71196979  1.74019473 -1.14313309  1.85129828 -1.01447975
+  2.46564284  1.14313309  1.01447975 -2.46564284 -0.98652169 -1.85129828
+ -2.28881115]
+step: 230 w: [ 2.33336428  0.07786404  1.74991736 -1.77240081  1.00762084  4.25546576
+ -0.07786404 -1.74991736  1.77240081 -1.15732151  1.88605914 -1.04341513
+  2.51469733  1.15732151  1.04341513 -2.51469733 -1.00762084 -1.88605914
+ -2.33336428]
+step: 240 w: [ 2.37657408  0.07279996  1.78672812 -1.80371529  1.02814229  4.32326108
+ -0.07279996 -1.78672812  1.80371529 -1.171114    1.91971874 -1.07134579
+  2.56230111  1.171114    1.07134579 -2.56230111 -1.02814229 -1.91971874
+ -2.37657408]
+step: 250 w: [ 2.41853229  0.06794489  1.82246933 -1.83419243  1.04811903  4.38914996
+ -0.06794489 -1.82246933  1.83419243 -1.18454427  1.95235156 -1.09833327
+  2.60854273  1.18454427  1.09833327 -2.60854273 -1.04811903 -1.95235156
+ -2.41853229]
+step: 260 w: [ 2.45932095  0.06329019  1.85720255 -1.86388126  1.06758117  4.45326222
+ -0.06329019 -1.85720255  1.86388126 -1.19764119  1.98402452 -1.12443425
+  2.65350264  1.19764119  1.12443425 -2.65350264 -1.06758117 -1.98402452
+ -2.45932095]
+step: 270 w: [ 2.49901373  0.05882717  1.89098427 -1.89282622  1.08655631  4.51571332
+ -0.05882717 -1.89098427  1.89282622 -1.21042968  2.01479802 -1.14970094
+  2.69725418  1.21042968  1.14970094 -2.69725418 -1.08655631 -2.01479802
+ -2.49901373]
+step: 280 w: [ 2.53767705  0.05454719  1.92386641 -1.9210678   1.10506979  4.57660646
+ -0.05454719 -1.92386641  1.9210678  -1.2229314   2.04472671 -1.17418152
+  2.73986442  1.2229314   1.17418152 -2.73986442 -1.10506979 -2.04472671
+ -2.53767705]
+step: 290 w: [ 2.57537105  0.05044178  1.95589684 -1.94864299  1.12314497  4.63603433
+ -0.05044178 -1.95589684  1.94864299 -1.23516525  2.07386027 -1.19792046
+  2.78139487  1.23516525  1.19792046 -2.78139487 -1.12314497 -2.07386027
+ -2.57537105]
+step: 300 w: [ 2.6121503   0.04650272  1.98711973 -1.97558572  1.14080341  4.69408051
+ -0.04650272 -1.98711973  1.97558572 -1.2471479   2.10224393 -1.2209589
+  2.82190205  1.2471479   1.2209589  -2.82190205 -1.14080341 -2.10224393
+ -2.6121503 ]
+step: 310 w: [ 2.64806454  0.04272207  2.01757595 -2.00192718  1.15806508  4.7508207
+ -0.04272207 -2.01757595  2.00192718 -1.25889406  2.12991905 -1.24333488
+  2.86143805  1.25889406  1.24333488 -2.86143805 -1.15806508 -2.12991905
+ -2.64806454]
+step: 320 w: [ 2.68315923  0.0390922   2.04730335 -2.02769613  1.1749485   4.80632371
+ -0.0390922  -2.04730335  2.02769613 -1.27041685  2.15692351 -1.26508367
+  2.90005098  1.27041685  1.26508367 -2.90005098 -1.1749485  -2.15692351
+ -2.68315923]
+step: 330 w: [ 2.71747604  0.03560582  2.07633707 -2.05291918  1.19147087  4.86065232
+ -0.03560582 -2.07633707  2.05291918 -1.28172798  2.18329213 -1.286238
+  2.93778538  1.28172798  1.286238   -2.93778538 -1.19147087 -2.18329213
+ -2.71747604]
+step: 340 w: [ 2.75105327  0.03225596  2.1047098  -2.07762098  1.20764824  4.91386399
+ -0.03225596 -2.1047098   2.07762098 -1.29283799  2.20905695 -1.30682825
+  2.97468254  1.29283799  1.30682825 -2.97468254 -1.20764824 -2.20905695
+ -2.75105327]
+step: 350 w: [ 2.78392621  0.029036    2.13245196 -2.10182443  1.22349555  4.9660115
+ -0.029036   -2.13245196  2.10182443 -1.3037564   2.23424757 -1.32688268
+  3.01078084  1.3037564   1.32688268 -3.01078084 -1.22349555 -2.23424757
+ -2.78392621]
+step: 360 w: [ 2.81612747  0.02593964  2.15959192 -2.12555086  1.23902676  5.01714343
+ -0.02593964 -2.15959192  2.12555086 -1.31449186  2.25889135 -1.34642761
+  3.04611601  1.31449186  1.34642761 -3.04611601 -1.23902676 -2.25889135
+ -2.81612747]
+step: 370 w: [ 2.84768725  0.0229609   2.18615618 -2.14882015  1.25425496  5.06730468
+ -0.0229609  -2.18615618  2.14882015 -1.32505224  2.28301367 -1.36548757
+  3.08072136  1.32505224  1.36548757 -3.08072136 -1.25425496 -2.28301367
+ -2.84768725]
+step: 380 w: [ 2.87863357  0.02009413  2.21216952 -2.17165089  1.2691924   5.11653681
+ -0.02009413 -2.21216952  2.17165089 -1.33544474  2.30663809 -1.38408546
+  3.11462801  1.33544474  1.38408546 -3.11462801 -1.2691924  -2.30663809
+ -2.87863357]
+step: 390 w: [ 2.9089925   0.01733396  2.23765516 -2.19406049  1.28385057  5.16487842
+ -0.01733396 -2.23765516  2.19406049 -1.345676    2.32978655 -1.40224267
+  3.14786508  1.345676    1.40224267 -3.14786508 -1.28385057 -2.32978655
+ -2.9089925 ]
+step: 400 w: [ 2.93878833  0.01467532  2.26263487 -2.21606526  1.29824029  5.21236542
+ -0.01467532 -2.26263487  2.21606526 -1.35575212  2.35247949 -1.4199792
+  3.18045984  1.35575212  1.4199792  -3.18045984 -1.29824029 -2.35247949
+ -2.93878833]
+step: 410 w: [ 2.96804375  0.0121134   2.28712908 -2.23768053  1.31237172  5.25903131
+ -0.0121134  -2.28712908  2.23768053 -1.36567876  2.37473601 -1.4373138
+  3.21243789  1.36567876  1.4373138  -3.21243789 -1.31237172 -2.37473601
+ -2.96804375]
+[ 2.97383187  0.01161222  2.29197137 -2.24195812  1.31516787  5.26826874
+ -0.01161222 -2.29197137  2.24195812 -1.36764661  2.37913653 -1.44073406
+  3.21876163  1.36764661  1.44073406 -3.21876163 -1.31516787 -2.37913653
+ -2.97383187]
+
+
+
+
+
+&#123;&#39;no&#39;: 4.885938048409815e-05, &#39;yes&#39;: 0.9999511406195158&#125;
+</code></pre>
+<h2 id="BFGS算法"><a href="#BFGS算法" class="headerlink" title="BFGS算法"></a>BFGS算法</h2><p>输入：目标函数$f(x)$，$g(x)=\nabla f(x)$，精度要求$\epsilon$；<br>输出：$f(x)$得极小值点$x^\star$。</p>
+<ol>
+<li>选定初始点$x^{(0)}$，取$B_0$为正定对称矩阵，置$k=0$。</li>
+<li>计算$g_k=g(x^{(k)})$。若$\Vert g_k \Vert \lt \epsilon$，则停止计算，得近似解$x^\star=x^{(k)}$；否则转(3)。</li>
+<li>由$B_kp_k=-g_k$求出$p_k$。</li>
+<li>一维搜索：求$\lambda_k$使得<br>$$<br>f(x^{(k)}+\lambda_kp_k) = \underset {\lambda \geq 0}{\min}f(x^{(k)}+\lambda p_k)<br>$$</li>
+<li>置$x^{(k+1)}=x^{(k)}+\lambda_kp_k$。</li>
+<li>计算$g_{k+1}=g(x^{(k+1)})$，若$\Vert g_{k+1}\Vert \lt \epsilon$，则停止计算，得近似解$x^\star = x^{(k+1)}$；否则计算$B_{k+1}$。<br>$$<br>B_{k+1}=B_k+\frac{y_ky_k^T}{y_k^T\delta_k}-\frac{B_k\delta_k\delta_k^TB_k}{\delta_k^TB_k\delta_k}<br>$$<br>其中：<br>$$<br>y_k = B_k\delta_k<br>$$</li>
+<li>置$k=k+1$，转(3)</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfgs</span>(<span class="params">enc, eps=<span class="number">0.01</span></span>):</span></span><br><span class="line">    N = enc.n</span><br><span class="line">    B = np.diagflat(np.ones(N))</span><br><span class="line">    step = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        step += <span class="number">1</span></span><br><span class="line">        gw = np.array([model_ep(enc, i) - enc.EP[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N)]).reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> np.linalg.norm(gw, <span class="number">2</span>) &lt; eps:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        pk = -(np.linalg.pinv(B)@gw).reshape((-<span class="number">1</span>,))</span><br><span class="line">        oldw = enc.w</span><br><span class="line">        <span class="keyword">if</span> step % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;step: &#123;&#125; w: &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(step, oldw))</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            oldfw = target_fw(enc)</span><br><span class="line">            enc.w = enc.w + pk</span><br><span class="line">            newfw = target_fw(enc)</span><br><span class="line">            <span class="keyword">if</span> newfw &gt; oldfw:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        deltak = (enc.w-oldw).reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        yk = B @ deltak</span><br><span class="line">        B = B + (yk@yk.T) / (yk.T@deltak).item(<span class="number">0</span>) - (B@deltak@deltak.T@B) / (deltak.T@B@deltak).item(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">enc = MaxEntropy()</span><br><span class="line">enc.load_data(dataset)</span><br><span class="line">bfgs(enc)</span><br><span class="line"><span class="built_in">print</span>(enc.w)</span><br><span class="line">predict(enc, [<span class="string">&#x27;overcast&#x27;</span>, <span class="string">&#x27;mild&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;FALSE&#x27;</span>])    </span><br></pre></td></tr></table></figure>
+
+<pre><code>step: 10 w: [ 0.42442533  0.10723444  0.33320304 -0.4729843   0.20051219  0.8898315
+ -0.10723444 -0.33320304  0.4729843  -0.19293405  0.32545197  0.05425458
+  0.60567515  0.19293405 -0.05425458 -0.60567515 -0.20051219 -0.32545197
+ -0.42442533]
+step: 20 w: [ 0.66003386  0.1527472   0.47034397 -0.63353198  0.29652903  1.40165357
+ -0.1527472  -0.47034397  0.63353198 -0.40461676  0.54021481 -0.05046466
+  0.80734692  0.40461676  0.05046466 -0.80734692 -0.29652903 -0.54021481
+ -0.66003386]
+step: 30 w: [ 0.83739774  0.17504888  0.58287022 -0.75125711  0.36497257  1.76613463
+ -0.17504888 -0.58287022  0.75125711 -0.54245235  0.69585052 -0.1345171
+  0.96915476  0.54245235  0.1345171  -0.96915476 -0.36497257 -0.69585052
+ -0.83739774]
+step: 40 w: [ 0.98505779  0.18495995  0.68162855 -0.84855265  0.42205589  2.0499215
+ -0.18495995 -0.68162855  0.84855265 -0.63836694  0.81924597 -0.20778926
+  1.10812531  0.63836694  0.20778926 -1.10812531 -0.42205589 -0.81924597
+ -0.98505779]
+step: 50 w: [ 1.11325187  0.18778884  0.77077304 -0.9328195   0.47231838  2.28351247
+ -0.18778884 -0.77077304  0.9328195  -0.70975948  0.92326197 -0.27497201
+  1.23127416  0.70975948  0.27497201 -1.23127416 -0.47231838 -0.92326197
+ -1.11325187]
+step: 60 w: [ 1.22717501  0.18639024  0.8526861  -1.00782079  0.51777194  2.48303595
+ -0.18639024 -0.8526861   1.00782079 -0.76581208  1.01430416 -0.33786507
+  1.34273496  0.76581208  0.33786507 -1.34273496 -0.51777194 -1.01430416
+ -1.22717501]
+step: 70 w: [ 1.33003444  0.18240637  0.92883982 -1.07583913  0.55956839  2.65798051
+ -0.18240637 -0.92883982  1.07583913 -0.81167533  1.09591425 -0.39723714
+  1.44511056  0.81167533  0.39723714 -1.44511056 -0.55956839 -1.09591425
+ -1.33003444]
+step: 80 w: [ 1.42401909  0.17683531  1.00020483 -1.13837926  0.59845165  2.81437774
+ -0.17683531 -1.00020483  1.13837926 -0.85043104  1.17025005 -0.45348713
+  1.54013244  0.85043104  0.45348713 -1.54013244 -0.59845165 -1.17025005
+ -1.42401909]
+step: 90 w: [ 1.51070931  0.17030851  1.06746464 -1.19648568  0.63493473  2.95628957
+ -0.17030851 -1.06746464  1.19648568 -0.88402931  1.23873525 -0.50687579
+  1.62901559  0.88402931  0.50687579 -1.62901559 -0.63493473 -1.23873525
+ -1.51070931]
+step: 100 w: [ 1.59128909  0.16323685  1.13112942 -1.25091208  0.66938776  3.08657612
+ -0.16323685 -1.13112942  1.25091208 -0.91376271  1.30237035 -0.55760918
+  1.71265374  0.91376271  0.55760918 -1.71265374 -0.66938776 -1.30237035
+ -1.59128909]
+step: 110 w: [ 1.66667035  0.15589264  1.19159847 -1.30221995  0.70208769  3.20732383
+ -0.15589264 -1.19159847  1.30221995 -0.94052122  1.36189385 -0.60586895
+  1.79173074  0.94052122  0.60586895 -1.79173074 -0.70208769 -1.36189385
+ -1.66667035]
+step: 120 w: [ 1.73757118  0.14845824  1.24919581 -1.35083934  0.73324836  3.32009928
+ -0.14845824 -1.24919581  1.35083934 -0.96493712  1.41787211 -0.6518229
+  1.86678679  0.96493712  0.6518229  -1.86678679 -0.73324836 -1.41787211
+ -1.73757118]
+step: 130 w: [ 1.80456753  0.14105617  1.30419166 -1.39710759  0.76303947  3.42610722
+ -0.14105617 -1.30419166  1.39710759 -0.98747156  1.47075262 -0.69562832
+  1.93825978  0.98747156  0.69562832 -1.93825978 -0.76303947 -1.47075262
+ -1.80456753]
+step: 140 w: [ 1.86812867  0.1337684   1.356816   -1.44129497  0.79159889  3.52629313
+ -0.1337684  -1.356816    1.44129497 -1.00846838  1.52089733 -0.73743285
+  2.00651208  1.00846838  0.73743285 -2.00651208 -0.79159889 -1.52089733
+ -1.86812867]
+step: 150 w: [ 1.92864204  0.12664895  1.40726758 -1.48362204  0.81904101  3.621412
+ -0.12664895 -1.40726758  1.48362204 -1.02818893  1.56860454 -0.77737456
+  2.07184861  1.02818893  0.77737456 -2.07184861 -0.81904101 -1.56860454
+ -1.92864204]
+step: 160 w: [ 1.98643137  0.11973247  1.45572009 -1.52427176  0.84546236  3.71207592
+ -0.11973247 -1.45572009  1.52427176 -1.04683515  1.61412388 -0.81558201
+  2.13452949  1.04683515  0.81558201 -2.13452949 -0.84546236 -1.61412388
+ -1.98643137]
+step: 170 w: [ 2.04176987  0.11304003  1.50232675 -1.56339802  0.87094563  3.79878773
+ -0.11304003 -1.50232675  1.56339802 -1.06456547  1.65766685 -0.85217443
+  2.19477914  1.06456547  0.85217443 -2.19477914 -0.87094563 -1.65766685
+ -2.04176987]
+step: 180 w: [ 2.09489029  0.10658316  1.54722367 -1.60113189  0.89556254  3.88196541
+ -0.10658316 -1.54722367  1.60113189 -1.08150577  1.69941456 -0.88726205
+  2.25279302  1.08150577  0.88726205 -2.25279302 -0.89556254 -1.69941456
+ -2.09489029]
+step: 190 w: [ 2.14599249  0.10036667  1.59053247 -1.63758625  0.91937596  3.96196013
+ -0.10036667 -1.59053247  1.63758625 -1.09775735  1.73952346 -0.92094651
+  2.30874276  1.09775735  0.92094651 -2.30874276 -0.91937596 -1.73952346
+ -2.14599249]
+step: 200 w: [ 2.1952494   0.09439069  1.63236235 -1.67285918  0.94244146  4.03906969
+ -0.09439069 -1.63236235  1.67285918 -1.11340256  1.77812979 -0.95332138
+  2.36278007  1.11340256  0.95332138 -2.36278007 -0.94244146 -1.77812979
+ -2.1952494 ]
+step: 210 w: [ 2.24281163  0.08865208  1.67281175 -1.70703669  0.96480857  4.11354885
+ -0.08865208 -1.67281175  1.70703669 -1.1285091   1.81535296 -0.98447275
+  2.41503988  1.1285091   0.98447275 -2.41503988 -0.96480857 -1.81535296
+ -2.24281163]
+step: 220 w: [ 2.28881115  0.08314548  1.71196979 -1.74019473  0.98652169  4.18561728
+ -0.08314548 -1.71196979  1.74019473 -1.14313309  1.85129828 -1.01447975
+  2.46564284  1.14313309  1.01447975 -2.46564284 -0.98652169 -1.85129828
+ -2.28881115]
+step: 230 w: [ 2.33336428  0.07786404  1.74991736 -1.77240081  1.00762084  4.25546576
+ -0.07786404 -1.74991736  1.77240081 -1.15732151  1.88605914 -1.04341513
+  2.51469733  1.15732151  1.04341513 -2.51469733 -1.00762084 -1.88605914
+ -2.33336428]
+step: 240 w: [ 2.37657408  0.07279996  1.78672812 -1.80371529  1.02814229  4.32326108
+ -0.07279996 -1.78672812  1.80371529 -1.171114    1.91971874 -1.07134579
+  2.56230111  1.171114    1.07134579 -2.56230111 -1.02814229 -1.91971874
+ -2.37657408]
+step: 250 w: [ 2.41853229  0.06794489  1.82246933 -1.83419243  1.04811903  4.38914996
+ -0.06794489 -1.82246933  1.83419243 -1.18454427  1.95235156 -1.09833327
+  2.60854273  1.18454427  1.09833327 -2.60854273 -1.04811903 -1.95235156
+ -2.41853229]
+step: 260 w: [ 2.45932095  0.06329019  1.85720255 -1.86388126  1.06758117  4.45326222
+ -0.06329019 -1.85720255  1.86388126 -1.19764119  1.98402452 -1.12443425
+  2.65350264  1.19764119  1.12443425 -2.65350264 -1.06758117 -1.98402452
+ -2.45932095]
+step: 270 w: [ 2.49901373  0.05882717  1.89098427 -1.89282622  1.08655631  4.51571332
+ -0.05882717 -1.89098427  1.89282622 -1.21042968  2.01479802 -1.14970094
+  2.69725418  1.21042968  1.14970094 -2.69725418 -1.08655631 -2.01479802
+ -2.49901373]
+step: 280 w: [ 2.53767705  0.05454719  1.92386641 -1.9210678   1.10506979  4.57660646
+ -0.05454719 -1.92386641  1.9210678  -1.2229314   2.04472671 -1.17418152
+  2.73986442  1.2229314   1.17418152 -2.73986442 -1.10506979 -2.04472671
+ -2.53767705]
+step: 290 w: [ 2.57537105  0.05044178  1.95589684 -1.94864299  1.12314497  4.63603433
+ -0.05044178 -1.95589684  1.94864299 -1.23516525  2.07386027 -1.19792046
+  2.78139487  1.23516525  1.19792046 -2.78139487 -1.12314497 -2.07386027
+ -2.57537105]
+step: 300 w: [ 2.6121503   0.04650272  1.98711973 -1.97558572  1.14080341  4.69408051
+ -0.04650272 -1.98711973  1.97558572 -1.2471479   2.10224393 -1.2209589
+  2.82190205  1.2471479   1.2209589  -2.82190205 -1.14080341 -2.10224393
+ -2.6121503 ]
+step: 310 w: [ 2.64806454  0.04272207  2.01757595 -2.00192718  1.15806508  4.7508207
+ -0.04272207 -2.01757595  2.00192718 -1.25889406  2.12991905 -1.24333488
+  2.86143805  1.25889406  1.24333488 -2.86143805 -1.15806508 -2.12991905
+ -2.64806454]
+step: 320 w: [ 2.68315923  0.0390922   2.04730335 -2.02769613  1.1749485   4.80632371
+ -0.0390922  -2.04730335  2.02769613 -1.27041685  2.15692351 -1.26508367
+  2.90005098  1.27041685  1.26508367 -2.90005098 -1.1749485  -2.15692351
+ -2.68315923]
+step: 330 w: [ 2.71747604  0.03560582  2.07633707 -2.05291918  1.19147087  4.86065232
+ -0.03560582 -2.07633707  2.05291918 -1.28172798  2.18329213 -1.286238
+  2.93778538  1.28172798  1.286238   -2.93778538 -1.19147087 -2.18329213
+ -2.71747604]
+step: 340 w: [ 2.75105327  0.03225596  2.1047098  -2.07762098  1.20764824  4.91386399
+ -0.03225596 -2.1047098   2.07762098 -1.29283799  2.20905695 -1.30682825
+  2.97468254  1.29283799  1.30682825 -2.97468254 -1.20764824 -2.20905695
+ -2.75105327]
+step: 350 w: [ 2.78392621  0.029036    2.13245196 -2.10182443  1.22349555  4.9660115
+ -0.029036   -2.13245196  2.10182443 -1.3037564   2.23424757 -1.32688268
+  3.01078084  1.3037564   1.32688268 -3.01078084 -1.22349555 -2.23424757
+ -2.78392621]
+step: 360 w: [ 2.81612747  0.02593964  2.15959192 -2.12555086  1.23902676  5.01714343
+ -0.02593964 -2.15959192  2.12555086 -1.31449186  2.25889135 -1.34642761
+  3.04611601  1.31449186  1.34642761 -3.04611601 -1.23902676 -2.25889135
+ -2.81612747]
+step: 370 w: [ 2.84768725  0.0229609   2.18615618 -2.14882015  1.25425496  5.06730468
+ -0.0229609  -2.18615618  2.14882015 -1.32505224  2.28301367 -1.36548757
+  3.08072136  1.32505224  1.36548757 -3.08072136 -1.25425496 -2.28301367
+ -2.84768725]
+step: 380 w: [ 2.87863357  0.02009413  2.21216952 -2.17165089  1.2691924   5.11653681
+ -0.02009413 -2.21216952  2.17165089 -1.33544474  2.30663809 -1.38408546
+  3.11462801  1.33544474  1.38408546 -3.11462801 -1.2691924  -2.30663809
+ -2.87863357]
+step: 390 w: [ 2.9089925   0.01733396  2.23765516 -2.19406049  1.28385057  5.16487842
+ -0.01733396 -2.23765516  2.19406049 -1.345676    2.32978655 -1.40224267
+  3.14786508  1.345676    1.40224267 -3.14786508 -1.28385057 -2.32978655
+ -2.9089925 ]
+step: 400 w: [ 2.93878833  0.01467532  2.26263487 -2.21606526  1.29824029  5.21236542
+ -0.01467532 -2.26263487  2.21606526 -1.35575212  2.35247949 -1.4199792
+  3.18045984  1.35575212  1.4199792  -3.18045984 -1.29824029 -2.35247949
+ -2.93878833]
+step: 410 w: [ 2.96804375  0.0121134   2.28712908 -2.23768053  1.31237172  5.25903131
+ -0.0121134  -2.28712908  2.23768053 -1.36567876  2.37473601 -1.4373138
+  3.21243789  1.36567876  1.4373138  -3.21243789 -1.31237172 -2.37473601
+ -2.96804375]
+[ 2.97383187  0.01161222  2.29197137 -2.24195812  1.31516787  5.26826874
+ -0.01161222 -2.29197137  2.24195812 -1.36764661  2.37913653 -1.44073406
+  3.21876163  1.36764661  1.44073406 -3.21876163 -1.31516787 -2.37913653
+ -2.97383187]
+
+
+
+
+
+&#123;&#39;no&#39;: 4.885938048409759e-05, &#39;yes&#39;: 0.9999511406195158&#125;
+</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/25/naive-bayes/" rel="next" title="朴素贝叶斯">
+                <i class="fa fa-chevron-left"></i> 朴素贝叶斯
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/26/decision-tree/" rel="prev" title="Decision Tree">
+                Decision Tree <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Logistic-%E5%9B%9E%E5%BD%92"><span class="nav-number">1.</span> <span class="nav-text">Logistic 回归</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">最大熵模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B%E7%9A%84%E5%B0%BA%E5%BA%A6%E8%BF%AD%E4%BB%A3%E6%B3%95-improved-iterative-scaling-IIS"><span class="nav-number">2.1.</span> <span class="nav-text">改进的尺度迭代法(improved iterative scaling, IIS)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">梯度下降法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%9B%E9%A1%BF%E6%B3%95"><span class="nav-number">2.3.</span> <span class="nav-text">牛顿法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DFP-%E7%AE%97%E6%B3%95"><span class="nav-number">2.4.</span> <span class="nav-text">DFP 算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFGS%E7%AE%97%E6%B3%95"><span class="nav-number">2.5.</span> <span class="nav-text">BFGS算法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

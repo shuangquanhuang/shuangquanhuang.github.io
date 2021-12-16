@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="线性回归：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线性回归">
+<meta property="og:url" content="http://yoursite.com/2019/08/08/Linear-Regression/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="线性回归：">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_3_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_6_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_9_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_10_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_12_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_13_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_15_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_16_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_25_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_27_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_29_1.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_33_1.png">
+<meta property="article:published_time" content="2019-08-08T07:56:50.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.762Z">
+<meta property="article:author" content="Firepaw">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/08/Linear-Regression/output_3_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/08/Linear-Regression/"/>
+
+
+
+
+
+  <title>线性回归 | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/08/Linear-Regression/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">线性回归</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-08T15:56:50+08:00">
+                2019-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>线性回归：</p>
+<span id="more"></span>
+<p>$$<br>f({\mathbf x}; \theta) = {\bf w}^T{\bf x} + b<br>$$</p>
+<p>的经验风险定义为：</p>
+<p>$$<br>\begin{aligned}<br>\mathcal{R}(\mathbf{w}) &amp; = \sum_{n=1}^{N}\mathcal{L}(y^{(n)}, f(\mathbf{x}^{(n)}; \mathbf{w}))<br>\\ &amp;= \frac{1}{2}\sum_{n=1}^N(y^{(n)}-\mathbf{w}^T\mathbf{x}^{(n)})^2<br>\\ &amp;= \frac{1}{2}\lVert\mathbf{y}-X^T\mathbf{w}\rVert^2<br>\end{aligned}<br>$$<br>其中$\mathbf{y} \in \mathbb{R}^N$是由每个真是标签$y^{(1)}, y^{(2)}, \cdots ,y^{(N)}$组成的列向量，$X \in \mathbb{R}^{(d+1)\times N}$是所有输入$x^{(1)}, x^{(2)}, \cdots, x^{(N)}$组成的矩阵：</p>
+<p>$$<br>X =<br> \left[<br> \begin{matrix}<br>   x_1^{(1)} &amp; x_1^{(2)} &amp; \cdots &amp; x_1^{(N)} \\<br>   \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\<br>   x_d^{(1)} &amp; x_d^{(2)} &amp; \cdots &amp; x_d^{(N)} \\<br>   1 &amp; 1 &amp; \cdots &amp; 1<br>  \end{matrix}<br>  \right] \tag{3}<br>$$<br>风险函数$\mathcal{R}(\mathbf{w})$是关于$\mathbf{w}$的凸函数，它对$\mathbf{w}$的偏导为：</p>
+<p>$$<br>\begin{aligned}<br>\frac{\partial\mathcal{R}(\mathbf{w})}{\partial\mathbf{w}} &amp;= \frac{1}{2} \frac{\partial{\lVert\mathbf{y}-X^T\mathbf{w}}\rVert^2 }{\partial\mathbf{w}}<br>\\ &amp;= -X(\mathbf{y}-X^T\mathbf{w})<br>\end{aligned}<br>$$</p>
+<p>令$\frac{\partial}{\partial\mathbf{w}}\mathcal{R}(\mathbf{w})=0$，得到最优的参数$\mathbf{w}^*$为：</p>
+<p>$$<br>\begin{aligned}<br>\mathbf{w}^* &amp;= (XX^T)^{-1}X\mathbf{y}<br>\\ &amp;= {\bigl (}\sum_{n=1}^Nx^{(n)} (\mathbf x^{(n)})^T {\bigr )} ^{-1} {\bigl (} \sum_{n=1}^N \mathbf x^{(n)} y^{(n)} {\bigr )}<br>\end{aligned}<br>$$</p>
+<p><strong>线性基函数</strong></p>
+<ol>
+<li>单变量 y = kx + b</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># y = kx + b</span></span><br><span class="line">x = np.random.randint(<span class="number">1</span>, <span class="number">100</span>, <span class="number">20</span>).astype(<span class="built_in">float</span>)</span><br><span class="line">k = np.random.rand()</span><br><span class="line">b = np.random.randint(<span class="number">1</span>, <span class="number">10</span>)</span><br><span class="line">y = np.array([k*v+b+np.random.randint(<span class="number">1</span>, <span class="number">10</span>) <span class="keyword">for</span> v <span class="keyword">in</span> x])</span><br><span class="line">x, y, k, b</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(array([34., 79., 62., 17., 18., 11., 38., 79., 48., 63., 17., 61., 96.,
+        18., 26., 75., 49.,  4.,  8., 56.]),
+ array([18.53552193, 37.45018331, 27.68242234, 13.76776096, 12.16586455,
+        13.37913945, 18.12793627, 39.45018331, 28.10897214, 31.08052593,
+        12.76776096, 35.28431876, 45.21794427, 10.16586455, 21.35069324,
+        40.85776896, 24.50707572, 10.59241434, 11.18482869, 25.29380083]),
+ 0.39810358616125074,
+ 2)
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.scatter(x, y)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x11c3eeb38&gt;
+</code></pre>
+<!-- ![png](output_3_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_3_1.png" class="">
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">X = x.reshape(-<span class="number">1</span>, <span class="number">1</span>).reshape(<span class="number">1</span>, -<span class="number">1</span>)</span><br><span class="line">X = np.concatenate([X, np.ones_like(X)])</span><br><span class="line">X</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[34., 79., 62., 17., 18., 11., 38., 79., 48., 63., 17., 61., 96.,
+        18., 26., 75., 49.,  4.,  8., 56.],
+       [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,
+         1.,  1.,  1.,  1.,  1.,  1.,  1.]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">y = y.reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">W = np.dot(np.dot(np.linalg.inv(np.dot(X, X.T)), X), y)</span><br><span class="line">W</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[0.39939607],
+       [6.69448781]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.scatter(x.flatten(), y.flatten(), color=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">plt.plot(x.flatten(), ypred.flatten())</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x11ce6c198&gt;]
+</code></pre>
+<!-- ![png](output_6_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_6_1.png" class="">
+
+
+<p>梯度下降法求$W$</p>
+<p>$$<br>\begin{aligned}<br>\theta_{t+1} &amp;= \theta_t - \alpha \frac{\partial \mathcal{R_D}(\theta)}{\partial \theta}<br>\\ &amp;= \theta_t - \alpha \cdot \frac{1}{N}\sum_{n=1}^N\frac{\partial \mathcal{L}\bigl{(}y^{(n)}, f(x^{(n)};\theta)\bigr{)}}{\partial \theta}<br>\\ &amp;= \theta_t - \alpha \cdot \frac{1}{2N} \cdot \frac{\sum_{n=1}^N (\mathbf{x}^{(n)}\mathbf{w}-\mathbf{y}^{(n)})^2 }{\partial \mathbf{w}}<br>\\ &amp;= \theta_t - \alpha \cdot \frac{1}{N} \cdot \sum_{n=1}^N (\mathbf{x}^{(n)}\mathbf{w}-\mathbf{y}^{(n)}) \cdot \frac{\partial (\mathbf{x}^{(n)}\mathbf{w}-\mathbf{y}^{(n)})}{\partial \mathbf{w}}<br>\\ &amp;= \theta_t - \alpha \cdot \frac{1}{N} \cdot \sum_{n=1}^N (\mathbf{y}^{(n)}-\mathbf{x}^{(n)}\mathbf{w}) \cdot \mathbf{x}^{(n)}<br>\end{aligned}<br>$$</p>
+<p>$\mathbf{X}$需要归一化到$[0, 1]$，否则不收敛</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">X = np.random.rand(<span class="number">20</span>, <span class="number">1</span>)</span><br><span class="line">y = <span class="number">4</span> +<span class="number">3</span> * X+np.random.randn(<span class="number">20</span>,<span class="number">1</span>)/<span class="number">10</span></span><br><span class="line">W = np.random.rand(<span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">X = np.concatenate([X, np.ones_like(X)], axis=<span class="number">1</span>)</span><br><span class="line"><span class="comment"># print(X, y)</span></span><br><span class="line">N = y.size</span><br><span class="line">alpha = <span class="number">0.01</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># for epoch in range(1000):</span></span><br><span class="line"><span class="comment">#     for n in range(N):</span></span><br><span class="line"><span class="comment">#         xn, yn = X2[n], y[n]</span></span><br><span class="line"><span class="comment">#         yp = np.dot(xn, W2)</span></span><br><span class="line"><span class="comment">#         delta = alpha * np.dot(xn.reshape(-1, 1), (yp-yn).reshape(-1, 1)) / N</span></span><br><span class="line"><span class="comment">#         W2 = W2 - delta</span></span><br><span class="line"></span><br><span class="line">W = np.random.rand(<span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">costs = []</span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    yhat = np.dot(X, W)</span><br><span class="line">    costs.append(<span class="number">1.0</span> / <span class="number">2</span> / N * np.<span class="built_in">sum</span>(np.square(yhat-y)))</span><br><span class="line">    W = W - alpha * (<span class="number">1.0</span> / N) * np.dot(X.T, (yhat-y))</span><br><span class="line">W</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[2.72750189],
+       [4.11846669]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yp = np.dot(X, W)</span><br><span class="line">plt.scatter(X[:, <span class="number">0</span>], y)</span><br><span class="line">plt.plot(X[:, <span class="number">0</span>], yp)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x11d5b40f0&gt;]
+</code></pre>
+<!-- ![png](output_9_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_9_1.png" class="">
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.plot([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(costs))], costs)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x11d6b7cc0&gt;]
+</code></pre>
+<!-- ![png](output_10_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_10_1.png" class="">
+
+
+<p><strong>Stochastic Gradient Descent</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">theta = np.random.rand(<span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">learning_rate = <span class="number">0.001</span></span><br><span class="line">cost_history = []</span><br><span class="line"><span class="keyword">for</span> it <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10000</span>):</span><br><span class="line">    cost =<span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">        rand_ind = np.random.randint(<span class="number">0</span>,N)</span><br><span class="line">        X_i = X[rand_ind,:].reshape(<span class="number">1</span>,X.shape[<span class="number">1</span>])</span><br><span class="line">        y_i = y[rand_ind].reshape(<span class="number">1</span>,<span class="number">1</span>)</span><br><span class="line">        prediction = np.dot(X_i,theta)</span><br><span class="line">        cost += <span class="number">1.0</span> / <span class="number">2</span> / N * np.<span class="built_in">sum</span>(np.square(prediction-y_i))</span><br><span class="line">        theta = theta -(<span class="number">1</span>/N)*learning_rate*( X_i.T.dot((prediction - y_i)))</span><br><span class="line"></span><br><span class="line">    cost_history.append(cost)</span><br><span class="line"></span><br><span class="line">yp = np.dot(X, theta)</span><br><span class="line">plt.scatter(X[:, <span class="number">0</span>], y)</span><br><span class="line">plt.plot(X[:, <span class="number">0</span>], yp)    </span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x11e4c7a58&gt;]
+</code></pre>
+<!-- ![png](output_12_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_12_1.png" class="">
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.plot([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(cost_history))], cost_history)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x11e6588d0&gt;]
+</code></pre>
+<!-- ![png](output_13_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_13_1.png" class="">
+
+<p><strong>Mini Batch Gradient Descent</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">theta = np.random.rand(<span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">learning_rate = <span class="number">0.001</span></span><br><span class="line">cost_history = []</span><br><span class="line">batch_size = <span class="number">10</span></span><br><span class="line"><span class="keyword">for</span> it <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10000</span>):</span><br><span class="line">    cost =<span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, N, batch_size):</span><br><span class="line">        rand_ind = np.random.randint(<span class="number">0</span>,N)</span><br><span class="line"><span class="comment">#         X_i = X[rand_ind: ,:].reshape(1,X.shape[1])</span></span><br><span class="line"><span class="comment">#         y_i = y[rand_ind].reshape(1,1)</span></span><br><span class="line">        X_i = X[i:i+batch_size]</span><br><span class="line">        y_i = y[i:i+batch_size]</span><br><span class="line">        prediction = np.dot(X_i,theta)</span><br><span class="line">        cost += <span class="number">1.0</span> / <span class="number">2</span> / N * np.<span class="built_in">sum</span>(np.square(prediction-y_i))</span><br><span class="line">        theta = theta -(<span class="number">1</span>/N)*learning_rate*( X_i.T.dot((prediction - y_i)))</span><br><span class="line"></span><br><span class="line">    cost_history.append(cost)</span><br><span class="line"></span><br><span class="line">yp = np.dot(X, theta)</span><br><span class="line">plt.scatter(X[:, <span class="number">0</span>], y)</span><br><span class="line">plt.plot(X[:, <span class="number">0</span>], yp)  </span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x11e9813c8&gt;]
+</code></pre>
+<!-- ![png](output_15_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_15_1.png" class="">
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.plot([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(cost_history))], cost_history)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x11ebbb6a0&gt;]
+</code></pre>
+<!-- ![png](output_16_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_16_1.png" class="">
+
+<ol start="2">
+<li>多变量 $y=k_1x_1+k_2x_2+\cdots+k_Nx_N+b$</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x = np.random.randint(<span class="number">1</span>, <span class="number">100</span>, (<span class="number">20</span>, <span class="number">3</span>))</span><br><span class="line">x</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[94, 12, 80],
+       [19,  1, 54],
+       [57, 27, 86],
+       [34, 29,  5],
+       [95,  9, 90],
+       [99, 15, 28],
+       [21, 51, 87],
+       [68, 71, 64],
+       [21, 67, 36],
+       [87, 66, 94],
+       [70, 14, 55],
+       [50, 64, 52],
+       [ 6, 47, 58],
+       [47, 54, 56],
+       [94, 26, 12],
+       [19, 43, 21],
+       [79, 80, 14],
+       [98, 10, 56],
+       [10, 80, 73],
+       [44, 97, 97]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">w = np.random.rand(<span class="number">4</span>, <span class="number">1</span>)</span><br><span class="line">X = np.concatenate([x, np.ones(<span class="built_in">len</span>(x)).reshape(-<span class="number">1</span>, <span class="number">1</span>)], axis=<span class="number">1</span>)</span><br><span class="line">y = np.dot(X, w)</span><br><span class="line">y = y + <span class="number">10</span>*np.random.rand(y.shape[<span class="number">0</span>], y.shape[<span class="number">1</span>])</span><br><span class="line">X, y</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(array([[94., 12., 80.,  1.],
+        [19.,  1., 54.,  1.],
+        [57., 27., 86.,  1.],
+        [34., 29.,  5.,  1.],
+        [95.,  9., 90.,  1.],
+        [99., 15., 28.,  1.],
+        [21., 51., 87.,  1.],
+        [68., 71., 64.,  1.],
+        [21., 67., 36.,  1.],
+        [87., 66., 94.,  1.],
+        [70., 14., 55.,  1.],
+        [50., 64., 52.,  1.],
+        [ 6., 47., 58.,  1.],
+        [47., 54., 56.,  1.],
+        [94., 26., 12.,  1.],
+        [19., 43., 21.,  1.],
+        [79., 80., 14.,  1.],
+        [98., 10., 56.,  1.],
+        [10., 80., 73.,  1.],
+        [44., 97., 97.,  1.]]), array([[122.0225137 ],
+        [ 57.31211171],
+        [114.23496601],
+        [ 45.02082836],
+        [132.89902273],
+        [102.33521945],
+        [ 94.71921182],
+        [118.68359381],
+        [ 66.57258803],
+        [145.77901983],
+        [ 92.18258466],
+        [ 97.51882711],
+        [ 59.53768113],
+        [ 93.55424288],
+        [ 87.89605488],
+        [ 43.67135596],
+        [100.45486488],
+        [109.54398009],
+        [ 84.69419534],
+        [133.22844521]]))
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">X = X.T</span><br><span class="line">W = np.dot(np.dot(np.linalg.inv(np.dot(X, X.T)), X), y)</span><br><span class="line">W</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[0.69759863],
+       [0.34849236],
+       [0.61882723],
+       [6.67669398]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ypred = np.dot(X.T, W)</span><br><span class="line">ypred</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[125.93905207],
+       [ 53.69623071],
+       [109.06825143],
+       [ 43.59546208],
+       [131.77944591],
+       [ 98.29350641],
+       [ 92.93734453],
+       [118.46130121],
+       [ 66.95303363],
+       [148.53803029],
+       [ 94.42298889],
+       [ 96.03915255],
+       [ 63.13340597],
+       [ 92.93674197],
+       [ 88.73769355],
+       [ 47.91161129],
+       [ 98.32995597],
+       [113.18060839],
+       [ 86.70645682],
+       [131.20103394]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mse = ((ypred - y) ** <span class="number">2</span>).mean()</span><br><span class="line">mse</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>7.540906254436324
+</code></pre>
+<p><strong>多项式基函数</strong><br>$$<br>y = w_1x+w_2x^2+w_3x^3+\cdots+w_nx^n+b<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = np.random.randint(<span class="number">1</span>, <span class="number">100</span>, <span class="number">20</span>)</span><br><span class="line">x.sort()</span><br><span class="line">w = np.random.rand(<span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">y = w[<span class="number">0</span>] * x + w[<span class="number">1</span>] * x**<span class="number">2</span> + w[<span class="number">2</span>]</span><br><span class="line">x, y</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(array([ 2, 14, 17, 18, 18, 27, 33, 35, 36, 41, 48, 59, 62, 67, 73, 83, 92,
+        93, 94, 96]),
+ array([4.65063444e+00, 1.35560701e+02, 1.96642866e+02, 2.19524001e+02,
+        2.19524001e+02, 4.82163511e+02, 7.13965815e+02, 8.01314903e+02,
+        8.46879756e+02, 1.09360712e+03, 1.49195411e+03, 2.24268841e+03,
+        2.47389847e+03, 2.88445269e+03, 3.41870458e+03, 4.40994092e+03,
+        5.40980129e+03, 5.52719792e+03, 5.64585476e+03, 5.88694905e+03]))
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.scatter(x, y)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x11d2f8390&gt;
+</code></pre>
+<!-- ![png](output_25_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_25_1.png" class="">
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = x.reshape(-<span class="number">1</span>, <span class="number">1</span>).reshape(<span class="number">1</span>, -<span class="number">1</span>)</span><br><span class="line">y = y.reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">X = np.concatenate([x, x**<span class="number">2</span>, x**<span class="number">3</span>, np.ones_like(x)])</span><br><span class="line">W = np.dot(np.dot(np.linalg.inv(np.dot(X, X.T)), X), y)</span><br><span class="line">W</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[ 8.27519400e-01],
+       [ 6.30103299e-01],
+       [-4.57533317e-16],
+       [ 4.75182446e-01]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">xp = np.linspace(<span class="number">0</span>, <span class="number">100</span>, num=<span class="number">50</span>, endpoint=<span class="literal">False</span>)</span><br><span class="line">xp = xp.reshape(-<span class="number">1</span>, <span class="number">1</span>).reshape(<span class="number">1</span>, -<span class="number">1</span>)</span><br><span class="line">X = np.concatenate([xp, xp**<span class="number">2</span>, xp**<span class="number">3</span>, np.ones_like(xp)])</span><br><span class="line">ypred = np.dot(X.T, W)</span><br><span class="line">plt.scatter(x.flatten(), y.flatten(), marker=<span class="string">&#x27;o&#x27;</span>, color=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">plt.plot(xp.flatten(), ypred.flatten())</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x11d390518&gt;]
+</code></pre>
+<!-- ![png](output_27_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_27_1.png" class="">
+
+<p>高斯基函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">x = np.random.randint(<span class="number">1</span>, <span class="number">100</span>, (<span class="number">20</span>, <span class="number">1</span>))</span><br><span class="line">x.sort()</span><br><span class="line">k = np.random.rand()</span><br><span class="line">b = np.random.randint(<span class="number">1</span>, <span class="number">10</span>)</span><br><span class="line">y = np.array([k*v+b+np.random.randint(<span class="number">1</span>, <span class="number">10</span>) <span class="keyword">for</span> v <span class="keyword">in</span> x])</span><br><span class="line"></span><br><span class="line">plt.scatter(x, y)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.collections.PathCollection at 0x11d4e0198&gt;
+</code></pre>
+<!-- ![png](output_29_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_29_1.png" class="">
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gaussian_basis</span>(<span class="params">x, feature_num=<span class="number">10</span></span>):</span></span><br><span class="line">    x = np.concatenate([x]*feature_num, axis=<span class="number">1</span>)</span><br><span class="line">    centers = np.linspace(<span class="number">0</span>, <span class="number">100</span>, feature_num)</span><br><span class="line">    width = <span class="number">1.0</span> * (centers[<span class="number">1</span>] - centers[<span class="number">0</span>])</span><br><span class="line">    ans = (x-centers)/width</span><br><span class="line">    ans = np.exp(-<span class="number">0.5</span> * ans ** <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">return</span> ans</span><br><span class="line"></span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">X = gaussian_basis(x)</span><br><span class="line">X = X.T</span><br><span class="line">X.shape</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(10, 20)
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">y.reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">W = np.dot(np.dot(np.linalg.inv(np.dot(X, X.T)), X), y)</span><br><span class="line">W</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>array([[ 259.44743174],
+       [-177.51499663],
+       [ 113.60845949],
+       [ -35.73031352],
+       [  33.26864073],
+       [  10.70467292],
+       [  18.5937312 ],
+       [  24.01366064],
+       [  13.68489993],
+       [  48.0199917 ]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">xp = np.linspace(<span class="number">0</span>, <span class="number">100</span>, <span class="number">20</span>).reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">Xp = gaussian_basis(x)</span><br><span class="line">yp = np.dot(Xp, W)</span><br><span class="line"></span><br><span class="line">plt.scatter(x.flatten(), y.flatten(), color=<span class="string">&#x27;r&#x27;</span>, marker=<span class="string">&#x27;+&#x27;</span>)</span><br><span class="line">plt.plot(xp.flatten(), yp.flatten())</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x11d50f470&gt;]
+</code></pre>
+<!-- ![png](output_33_1.png) -->
+<img src="/2019/08/08/Linear-Regression/output_33_1.png" class="">
+
+<p><strong>梯度下降法</strong> - 多项式基函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/07/nndl-notebook/" rel="next" title="神经网络与深度学习笔记">
+                <i class="fa fa-chevron-left"></i> 神经网络与深度学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/08/nndl_2_6/" rel="prev" title="最大似然估计高斯分布">
+                最大似然估计高斯分布 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

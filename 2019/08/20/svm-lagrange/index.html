@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="拉格朗日函数原始问题是一个凸二次规划问题：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拉格朗日对偶问题与SVM">
+<meta property="og:url" content="http://yoursite.com/2019/08/20/svm-lagrange/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="拉格朗日函数原始问题是一个凸二次规划问题：">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2019/08/20/svm-lagrange/output_2_2.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/20/svm-lagrange/output_4_0.png">
+<meta property="article:published_time" content="2019-08-20T06:57:25.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.835Z">
+<meta property="article:author" content="Firepaw">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/20/svm-lagrange/output_2_2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/20/svm-lagrange/"/>
+
+
+
+
+
+  <title>拉格朗日对偶问题与SVM | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/20/svm-lagrange/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">拉格朗日对偶问题与SVM</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-20T14:57:25+08:00">
+                2019-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="拉格朗日函数"><a href="#拉格朗日函数" class="headerlink" title="拉格朗日函数"></a>拉格朗日函数</h1><p>原始问题是一个<strong>凸二次规划问题</strong>：</p>
+<span id="more"></span>
+<p>$$<br>\underset {x \in R^N}{\min} f(x) \tag{1} \label{1} \\<br>s.t. c_i(x) \leq 0, i=1, 2, \ldots, k \\<br>h_j(x) = 0, j=1, 2, \ldots l<br>$$</p>
+<p>添加拉格朗日算子后写成：</p>
+<p>$$<br>\mathcal L(x, \alpha, \beta) = f(x)+\sum_{i=1}^k\alpha_i c_i(x)+\sum_{j=1}^l\beta_j h_j(x) \tag{2} \label{2}<br>$$</p>
+<p>将对$x$有限制条件的$f(x)$的最优化问题转换为对$x,\alpha,\beta$的没有限制条件的极值问题。其中$\alpha, \beta$是拉格朗日乘子，且$\alpha_i \geq 0$。</p>
+<p>再定义函数</p>
+<p>$$<br>\theta_p(x)=\underset{\alpha, \beta, \alpha_i \geq 0}{\max} \mathcal L(x, \alpha, \beta) \tag{3} \label{3}<br>$$</p>
+<p>将$(\ref{2})$带入得到：</p>
+<p>$$<br>\theta_p(x)=\underset{\alpha, \beta, \alpha_i \geq 0}{\max} \left(f(x)+\sum_{i=1}^k\alpha_i c_i(x)+\sum_{j=1}^l\beta_j h_j(x)\right) \tag{4}\label{4}<br>$$</p>
+<p>分析可知：</p>
+<ol>
+<li><p>如果有$x$不满足约束条件，即$c_i(x) \gt 0$或者$h_j(x) \neq 0$时，由于$\alpha_i \geq 0$，可以取$\alpha_i = +\infty, \beta_jh_j(x)=+\infty$，则$\theta_p(x) \dashrightarrow +\infty$。</p>
+</li>
+<li><p>如果满足全部原始约束条件，有$\sum_{j=1}^l\beta_j h_j(x)=0$， $\sum_{i=1}^k\alpha_i c_i(x) \leq 0$，所以$\theta_p(x) \leq f(x)$。要使$\theta_p(x)$最大，需要$\sum_{i=1}^k\alpha_i c_i(x) = 0$，此时$\theta_p(x)=f(x)$。这里$\theta_p(x)$把$x$看成常数，所以$f(x)$也是常数，所以$max(f(x))=f(x)$。</p>
+</li>
+<li><p>所以原最小化问题$\underset {x \in R^N}{\min} f(x)$可以变为$\underset {x \in R^N}{\min} \theta_p(x)$即$\underset {x}{\min} \underset {\alpha, \beta,\alpha_i \geq 0}{max} \mathcal L(x, \alpha, \beta)$</p>
+</li>
+</ol>
+<p>转换为对偶问题，因为最小值的最大值小于等于最大值的最小值即$\max \min \leq \min \max$，所以：</p>
+<p>$$<br>\underset {\alpha, \beta,\alpha_i \geq 0}{max} \underset {x}{\min} \mathcal L(x, \alpha, \beta) \leq \underset {x}{\min} \underset {\alpha, \beta,\alpha_i \geq 0}{max} \mathcal L(x, \alpha, \beta) \tag{5}\label{5}<br>$$</p>
+<p>可以看出对偶问题的外层是先求得拉格朗日参数，然后通过拉格朗日参数求得最终超平面参数$x$，而原问题是直接求$x$，因为存在其他未知参数所以无法直接求出。</p>
+<h1 id="SVM优化的问题"><a href="#SVM优化的问题" class="headerlink" title="SVM优化的问题"></a>SVM优化的问题</h1><p>原问题</p>
+<p>$$<br>\underset {\mathbf w, b}{min} \frac{1}{2}\Vert \mathbf w \Vert^2 \tag{6}\label{6} \\<br>s.t.\ y_i(\mathbf w \mathbf x_i + b) &gt;= 1,\  \forall j \in {1, 2, \ldots, N}<br>$$</p>
+<p>使用拉格朗日算子得到</p>
+<p>$$<br>\mathcal L(\mathbf w, b, \alpha)=\frac{1}{2}\Vert \mathbf w \Vert^2 + \sum_{i=1}^N\alpha_i \left(1-y_i (\mathbf w^T \mathbf x_i + b)\right) \tag{7}\label{7}<br>$$</p>
+<p>需要求解$\underset{\mathbf w, b}{\min} \underset{\alpha, \alpha_i\geq 0}{\max} \mathcal L(\mathbf w, b, \alpha)$<br>交换$\min, \max$得到对偶问题$\underset{\alpha, \alpha_i\geq 0}{\max} \underset{\mathbf w, b}{\min} \mathcal L(\mathbf w, b, \alpha)$</p>
+<p>把$\mathbf w, b$看成关于$\alpha$的函数，求最小值，求导得到:</p>
+<p>$$<br>\frac{\partial \mathcal L(\mathbf w, b, \alpha)}{\partial \mathbf w}=\mathbf w - \sum_{i=1}^N\alpha_iy_i\mathbf x_i = 0 \tag{8}\label{8}<br>$$</p>
+<p>$$<br>\frac{\partial \mathcal L(\mathbf w, b, \alpha)}{b}=\sum_{i=1}^N\alpha_iy_i = 0 \tag{9}\label{9}<br>$$</p>
+<p>将$(\ref{8}) (\ref{9})$带入$\mathcal L(\mathbf w, b, \alpha)$ 得到：</p>
+<p>$$<br>\begin{aligned}<br>\mathcal L(\mathbf w, b, \alpha) &amp;= \frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N\alpha_i\alpha_jy_iy_j\mathbf x_i^T \mathbf x_j + \sum_{i=1}^N\alpha_i-\sum_{i=1}^N\alpha_iy_i\left((\sum_{j=1}^N\alpha_jy_j\mathbf x_j)\cdot\mathbf x_i+b\right) \\<br>&amp;= \frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N\alpha_i\alpha_jy_iy_j\mathbf x_i^T \mathbf x_j +\sum_{i=1}^N\alpha_i-\sum_{i=1}^N\sum_{j=1}^N\alpha_i\alpha_jy_iy_j\mathbf x_i^T \mathbf x_j-b\sum_{i=1}^N\alpha_iy_i \\<br>&amp;=-\frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N\alpha_i\alpha_jy_iy_j\mathbf x_i^T \mathbf x_j +\sum_{i=1}^N\alpha_i + b*0 \\<br>&amp;=-\frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N\alpha_i\alpha_jy_iy_j\mathbf x_i^T \mathbf x_j +\sum_{i=1}^N\alpha_i<br>\end{aligned}<br>$$</p>
+<p>此时再求$\underset{\alpha, \alpha_i\geq 0}{\max} \underset{\mathbf w, b}{\min} \mathcal L(\mathbf w, b, \alpha)$，即</p>
+<p>$$<br>\underset{\alpha, \alpha_i\geq 0}{\max} \underset{\mathbf w, b}{\min} \mathcal L(\mathbf w, b, \alpha) = \underset {\alpha}{\max} { -\frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N\alpha_i\alpha_jy_iy_j\mathbf x_i^T \mathbf x_j +\sum_{i=1}^N\alpha_i }<br>$$</p>
+<p>解出$\alpha$之后，求出$\mathbf w, b$，得到：</p>
+<p>$$<br>\begin{aligned}<br>f(\mathbf x_{test})&amp;=\mathbf w^T\mathbf x+b \\<br>&amp;=\sum_{i=1}^N\alpha_iy_i\mathbf x_i^T\mathbf x_{test}+b<br>\end{aligned}<br>$$</p>
+<p>KKT条件为：</p>
+<p>$$<br>\begin{cases}<br>\alpha_i \geq 0 \\<br>1-y_i f(\mathbf x_i) \leq 0 \\<br>\alpha_i(1-y_i f(\mathbf x_i)) = 0<br>\end{cases}<br>$$</p>
+<p>所以对任意样本，总有$\alpha_i=0$或者$1-y_i f(\mathbf x_i)=0$。</p>
+<ul>
+<li>若$\alpha_i=0$，则该样本不会在$\sum_{i=1}^N\alpha_iy_i\mathbf x_i^T\mathbf x_{test}+b$中出现，就不会对$f(\mathbf x)$有任何影响。</li>
+<li>若$\alpha_i \gt 0$，则必有$y_i f(\mathbf x_i)=1$，对应的点在最大间隔的边界上，是一个支持向量。所以训练完成后，大部分样本都不需要保留，最终模型只与支持向量有关。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_blobs</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MinMaxScaler</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets, svm</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"></span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">6</span>, <span class="number">5</span>))</span><br><span class="line">plt.xlim(-<span class="number">0.2</span>, <span class="number">1.5</span>)</span><br><span class="line">plt.ylim(-<span class="number">0.2</span>, <span class="number">1.5</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">0</span>], c=<span class="string">&#x27;k&#x27;</span>)</span><br><span class="line">plt.arrow(<span class="number">1.0</span>, <span class="number">0</span>, <span class="number">0.2</span>, <span class="number">0.0</span>, head_width=<span class="number">0.05</span>, head_length=<span class="number">0.1</span>, **&#123;<span class="string">&#x27;length_includes_head&#x27;</span>: <span class="literal">True</span>&#125;)</span><br><span class="line">plt.arrow(<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">0</span>, <span class="number">0.2</span>, head_width=<span class="number">0.05</span>, head_length=<span class="number">0.1</span>, **&#123;<span class="string">&#x27;length_includes_head&#x27;</span>: <span class="literal">True</span>&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">iris = datasets.load_iris()</span><br><span class="line">X = iris.data</span><br><span class="line">y = iris.target</span><br><span class="line"></span><br><span class="line">X = X[y != <span class="number">0</span>, :<span class="number">2</span>]</span><br><span class="line">y = y[y != <span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">scaler = MinMaxScaler()</span><br><span class="line">X = scaler.fit_transform(X, y)</span><br><span class="line"></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.33</span>, random_state=<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">clf = svm.SVC(kernel=<span class="string">&#x27;linear&#x27;</span>, gamma=<span class="number">10</span>)</span><br><span class="line">clf.fit(X_train, y_train)</span><br><span class="line"><span class="built_in">print</span>(y_train)</span><br><span class="line"><span class="built_in">print</span>(X_train.shape)</span><br><span class="line"><span class="keyword">for</span> v, c, m <span class="keyword">in</span> <span class="built_in">zip</span>([<span class="number">1</span>, <span class="number">2</span>], [<span class="string">&#x27;r&#x27;</span>,<span class="string">&#x27;b&#x27;</span>], [<span class="string">&#x27;o&#x27;</span>, <span class="string">&#x27;^&#x27;</span>]):</span><br><span class="line">    ix = np.where(y_train==v)[<span class="number">0</span>]</span><br><span class="line">    xc = np.take(X_train, ix, axis=<span class="number">0</span>)</span><br><span class="line">    yc = np.take(y_train, ix, axis=<span class="number">0</span>)</span><br><span class="line">    plt.scatter(xc[:, <span class="number">0</span>], xc[:, <span class="number">1</span>], s=<span class="number">20</span>, marker=m, fc=<span class="string">&#x27;w&#x27;</span>, ec=c)</span><br><span class="line">    </span><br><span class="line">    ix = np.where(y_test==v)[<span class="number">0</span>]</span><br><span class="line">    xc = np.take(X_test, ix, axis=<span class="number">0</span>)</span><br><span class="line">    yc = np.take(y_test, ix, axis=<span class="number">0</span>)</span><br><span class="line">    plt.scatter(xc[:, <span class="number">0</span>], xc[:, <span class="number">1</span>], s=<span class="number">40</span>, marker=m, c=c)</span><br><span class="line"></span><br><span class="line">x_min = X[:, <span class="number">0</span>].<span class="built_in">min</span>()</span><br><span class="line">x_max = X[:, <span class="number">0</span>].<span class="built_in">max</span>()</span><br><span class="line">y_min = X[:, <span class="number">1</span>].<span class="built_in">min</span>()</span><br><span class="line">y_max = X[:, <span class="number">1</span>].<span class="built_in">max</span>()</span><br><span class="line"></span><br><span class="line">XX, YY = np.mgrid[x_min:x_max:<span class="number">200j</span>, y_min:y_max:<span class="number">200j</span>]</span><br><span class="line">Z = clf.decision_function(np.c_[XX.ravel(), YY.ravel()])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Put the result into a color plot</span></span><br><span class="line">Z = Z.reshape(XX.shape)</span><br><span class="line">plt.contour(XX, YY, Z, colors=[<span class="string">&#x27;k&#x27;</span>, <span class="string">&#x27;k&#x27;</span>, <span class="string">&#x27;k&#x27;</span>], linestyles=[<span class="string">&#x27;--&#x27;</span>, <span class="string">&#x27;-&#x27;</span>, <span class="string">&#x27;--&#x27;</span>], levels=[-<span class="number">.5</span>, <span class="number">0</span>, <span class="number">.5</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;matplotlib.contour.QuadContourSet at 0x1a1f5461d0&gt;
+</code></pre>
+<img src="/2019/08/20/svm-lagrange/output_2_2.png" class="">
+
+<h1 id="软间隔"><a href="#软间隔" class="headerlink" title="软间隔"></a>软间隔</h1><p>如果数据不可分，可以引入软间隔(soft margin)，即允许支持向量机一定程度上出错。</p>
+<p>引入常量$C$和0-1损失函数$l_{0/1(z)}$:</p>
+<p>$$<br>\begin{aligned}<br>l_{0/1}(z)&amp;=<br>\begin{cases}<br>1, z \leq 0 \\<br>0, z \geq 0<br>\end{cases}<br>\end{aligned}<br>$$</p>
+<p>允许部分样本分类出错，即：</p>
+<p>$$<br>y_i(\mathbf w^T \mathbf x+b)\lt1<br>$$</p>
+<p>目标是最大化间隔的同时，尽量减少不满足约束条件的样本的条件，此时优化目标为：</p>
+<p>$$<br>\mathcal L(\mathbf w, b)= \underset{\mathbf w, b}{\min} \frac{1}{2}\Vert \mathbf w\Vert^2+C\sum_{i=1}^ml_{0/1}(1-y_i(\mathbf w^T\mathbf x_i + b))<br>$$</p>
+<p>$C$无穷大时，迫使后面部分$l_{0/1}(1-y_i(\mathbf w^T\mathbf x_i + b))=0$，即$1-y_i(\mathbf w^T\mathbf x_i + b)&lt;=0$，所有的样本点都满足约束条件。$C$的取值有限时，允许一部分样本点不满足约束条件。</p>
+<p>0-1损失函数非凸、非连续，数学性质不好，可以使用其他函数来代替：</p>
+<ul>
+<li>hinge损失：$\mathcal L_{hinge}=\max(0, 1-z)$</li>
+<li>指数损失: $\mathcal L_{exp}=e^{-z}$</li>
+<li>对数损失: $\mathcal L_{log}=log(1+e^{-z})$</li>
+</ul>
+<p>对应的图像如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.patches <span class="keyword">as</span> patches</span><br><span class="line"></span><br><span class="line">fontdict = &#123;<span class="string">&#x27;size&#x27;</span>:<span class="number">15</span>&#125;</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">8</span>, <span class="number">6</span>))</span><br><span class="line"><span class="comment"># plt.axis(&#x27;off&#x27;)</span></span><br><span class="line">plt.xlim(-<span class="number">2.2</span>, <span class="number">4.2</span>)</span><br><span class="line">plt.ylim(-<span class="number">0.5</span>, <span class="number">4</span>)</span><br><span class="line">plt.plot([-<span class="number">2</span>, <span class="number">3.5</span>], [<span class="number">0</span>, <span class="number">0</span>], c=<span class="string">&#x27;k&#x27;</span>, zorder=<span class="number">1</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">0</span>], [-<span class="number">0.3</span>, <span class="number">3.5</span>], c=<span class="string">&#x27;k&#x27;</span>, zorder=<span class="number">1</span>)</span><br><span class="line">plt.arrow(<span class="number">3.5</span>, <span class="number">0</span>, <span class="number">0.2</span>, <span class="number">0.0</span>, head_width=<span class="number">0.1</span>, head_length=<span class="number">0.1</span>, **&#123;<span class="string">&#x27;length_includes_head&#x27;</span>: <span class="literal">True</span>&#125;, zorder=<span class="number">1</span>)</span><br><span class="line">plt.arrow(<span class="number">0.0</span>, <span class="number">3.5</span>, <span class="number">0</span>, <span class="number">0.2</span>, head_width=<span class="number">0.1</span>, head_length=<span class="number">0.1</span>, **&#123;<span class="string">&#x27;length_includes_head&#x27;</span>: <span class="literal">True</span>&#125;, zorder=<span class="number">1</span>)</span><br><span class="line">plt.text(<span class="number">3.2</span>, <span class="number">0.1</span>, <span class="string">&#x27;z&#x27;</span>, c=<span class="string">&#x27;k&#x27;</span>,**fontdict)</span><br><span class="line">plt.text(<span class="number">0.05</span>, <span class="number">3.5</span>, <span class="string">r&#x27;$L(z)$&#x27;</span>, c=<span class="string">&#x27;k&#x27;</span>, **fontdict)</span><br><span class="line"></span><br><span class="line">z = np.linspace(-<span class="number">2</span>,<span class="number">3</span>,<span class="number">1000</span>)</span><br><span class="line">l_hinge = <span class="number">1</span>-z</span><br><span class="line">l_hinge = np.where(l_hinge&lt;<span class="number">0</span>, <span class="number">0</span>, l_hinge)</span><br><span class="line"></span><br><span class="line">l_01 = np.where(z&lt;<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">l_exp = np.exp(-z)</span><br><span class="line">l_log = np.log2(<span class="number">1</span>+np.exp(-z))</span><br><span class="line">plt.plot(z, l_hinge, zorder=<span class="number">2</span>, c=<span class="string">&#x27;b&#x27;</span>)</span><br><span class="line">plt.plot(z, l_exp, zorder=<span class="number">2</span>, linestyle=<span class="string">&#x27;--&#x27;</span>, c=<span class="string">&#x27;c&#x27;</span>)</span><br><span class="line">plt.plot(z, l_log, zorder=<span class="number">2</span>, linestyle=<span class="string">&#x27;:&#x27;</span>, c=<span class="string">&#x27;m&#x27;</span>)</span><br><span class="line">plt.plot(z, l_01, zorder=<span class="number">2</span>, c=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line"></span><br><span class="line">style=<span class="string">&quot;Simple,tail_width=0.5,head_width=4,head_length=8&quot;</span></span><br><span class="line">kw = <span class="built_in">dict</span>(arrowstyle=style)</span><br><span class="line"></span><br><span class="line">plt.text(<span class="number">0.1</span>, <span class="number">2.5</span>, <span class="string">r&#x27;$L_&#123;exp&#125;(z)=e^&#123;-z&#125;$&#x27;</span>, c=<span class="string">&#x27;c&#x27;</span>,**fontdict)</span><br><span class="line">a1 = patches.FancyArrowPatch((<span class="number">0.5</span>,<span class="number">2.4</span>), (-<span class="number">0.6</span>,<span class="number">1.8</span>),**kw, color=<span class="string">&#x27;c&#x27;</span>)</span><br><span class="line">plt.text(<span class="number">0.1</span>, <span class="number">1.5</span>, <span class="string">r&#x27;$L_&#123;log&#125;(z)=log_2(1+e^&#123;-z&#125;)$&#x27;</span>, c=<span class="string">&#x27;m&#x27;</span>,**fontdict)</span><br><span class="line">a2 = patches.FancyArrowPatch((<span class="number">0.6</span>,<span class="number">1.4</span>), (<span class="number">0.8</span>,<span class="number">0.6</span>),**kw, color=<span class="string">&#x27;m&#x27;</span>)</span><br><span class="line">plt.text(<span class="number">1.0</span>, <span class="number">0.8</span>, <span class="string">r&#x27;$L_&#123;log&#125;(z)=max(0, 1-z)$&#x27;</span>, c=<span class="string">&#x27;b&#x27;</span>,**fontdict)</span><br><span class="line">a3 = patches.FancyArrowPatch((<span class="number">1.2</span>,<span class="number">0.7</span>), (<span class="number">0.8</span>,<span class="number">0.25</span>),**kw, color=<span class="string">&#x27;b&#x27;</span>)</span><br><span class="line"></span><br><span class="line">plt.text(-<span class="number">2.1</span>, <span class="number">0.35</span>, <span class="string">r&#x27;$l_&#123;0/1&#125;(z)=$&#x27;</span>, **fontdict, color=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">plt.text(-<span class="number">1.0</span>, <span class="number">0.5</span>, <span class="string">r&#x27;$-1, z&lt;0$&#x27;</span>,**fontdict, color=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">plt.text(-<span class="number">1.0</span>, <span class="number">0.2</span>, <span class="string">r&#x27;$0, z\geq0$&#x27;</span>,**fontdict, color=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">plt.text(-<span class="number">1.3</span>, <span class="number">0.30</span>, <span class="string">r&quot;$\&#123;$&quot;</span>,fontsize=<span class="number">30</span>, color=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">a4 = patches.FancyArrowPatch((-<span class="number">0.9</span>,<span class="number">0.6</span>), (-<span class="number">1.2</span>,<span class="number">0.95</span>),**kw, color=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">a5 = patches.FancyArrowPatch((-<span class="number">0.2</span>,<span class="number">0.25</span>), (<span class="number">0.4</span>,<span class="number">0.05</span>),**kw, color=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># a3 = patches.FancyArrowPatch((-0.4,-0.6), (0.4,-0.6),connectionstyle=&quot;arc3,rad=.5&quot;, **kw)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> a <span class="keyword">in</span> [a1,a2,a3, a4, a5]:</span><br><span class="line">    plt.gca().add_patch(a)</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2019/08/20/svm-lagrange/output_4_0.png" class="">
+
+<p>如果采用hinge损失，优化目标函数变为：</p>
+<p>$$<br>\mathcal L(\mathbf w, b)= \underset{\mathbf w, b}{\min} \frac{1}{2}\Vert \mathbf w\Vert^2+C\sum_{i=1}^m\max(0,1-y_i(\mathbf w^T\mathbf x_i + b))<br>$$</p>
+<p>引入松弛变量，将上式写成：</p>
+<p>$$<br>\mathcal L(\mathbf w, b)= \underset{\mathbf w, b}{\min} \frac{1}{2}\Vert \mathbf w\Vert^2+C\sum_{i=1}^m\xi_i \\<br>s.t.\ 1-y_i(\mathbf w^T\mathbf x_i + b)-\xi_i \leq 0 \\<br>\xi_i \geq 0, i=1,2,\ldots, m<br>$$</p>
+<p>原来的硬间隔要求$1-y_i(\mathbf w^T\mathbf x_i + b) \leq 0$，所有的样本离超平面的距离都要大于$\frac{1}{\Vert \mathbf w\Vert}$。而引入松弛变量$\xi$之后，允许那些距离超平面$\frac{1-\xi}{\Vert \mathbf w\Vert}$的点存在，这样可以不因为这些离群点改变原有的可以将大多数样本正确划分的超平面。可以看出$\xi=0$即硬间隔，不允许离群点存在；$\xi$越大，离群点偏离分类越远；$\xi=1$是，离群点在超平面上，$xi\gt1$时，离群点已经跑到另外一个分类中去了，即被错误分类了。</p>
+<p>而$C$是和$\xi$一起引入的，代表了有多重视离群点。$C$越大表示越重视离群点，$C$为无穷大时，迫使$\sum_{i=1}^m\xi_i=0$，而$\xi_i\gt0$，所以$\xi_i=0$，即不允许离群点存在。</p>
+<p>上面的软间隔优化目标也是二次规划，同样转换为拉格朗日函数：</p>
+<p>$$<br>\underset{\mathbf w, b, \xi}{\min} \underset{\alpha, \mu}{\max} \mathcal L(\mathbf w, b, \alpha)=\frac{1}{2}\Vert \mathbf w \Vert^2 + C\sum_{i=1}^m\xi_i++ \sum_{i=1}^N\alpha_i \left(1-\xi_i-y_i (\mathbf w^T \mathbf x_i + b)\right)-\sum_{i=1}^m\mu_ixi_i<br>$$</p>
+<p>其中$\alpha_i \geq 0, \mu_i\geq 0$是拉格朗日因子，转换为对偶问题:</p>
+<p>$$<br>\underset{\mathbf w, b, \xi}{\min} \underset{\alpha, \mu}{\max} \mathcal L(\mathbf w, b, \alpha) \geq \underset{\alpha, \mu}{\max} \underset{\mathbf w, b, \xi}{\min}  \mathcal L(\mathbf w, b, \alpha)<br>$$</p>
+<p>令$L(\mathbf w, b, \alpha)$对$\mathbf w, b, \xi$求偏导并等于0得到：</p>
+<p>$$<br>\mathbf w = \sum_{i=1}^m\alpha_iy_i\mathbf x_i<br>$$</p>
+<p>$$<br>0 = \sum_{i=1}^m\alpha_iy_i<br>$$</p>
+<p>$$<br>C=\alpha_i+\mu_i<br>$$</p>
+<p>带入$\mathcal L(\mathbf w, b, \alpha)$得到最小值，然后起对偶问题转化为：</p>
+<p>$$<br>\underset{\alpha}{\max} \sum_{i=1}^m\alpha_i-\frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\alpha_i\alpha_jy_iy_j\mathbf x_i^T \mathbf x_i \\<br>s.t.\ sum_{i=1}^m\alpha_iy_i=0\\<br>0 \leq \alpha_i \leq C, i=1, 2, \ldots, m<br>$$</p>
+<p>对比硬间隔， 软间隔的差别仅在于对对偶变量的约束不同：前者是$\alpha_i \geq 0$，后者是$0 \leq \alpha_i \leq C$。</p>
+<h1 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h1><p>只要矩阵半正定的，就可以作为核函数，常用的有:</p>
+<ul>
+<li>线性核, $K(\mathbf x_i, \mathbf x_j)=\mathbf x_i^T \mathbf x_j$</li>
+<li>多项式核，$K(\mathbf x_i, \mathbf x_j)=(\mathbf x_i^T \mathbf x_j)^d$；$d \geq 1$是多项式系数</li>
+<li>高斯核，$K(\mathbf x_i, \mathbf x_j)=exp\left(-\frac{\Vert\mathbf x_i-\mathbf x_j\Vert^2}{2\sigma^2}\right)$；$\sigma \gt 0$是高斯核的带宽</li>
+<li>拉普拉斯核，$K(\mathbf x_i, \mathbf x_j)=exp\left(-\frac{\Vert\mathbf x_i-\mathbf x_j\Vert}{\sigma}\right)$；$\sigma \gt 0$</li>
+<li>sigmoid核，$K(\mathbf x_i, \mathbf x_j)=\tanh(\beta\mathbf x_i^T \mathbf x_j+\theta)$；$\tanh$为双曲正切函数，$\beta \gt 0, \theta \gt 0$</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/18/Locally-Weighted-Linear-Regression/" rel="next" title="Locally Weighted Linear Regression">
+                <i class="fa fa-chevron-left"></i> Locally Weighted Linear Regression
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/25/KNN/" rel="prev" title="KNN">
+                KNN <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">拉格朗日函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SVM%E4%BC%98%E5%8C%96%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">SVM优化的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AF%E9%97%B4%E9%9A%94"><span class="nav-number">3.</span> <span class="nav-text">软间隔</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">核函数</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

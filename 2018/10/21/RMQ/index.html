@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Algorithms, rmq," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Range Minimum Query给一个数组 A[1..N], 需要回到查询,在闭区间 [L, R]里面最小的元素是多少.RMQ可以用于解决LCA问题.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RMQ">
+<meta property="og:url" content="http://yoursite.com/2018/10/21/RMQ/index.html">
+<meta property="og:site_name" content="Firepaw">
+<meta property="og:description" content="Range Minimum Query给一个数组 A[1..N], 需要回到查询,在闭区间 [L, R]里面最小的元素是多少.RMQ可以用于解决LCA问题.">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-10-21T15:13:01.000Z">
+<meta property="article:modified_time" content="2021-12-16T02:23:14.773Z">
+<meta property="article:author" content="Firepaw">
+<meta property="article:tag" content="Algorithms, rmq">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/21/RMQ/"/>
+
+
+
+
+
+  <title>RMQ | Firepaw</title>
+  
+
+
+
+
+
+
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Firepaw</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/21/RMQ/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Firepaw">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RMQ</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-21T23:13:01+08:00">
+                2018-10-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Range-Minimum-Query"><a href="#Range-Minimum-Query" class="headerlink" title="Range Minimum Query"></a>Range Minimum Query</h1><p>给一个数组 A[1..N], 需要回到查询,在闭区间 [L, R]里面最小的元素是多少.<br>RMQ可以用于解决LCA问题.</p>
+<span id="more"></span>
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><p>算法 | 预处理 | 查询<br>———— | ————-<br>Sqrt-decomposition|$O(N)$|$O(\sqrt{N})$<br>Segment tree|$O(N)$|$O(logN)$<br>Fenwick tree|$O(NlogN)$|$O(logN)$<br>Sparse Table|$O(NlogN)$|$O(1)$<br>Sqrt Tree|$O(NlogN)$|$O(1)$<br>Disjoint Set Union / Arpa’s Trick |$O(N)$|$O(1)$<br>Cartesian Tree|$O(N)$|$O(1)$<br>Farach-Colton and Bender algorithm|$O(N)$|$O(1)$</p>
+<h2 id="Sqrt-decomposition"><a href="#Sqrt-decomposition" class="headerlink" title="Sqrt-decomposition"></a><a target="_blank" rel="noopener" href="https://cp-algorithms.com/data_structures/sqrt_decomposition.html">Sqrt-decomposition</a></h2><h2 id="Segment-Tree"><a href="#Segment-Tree" class="headerlink" title="Segment Tree"></a><a target="_blank" rel="noopener" href="https://cp-algorithms.com/data_structures/segment_tree.html">Segment Tree</a></h2><p>线段树能够高效的回答数组的范围查询，同时允许更新数组。能够在$O(logN)$时间内查询连续元素$a[l\ldots r]$的和或者最小值。在查询中允许修改元素的值。甚至修改整个子段（例如把$a[l\ldots r]$都设置成某个值，或者都加上一个数）。</p>
+<p>总体上来说线段树是非常灵活的数据结构，有很多问题都可以用它来解决。也可以为它增加更复杂的操作，回答更复杂的查询。线段树可以容易的扩展到高维，例如二维线段树可以在$O(log^2{N})$时间内回答子矩阵的和或者最小值。</p>
+<p>线段树的一个重要的性质是，它只占用线性的空间，标准的线段树处理长度为$N$的数组需要$4N$的空间。</p>
+<h3 id="Segment-Tree-的简单形式"><a href="#Segment-Tree-的简单形式" class="headerlink" title="Segment Tree 的简单形式"></a>Segment Tree 的简单形式</h3><p>有一个数组$a_1, a_2, \ldots, a_n$，线段树能够在$O(logN)$查询区间的和$\sum_l^ra[i]$和更新数组元素$a[i]=x$。</p>
+<h4 id="Segment-Tree-的结构"><a href="#Segment-Tree-的结构" class="headerlink" title="Segment Tree 的结构"></a>Segment Tree 的结构</h4><p>构造一颗二叉树，根节点是整个数组的和$\sum_{i=0}^{n-1}a_i$，左子节点是左半部分的和$\sum_{i=0}^{n//2}a_i$，右子节点是右半部分的和$\sum_{i=n//2+1}^{n-1}a_i$。然后对左右半部分继续划分，直到每个节点都是一个元素的和。</p>
+<p>下面是数组$a=[1, 3, −2, 8, −7]$的线段树</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line"></span><br><span class="line">root(&quot;a[0..4]&lt;br/&gt; sum=3&quot;)</span><br><span class="line"></span><br><span class="line">root --- l21(&quot;a[0..2]&lt;br/&gt; sum=2&quot;)</span><br><span class="line">root --- l22(&quot;a[3..4]&lt;br/&gt; sum=1&quot;)</span><br><span class="line"></span><br><span class="line">l21 --- l31(&quot;a[0..1]&lt;br/&gt; sum=4&quot;)</span><br><span class="line">l21 --- l32(&quot;a[2..2]&lt;br/&gt; sum=-2&quot;)</span><br><span class="line">l22 --- l33(&quot;a[3..3]&lt;br/&gt; sum=8&quot;)</span><br><span class="line">l22 --- l34(&quot;a[4..4]&lt;br/&gt; sum=-7&quot;)</span><br><span class="line"></span><br><span class="line">l31 --- l41(&quot;a[0..0]&lt;br/&gt; sum=1&quot;)</span><br><span class="line">l31 --- l42(&quot;a[1..1]&lt;br/&gt; sum=3&quot;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看出线段树的空间复杂度是$O(N)$，总的节点数$=1+2+4+\cdots+2^{\lceil{log_2N}\rceil}=2^{\lceil{log_2N}\rceil+1} \lt 4N$，树的高度是$O(logN)$</p>
+<h4 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h4><p>递归构造节点，复杂度$O(N)$。</p>
+<h4 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h4><p>查询给定区间的和$a[l_q\ldots r_q]$，有三种情况：  </p>
+<ol>
+<li>查询区间和当前节点的区间一样，$[l_q, r_q] == [l, r]$，直接返回当前节点的值</li>
+<li>查询区间在当前节点的左子树，在左子树中查询</li>
+<li>查询区间和左右子树都相交，在左子树查询$[l_q, (l+r)/2]$，右子树查询$[(l+r)/2+1, r_q]$ </li>
+</ol>
+<p>例如要查询$\sum_{i=2}^4a[i]$，会遍历下图中的浅粉色和浅绿色节点，把浅绿色节点的值加起来得到结果$-2 + 1 = -1$。</p>
+<p>下面证明为什么查询复杂度是$O(logN)$，我们可以证明树的每一层最多访问4个节点，而树的高度是$O(logN)$，所以查询复杂度是$O(logN)$。</p>
+<p>下面证明每一层最多访问4个节点：</p>
+<ol>
+<li>如果当前层访问的节点数$\leq 2$，那么下一层最多访问4个节点。</li>
+<li>如果层访问了3个或者四个节点，因为查询的区间是连续的，所以中间的节点不会继续向下一层扩展，只有两边的两个节点有可能去下一层查询，最多查询下一层的4个节点。</li>
+</ol>
+<p>所以在查询区间和的时候，会去查询已经提前计算好的子区间的结果，时间复杂度是$O(logN)$。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line"></span><br><span class="line">root(&quot;a[0..4]&lt;br/&gt; sum=3&quot;)</span><br><span class="line"></span><br><span class="line">root --- l21(&quot;a[0..2]&lt;br/&gt; sum=2&quot;)</span><br><span class="line">root --- l22(&quot;a[3..4]&lt;br/&gt; sum=1&quot;)</span><br><span class="line"></span><br><span class="line">l21 --- l31(&quot;a[0..1]&lt;br/&gt; sum=4&quot;)</span><br><span class="line">l21 --- l32(&quot;a[2..2]&lt;br/&gt; sum=-2&quot;)</span><br><span class="line">l22 --- l33(&quot;a[3..3]&lt;br/&gt; sum=8&quot;)</span><br><span class="line">l22 --- l34(&quot;a[4..4]&lt;br/&gt; sum=-7&quot;)</span><br><span class="line"></span><br><span class="line">l31 --- l41(&quot;a[0..0]&lt;br/&gt; sum=1&quot;)</span><br><span class="line">l31 --- l42(&quot;a[1..1]&lt;br/&gt; sum=3&quot;)</span><br><span class="line"></span><br><span class="line">style root fill:lightpink</span><br><span class="line">style l21 fill:lightpink</span><br><span class="line">style l22 fill:lightgreen</span><br><span class="line">style l32 fill:lightgreen</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h4><p>现在考虑更新数组中的某个特定元素，即$a[i] = x$，我们需要重建线段树，使得它和更新后的数组对应。</p>
+<p>更新的过程比查询的过程更加简单，因为线段树的每一层都是对数组的一个划分，所以$a[i]$只会影响每一层的一个节点，所以只有$O(logN)$个节点需要更新。</p>
+<p>很容易就可以发现，可以使用递归的方式更新线段树。要更新树的当前节点，先更新包含$a[i]$的子节点，然后再更新自己的值。</p>
+<p>下图是更新$a[2] = 3$的过程，浅绿色节点是遍历更新过的节点。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line"></span><br><span class="line">root(&quot;a[0..4]&lt;br/&gt; sum=8&quot;)</span><br><span class="line"></span><br><span class="line">root --- l21(&quot;a[0..2]&lt;br/&gt; sum=7&quot;)</span><br><span class="line">root --- l22(&quot;a[3..4]&lt;br/&gt; sum=1&quot;)</span><br><span class="line"></span><br><span class="line">l21 --- l31(&quot;a[0..1]&lt;br/&gt; sum=4&quot;)</span><br><span class="line">l21 --- l32(&quot;a[2..2]&lt;br/&gt; sum=3&quot;)</span><br><span class="line">l22 --- l33(&quot;a[3..3]&lt;br/&gt; sum=8&quot;)</span><br><span class="line">l22 --- l34(&quot;a[4..4]&lt;br/&gt; sum=-7&quot;)</span><br><span class="line"></span><br><span class="line">l31 --- l41(&quot;a[0..0]&lt;br/&gt; sum=1&quot;)</span><br><span class="line">l31 --- l42(&quot;a[1..1]&lt;br/&gt; sum=3&quot;)</span><br><span class="line"></span><br><span class="line">style root fill:lightgreen</span><br><span class="line">style l21 fill:lightgreen</span><br><span class="line">style l32 fill:lightgreen</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>首先要考虑如何存储线段树，当然可以使用二叉树结构，但是会存储多余的信息。我们可以使用数组直接存储，根节点存储在下标1，左右节点分别存放在下标2，3。递归的对节点$i$，左右子区间分别存放在$2<em>i, 2</em>i+1$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">MAXN = <span class="number">1000</span></span><br><span class="line">segmentTree = [<span class="number">0</span>] * (<span class="number">4</span> * MAXN)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build</span>(<span class="params">A, index, l, r</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    为数组A的闭区间[l, r]构建线段树</span></span><br><span class="line"><span class="string">    :param A: 原始数组</span></span><br><span class="line"><span class="string">    :param index: 当前节点在线段树数组中的位置下标</span></span><br><span class="line"><span class="string">    :param l: 子区间的开始位置</span></span><br><span class="line"><span class="string">    :param r: 子区间的结束位置</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> l == r:</span><br><span class="line">        segmentTree[index] = A[l]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        m = (l + r) // <span class="number">2</span></span><br><span class="line">        build(A, index * <span class="number">2</span>, l, m)</span><br><span class="line">        build(A, index * <span class="number">2</span> + <span class="number">1</span>, m + <span class="number">1</span>, r)</span><br><span class="line">        segmentTree[index] = segmentTree[index * <span class="number">2</span>] + segmentTree[index * <span class="number">2</span> + <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum</span>(<span class="params">index, l, r, ql, qr</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    在根节点是segmentTree[index], 起始闭区间是[l, r]的线段树中查询闭区间[ql, qr]的和</span></span><br><span class="line"><span class="string">    :param index: 当前线段树节点在数组中的位置下标</span></span><br><span class="line"><span class="string">    :param l: 当前节点的区间开始位置</span></span><br><span class="line"><span class="string">    :param r: 当前节点的区间结束位置</span></span><br><span class="line"><span class="string">    :param ql: 查询区间的开始位置</span></span><br><span class="line"><span class="string">    :param qr: 查询区间的结束位置</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> l &gt; r <span class="keyword">or</span> ql &gt; qr:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> l == ql <span class="keyword">and</span> r == qr:</span><br><span class="line">        <span class="keyword">return</span> segmentTree[index]</span><br><span class="line">    </span><br><span class="line">    m = (l+r) // <span class="number">2</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span>(index*<span class="number">2</span>, l, m, ql, <span class="built_in">min</span>(m, qr)) + <span class="built_in">sum</span>(index*<span class="number">2</span>+<span class="number">1</span>, m+<span class="number">1</span>, r, <span class="built_in">max</span>(ql, m+<span class="number">1</span>), qr)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">index, l, r, pos, val</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    更新原始数组的值a[pos]=val，当前节点是区间[l, r]的和</span></span><br><span class="line"><span class="string">    :param index: 当前节点在线段数组中的下标</span></span><br><span class="line"><span class="string">    :param l: 区间开始位置</span></span><br><span class="line"><span class="string">    :param r: 区间结束位置</span></span><br><span class="line"><span class="string">    :param pos: 原始数组的下标</span></span><br><span class="line"><span class="string">    :param val: 更新后的值</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> l == r:</span><br><span class="line">        segmentTree[index] = val</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        m = (l+r) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> pos &lt;= m:</span><br><span class="line">            update(index*<span class="number">2</span>, l, m, pos, val)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            update(index*<span class="number">2</span>+<span class="number">1</span>, m+<span class="number">1</span>, r, pos, val)</span><br><span class="line">        segmentTree[index] = segmentTree[index*<span class="number">2</span>] + segmentTree[index*<span class="number">2</span>+<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">A = [<span class="number">1</span>, <span class="number">3</span>, -<span class="number">2</span>, <span class="number">8</span>, -<span class="number">7</span>]</span><br><span class="line">build(A, <span class="number">1</span>, <span class="number">0</span>, <span class="number">4</span>)</span><br><span class="line"><span class="keyword">for</span> l <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(A)):</span><br><span class="line">    <span class="keyword">for</span> r <span class="keyword">in</span> <span class="built_in">range</span>((<span class="built_in">len</span>(A))):</span><br><span class="line">        <span class="built_in">print</span>(l, r, <span class="built_in">sum</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">4</span>, l, r))</span><br><span class="line"></span><br><span class="line">update(<span class="number">1</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;===========after=============&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> l <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(A)):</span><br><span class="line">    <span class="keyword">for</span> r <span class="keyword">in</span> <span class="built_in">range</span>((<span class="built_in">len</span>(A))):</span><br><span class="line">        <span class="built_in">print</span>(l, r, <span class="built_in">sum</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">4</span>, l, r))</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Segment-Tree-的其他应用"><a href="#Segment-Tree-的其他应用" class="headerlink" title="Segment Tree 的其他应用"></a>Segment Tree 的其他应用</h3><h4 id="更复杂的查询"><a href="#更复杂的查询" class="headerlink" title="更复杂的查询"></a>更复杂的查询</h4><ol>
+<li>查询最大值、最小值以及最大/小值的个数</li>
+<li>查询最大公约数GCD，最小公倍数LCM</li>
+<li>查询0的个数，第k个0的位置</li>
+<li>查找数组的前缀，使得和大于某个值</li>
+<li>查找具有最大和的子区间，每个节点存储4个值：区间的和，最大前缀和，最大后缀和，子区间内的最大和。{sum, pref, suff, ans}</li>
+</ol>
+<h4 id="节点上存储所有的数据"><a href="#节点上存储所有的数据" class="headerlink" title="节点上存储所有的数据"></a>节点上存储所有的数据</h4><p>每个节点除了存储上面提到的信息之外，还把整个区间的数据都存起来。空间复杂度是$O(NlogN)$，因为每个值会落到$logN$个节点上。<br>这样可以解决下面的一些问题：  </p>
+<h5 id="找到区间内大于给定数字的最小数字"><a href="#找到区间内大于给定数字的最小数字" class="headerlink" title="找到区间内大于给定数字的最小数字"></a>找到区间内大于给定数字的最小数字</h5><p>给定三个数字输入$(l, r, x)$，查询区间$[l, r]$里面最小的大于等于$x$的数字。</p>
+<p>每个节点存储排序后的当前区间的数字，构建过程只需要$O(NlogN)$时间，因为每个区间排序数组只需要合并两个子节点排好序的数组就行。因为使用了类似meger-sort的方法，所以又被叫做”Merged Segment Tree”。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;int&gt; t[4*MAXN];</span><br><span class="line"></span><br><span class="line">void build(int a[], int v, int tl, int tr) &#123;</span><br><span class="line">    if (tl == tr) &#123;</span><br><span class="line">        t[v] = vector&lt;int&gt;(1, a[tl]);</span><br><span class="line">    &#125; else &#123; </span><br><span class="line">        int tm = (tl + tr) / 2;</span><br><span class="line">        build(a, v*2, tl, tm);</span><br><span class="line">        build(a, v*2+1, tm+1, tr);</span><br><span class="line">        merge(t[v*2].begin(), t[v*2].end(), t[v*2+1].begin(), t[v*2+1].end(),</span><br><span class="line">              back_inserter(t[v]));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查询的时候最多访问$O(logN)$的节点，每个节点里面用折半查找最多$O(logN)$次，所以查询的时间复杂度是$O(log^2N)$</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">int query(int v, int tl, int tr, int l, int r, int x) &#123;</span><br><span class="line">    if (l &gt; r)</span><br><span class="line">        return INF;</span><br><span class="line">    if (l == tl &amp;&amp; r == tr) &#123;</span><br><span class="line">        vector&lt;int&gt;::iterator pos = lower_bound(t[v].begin(), t[v].end(), x);</span><br><span class="line">        if (pos != t[v].end())</span><br><span class="line">            return *pos;</span><br><span class="line">        return INF;</span><br><span class="line">    &#125;</span><br><span class="line">    int tm = (tl + tr) / 2;</span><br><span class="line">    return min(query(v*2, tl, tm, l, min(r, tm), x), </span><br><span class="line">               query(v*2+1, tm+1, tr, max(l, tm+1), r, x));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="找到区间内大于给定数字的最小数字，同时允许更新数组"><a href="#找到区间内大于给定数字的最小数字，同时允许更新数组" class="headerlink" title="找到区间内大于给定数字的最小数字，同时允许更新数组"></a>找到区间内大于给定数字的最小数字，同时允许更新数组</h5><p>节点内部不用排序数组存储，而是用红黑树这样的平衡树存储，std::lower_bound查找的复杂度是$O(logN)$，整体的查询复杂度还是$O(log^2N)$。构建时间复杂度是$O(Nlog^2N)$，更新的时间复杂度是$O(log^N)$。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void update(int v, int tl, int tr, int pos, int new_val) &#123;</span><br><span class="line">    t[v].erase(t[v].find(a[pos]));</span><br><span class="line">    t[v].insert(new_val);</span><br><span class="line">    if (tl != tr) &#123;</span><br><span class="line">        int tm = (tl + tr) / 2;</span><br><span class="line">        if (pos &lt;= tm)</span><br><span class="line">            update(v*2, tl, tm, pos, new_val);</span><br><span class="line">        else</span><br><span class="line">            update(v*2+1, tm+1, tr, pos, new_val);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        a[pos] = new_val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用”fractional-cascading”加速查询"><a href="#使用”fractional-cascading”加速查询" class="headerlink" title="使用”fractional cascading”加速查询"></a>使用”fractional cascading”加速查询</h5><p>前面的问题使用”fractional cascading”可以在$O(logN)$时间内完成。<br>前面的查询中，我们把查询分成多个子查询，每个子查询都是用折半查找。使用”fractional cascading” 可以把所有的折半查找替换成一个。<br>最简单的”fractional cascading”的一个例子：有$k$个排好序的数组，需要从每个数组中找出最小的大于等于给定数字的数字。<br>我们在排序的数组中，存储{数组，在左子树中的位置， 在右子树中的位置}，我们就不需要在子节点中进行折半查找了。<br>这种技巧用于没有更新的区间查询，此时的线段树也被称作”Wavelet Tree”。</p>
+<h4 id="范围更新-延迟传播-Lazy-Propagation"><a href="#范围更新-延迟传播-Lazy-Propagation" class="headerlink" title="范围更新(延迟传播 Lazy Propagation)"></a>范围更新(延迟传播 Lazy Propagation)</h4><p>允许更新一个连续的区间，同时保证查询的复杂度是$O(logN)$。 </p>
+<h5 id="区间的每个元素都加上一个值"><a href="#区间的每个元素都加上一个值" class="headerlink" title="区间的每个元素都加上一个值"></a>区间的每个元素都加上一个值</h5><p>这里我们考虑一个简单的问题，为区间$[l, r]$中的每一个值都加上值$x$，然后查询知道指定位置$a[i]$的值。为了使修改操作更加高效，我们在线段树的每个节点存储需要为整个区间加上的值。<br>这样只要找到当前节点包含在修改区间内， 我们就不需要再往下查找，需要修改的节点数就从$O(N)$变成了$O(logN)$。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> v, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tl == tr) &#123;</span><br><span class="line">        t[v] = a[tl];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> tm = (tl + tr) / <span class="number">2</span>;</span><br><span class="line">        <span class="built_in">build</span>(a, v*<span class="number">2</span>, tl, tm);</span><br><span class="line">        <span class="built_in">build</span>(a, v*<span class="number">2</span>+<span class="number">1</span>, tm+<span class="number">1</span>, tr);</span><br><span class="line">        t[v] = <span class="number">0</span>; <span class="comment">// 建立的时候，除了叶子节点增量都是0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> add)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; r)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (l == tl &amp;&amp; r == tr) &#123; <span class="comment">// 如果当前节点的区间等于要更新的区间，改变增量后返回，使得复杂度降低</span></span><br><span class="line">        t[v] += add;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> tm = (tl + tr) / <span class="number">2</span>;</span><br><span class="line">        <span class="built_in">update</span>(v*<span class="number">2</span>, tl, tm, l, <span class="built_in">min</span>(r, tm), add);</span><br><span class="line">        <span class="built_in">update</span>(v*<span class="number">2</span>+<span class="number">1</span>, tm+<span class="number">1</span>, tr, <span class="built_in">max</span>(l, tm+<span class="number">1</span>), r, add);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 查找位置pos的值 </span></span><br><span class="line"><span class="comment"> * @param v 当前节点的下标，初始值是根节点的下标0</span></span><br><span class="line"><span class="comment"> * @param tl 当前节点包含的区间的起始下标</span></span><br><span class="line"><span class="comment"> * @param tr 当前节点包含的区间的结束下标</span></span><br><span class="line"><span class="comment"> * @param pos 需要查找的位置</span></span><br><span class="line"><span class="comment"> * @return 原始数组在下标pos位置的值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">// 查找位置pos的值，v是当前节点的下标，初始是根节点</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr, <span class="keyword">int</span> pos)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tl == tr)</span><br><span class="line">        <span class="keyword">return</span> t[v];</span><br><span class="line">    <span class="keyword">int</span> tm = (tl + tr) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (pos &lt;= tm)</span><br><span class="line">        <span class="keyword">return</span> t[v] + <span class="built_in">get</span>(v*<span class="number">2</span>, tl, tm, pos);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> t[v] + <span class="built_in">get</span>(v*<span class="number">2</span>+<span class="number">1</span>, tm+<span class="number">1</span>, tr, pos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="整个区间都更新为指定值"><a href="#整个区间都更新为指定值" class="headerlink" title="整个区间都更新为指定值"></a>整个区间都更新为指定值</h5><p>现在要把去买$[l, r]$的所有值都更新成$x$，我们还是考虑查询指定位置的值$a[i]$。<br>这里主要使用了延迟更新的方式：不更新所有的节点，而是值更新在区间内的根节点，需要一个标记来标记当前的值是否是更新的值。<br>假设当前节点的值是标记后的值，此时如果要更新它下面的子区间，我们就需要先把之前的值更新到两个子节点。<br>这里就需要一个push操作，把当前节点的信息更新都子节点中。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @param v 当前节点的下标</span></span><br><span class="line"><span class="comment"> */</span> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (marked[v]) &#123;</span><br><span class="line">        t[v*<span class="number">2</span>] = t[v*<span class="number">2</span>+<span class="number">1</span>] = t[v];</span><br><span class="line">        marked[v*<span class="number">2</span>] = marked[v*<span class="number">2</span>+<span class="number">1</span>] = <span class="literal">true</span>;</span><br><span class="line">        marked[v] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * update之间先push</span></span><br><span class="line"><span class="comment"> * @param v 当前节点的下标</span></span><br><span class="line"><span class="comment"> * @param tl 当前节点的区间起始位置</span></span><br><span class="line"><span class="comment"> * @param tr 当期节点的区间结束位置</span></span><br><span class="line"><span class="comment"> * @param l 查询区间起始位置</span></span><br><span class="line"><span class="comment"> * @param r 查询区间结束位置</span></span><br><span class="line"><span class="comment"> * @param new_val 更新后的值</span></span><br><span class="line"><span class="comment"> */</span> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> new_val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; r) </span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (l == tl &amp;&amp; tr == r) &#123;</span><br><span class="line">        t[v] = new_val;</span><br><span class="line">        marked[v] = <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">push</span>(v);</span><br><span class="line">        <span class="keyword">int</span> tm = (tl + tr) / <span class="number">2</span>;</span><br><span class="line">        <span class="built_in">update</span>(v*<span class="number">2</span>, tl, tm, l, <span class="built_in">min</span>(r, tm), new_val);</span><br><span class="line">        <span class="built_in">update</span>(v*<span class="number">2</span>+<span class="number">1</span>, tm+<span class="number">1</span>, tr, <span class="built_in">max</span>(l, tm+<span class="number">1</span>), r, new_val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在查询的时候先push，也可以用另一种方式：不更新遇到marked[v]就返回</span></span><br><span class="line"><span class="comment"> * @param v 当前节点的下标</span></span><br><span class="line"><span class="comment"> * @param tl 当前节点的区间起始位置</span></span><br><span class="line"><span class="comment"> * @param tr 当前节点的区间结束位置</span></span><br><span class="line"><span class="comment"> * @param pos 查询的下标</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr, <span class="keyword">int</span> pos)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tl == tr) &#123;</span><br><span class="line">        <span class="keyword">return</span> t[v];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">push</span>(v);</span><br><span class="line">    <span class="keyword">int</span> tm = (tl + tr) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (pos &lt;= tm) </span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get</span>(v*<span class="number">2</span>, tl, tm, pos);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get</span>(v*<span class="number">2</span>+<span class="number">1</span>, tm+<span class="number">1</span>, tr, pos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="区间增加某个值，然后查询区间最大值"><a href="#区间增加某个值，然后查询区间最大值" class="headerlink" title="区间增加某个值，然后查询区间最大值"></a>区间增加某个值，然后查询区间最大值</h5><p>解决的方法是在更新和查询之前，先调用push把当前节点的信息传播到两个子节点中。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @param v 当前节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    t[v*<span class="number">2</span>] += lazy[v];</span><br><span class="line">    lazy[v*<span class="number">2</span>] += lazy[v];</span><br><span class="line">    t[v*<span class="number">2</span>+<span class="number">1</span>] += lazy[v];</span><br><span class="line">    lazy[v*<span class="number">2</span>+<span class="number">1</span>] += lazy[v];</span><br><span class="line">    lazy[v] = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * t[v]是以v为根节点的区间的最大值，lazy[v]是以v为根节点的区间的延迟更新值。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> addend)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; r) </span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (l == tl &amp;&amp; tr == r) &#123;</span><br><span class="line">        t[v] += addend;</span><br><span class="line">        lazy[v] += addend; <span class="comment">//延迟更新</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">push</span>(v);</span><br><span class="line">        <span class="keyword">int</span> tm = (tl + tr) / <span class="number">2</span>;</span><br><span class="line">        <span class="built_in">update</span>(v*<span class="number">2</span>, tl, tm, l, <span class="built_in">min</span>(r, tm), addend);</span><br><span class="line">        <span class="built_in">update</span>(v*<span class="number">2</span>+<span class="number">1</span>, tm+<span class="number">1</span>, tr, <span class="built_in">max</span>(l, tm+<span class="number">1</span>), r, addend);</span><br><span class="line">        t[v] = <span class="built_in">max</span>(t[v*<span class="number">2</span>], t[v*<span class="number">2</span>+<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; r)</span><br><span class="line">        <span class="keyword">return</span> -INF;</span><br><span class="line">    <span class="keyword">if</span> (tl == tr)</span><br><span class="line">        <span class="keyword">return</span> t[v];</span><br><span class="line">    <span class="built_in">push</span>(v); <span class="comment">// query 之前先传播</span></span><br><span class="line">    <span class="keyword">int</span> tm = (tl + tr) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(<span class="built_in">query</span>(v*<span class="number">2</span>, tl, tm, l, <span class="built_in">min</span>(r, tm)), </span><br><span class="line">               <span class="built_in">query</span>(v*<span class="number">2</span>+<span class="number">1</span>, tm+<span class="number">1</span>, tr, <span class="built_in">max</span>(l, tm+<span class="number">1</span>), r));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="泛化到更高维度"><a href="#泛化到更高维度" class="headerlink" title="泛化到更高维度"></a>泛化到更高维度</h4><p>可以用线段树分割第一个维度，然后每个节点创建一个线段树分割第二维度。</p>
+<h5 id="简单二维线段树"><a href="#简单二维线段树" class="headerlink" title="简单二维线段树"></a>简单二维线段树</h5><p>给定矩阵$A[0\ldots N-1, 0\ldots M-1]$，需要查询子矩阵$A[x_1\ldots x_2, y_1\ldots y_2]$的和（或者最大最小值），同时可以更新每个元素（例如$A[x][y]=val$）。<br>构建一个二维线段树先处理$x$再处理$y$，空间复杂度$O(16MN)$，查询时间复杂度$O(logNlogM)$。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build_y</span><span class="params">(<span class="keyword">int</span> vx, <span class="keyword">int</span> lx, <span class="keyword">int</span> rx, <span class="keyword">int</span> vy, <span class="keyword">int</span> ly, <span class="keyword">int</span> ry)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ly == ry) &#123;</span><br><span class="line">        <span class="keyword">if</span> (lx == rx)</span><br><span class="line">            t[vx][vy] = a[lx][ly];</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            t[vx][vy] = t[vx*<span class="number">2</span>][vy] + t[vx*<span class="number">2</span>+<span class="number">1</span>][vy];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> my = (ly + ry) / <span class="number">2</span>;</span><br><span class="line">        <span class="built_in">build_y</span>(vx, lx, rx, vy*<span class="number">2</span>, ly, my);</span><br><span class="line">        <span class="built_in">build_y</span>(vx, lx, rx, vy*<span class="number">2</span>+<span class="number">1</span>, my+<span class="number">1</span>, ry);</span><br><span class="line">        t[vx][vy] = t[vx][vy*<span class="number">2</span>] + t[vx][vy*<span class="number">2</span>+<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build_x</span><span class="params">(<span class="keyword">int</span> vx, <span class="keyword">int</span> lx, <span class="keyword">int</span> rx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lx != rx) &#123;</span><br><span class="line">        <span class="keyword">int</span> mx = (lx + rx) / <span class="number">2</span>;</span><br><span class="line">        <span class="built_in">build_x</span>(vx*<span class="number">2</span>, lx, mx);</span><br><span class="line">        <span class="built_in">build_x</span>(vx*<span class="number">2</span>+<span class="number">1</span>, mx+<span class="number">1</span>, rx);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">build_y</span>(vx, lx, rx, <span class="number">1</span>, <span class="number">0</span>, m<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum_y</span><span class="params">(<span class="keyword">int</span> vx, <span class="keyword">int</span> vy, <span class="keyword">int</span> tly, <span class="keyword">int</span> try_, <span class="keyword">int</span> ly, <span class="keyword">int</span> ry)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ly &gt; ry) </span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (ly == tly &amp;&amp; try_ == ry)</span><br><span class="line">        <span class="keyword">return</span> t[vx][vy];</span><br><span class="line">    <span class="keyword">int</span> tmy = (tly + try_) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum_y</span>(vx, vy*<span class="number">2</span>, tly, tmy, ly, <span class="built_in">min</span>(ry, tmy))</span><br><span class="line">         + <span class="built_in">sum_y</span>(vx, vy*<span class="number">2</span>+<span class="number">1</span>, tmy+<span class="number">1</span>, try_, <span class="built_in">max</span>(ly, tmy+<span class="number">1</span>), ry);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum_x</span><span class="params">(<span class="keyword">int</span> vx, <span class="keyword">int</span> tlx, <span class="keyword">int</span> trx, <span class="keyword">int</span> lx, <span class="keyword">int</span> rx, <span class="keyword">int</span> ly, <span class="keyword">int</span> ry)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lx &gt; rx)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (lx == tlx &amp;&amp; trx == rx)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum_y</span>(vx, <span class="number">1</span>, <span class="number">0</span>, m<span class="number">-1</span>, ly, ry);</span><br><span class="line">    <span class="keyword">int</span> tmx = (tlx + trx) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum_x</span>(vx*<span class="number">2</span>, tlx, tmx, lx, <span class="built_in">min</span>(rx, tmx), ly, ry)</span><br><span class="line">         + <span class="built_in">sum_x</span>(vx*<span class="number">2</span>+<span class="number">1</span>, tmx+<span class="number">1</span>, trx, <span class="built_in">max</span>(lx, tmx+<span class="number">1</span>), rx, ly, ry);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update_y</span><span class="params">(<span class="keyword">int</span> vx, <span class="keyword">int</span> lx, <span class="keyword">int</span> rx, <span class="keyword">int</span> vy, <span class="keyword">int</span> ly, <span class="keyword">int</span> ry, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> new_val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ly == ry) &#123;</span><br><span class="line">        <span class="keyword">if</span> (lx == rx)</span><br><span class="line">            t[vx][vy] = new_val;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            t[vx][vy] = t[vx*<span class="number">2</span>][vy] + t[vx*<span class="number">2</span>+<span class="number">1</span>][vy];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> my = (ly + ry) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (y &lt;= my)</span><br><span class="line">            <span class="built_in">update_y</span>(vx, lx, rx, vy*<span class="number">2</span>, ly, my, x, y, new_val);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="built_in">update_y</span>(vx, lx, rx, vy*<span class="number">2</span>+<span class="number">1</span>, my+<span class="number">1</span>, ry, x, y, new_val);</span><br><span class="line">        t[vx][vy] = t[vx][vy*<span class="number">2</span>] + t[vx][vy*<span class="number">2</span>+<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update_x</span><span class="params">(<span class="keyword">int</span> vx, <span class="keyword">int</span> lx, <span class="keyword">int</span> rx, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> new_val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lx != rx) &#123;</span><br><span class="line">        <span class="keyword">int</span> mx = (lx + rx) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (x &lt;= mx)</span><br><span class="line">            <span class="built_in">update_x</span>(vx*<span class="number">2</span>, lx, mx, x, y, new_val);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="built_in">update_x</span>(vx*<span class="number">2</span>+<span class="number">1</span>, mx+<span class="number">1</span>, rx, x, y, new_val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">update_y</span>(vx, lx, rx, <span class="number">1</span>, <span class="number">0</span>, m<span class="number">-1</span>, x, y, new_val);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Fenwick-Tree"><a href="#Fenwick-Tree" class="headerlink" title="Fenwick Tree"></a>Fenwick Tree</h2><h2 id="Sparse-Table"><a href="#Sparse-Table" class="headerlink" title="Sparse Table"></a>Sparse Table</h2><h2 id="Sqrt-Tree"><a href="#Sqrt-Tree" class="headerlink" title="Sqrt Tree"></a>Sqrt Tree</h2><h2 id="DIsjoint-Set-Union"><a href="#DIsjoint-Set-Union" class="headerlink" title="DIsjoint Set Union"></a>DIsjoint Set Union</h2><h2 id="Cartesian-Tree"><a href="#Cartesian-Tree" class="headerlink" title="Cartesian Tree"></a>Cartesian Tree</h2><h2 id="Farach-Colton-and-Bender-Algorithm"><a href="#Farach-Colton-and-Bender-Algorithm" class="headerlink" title="Farach-Colton and Bender Algorithm"></a>Farach-Colton and Bender Algorithm</h2>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Algorithms-rmq/" rel="tag"># Algorithms, rmq</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/18/Labyrinth/" rel="next" title="Labyrinth">
+                <i class="fa fa-chevron-left"></i> Labyrinth
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/23/Codeforces-Vasya-and-Good-Sequences/" rel="prev" title="Codeforces Vasya and Good Sequences">
+                Codeforces Vasya and Good Sequences <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Range-Minimum-Query"><span class="nav-number">1.</span> <span class="nav-text">Range Minimum Query</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Solution"><span class="nav-number">2.</span> <span class="nav-text">Solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sqrt-decomposition"><span class="nav-number">2.1.</span> <span class="nav-text">Sqrt-decomposition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Segment-Tree"><span class="nav-number">2.2.</span> <span class="nav-text">Segment Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Segment-Tree-%E7%9A%84%E7%AE%80%E5%8D%95%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.2.1.</span> <span class="nav-text">Segment Tree 的简单形式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Segment-Tree-%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Segment Tree 的结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0"><span class="nav-number">2.2.1.4.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.1.5.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Segment-Tree-%E7%9A%84%E5%85%B6%E4%BB%96%E5%BA%94%E7%94%A8"><span class="nav-number">2.2.2.</span> <span class="nav-text">Segment Tree 的其他应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E5%A4%8D%E6%9D%82%E7%9A%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">更复杂的查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E4%B8%8A%E5%AD%98%E5%82%A8%E6%89%80%E6%9C%89%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">节点上存储所有的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%BE%E5%88%B0%E5%8C%BA%E9%97%B4%E5%86%85%E5%A4%A7%E4%BA%8E%E7%BB%99%E5%AE%9A%E6%95%B0%E5%AD%97%E7%9A%84%E6%9C%80%E5%B0%8F%E6%95%B0%E5%AD%97"><span class="nav-number">2.2.2.2.1.</span> <span class="nav-text">找到区间内大于给定数字的最小数字</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%BE%E5%88%B0%E5%8C%BA%E9%97%B4%E5%86%85%E5%A4%A7%E4%BA%8E%E7%BB%99%E5%AE%9A%E6%95%B0%E5%AD%97%E7%9A%84%E6%9C%80%E5%B0%8F%E6%95%B0%E5%AD%97%EF%BC%8C%E5%90%8C%E6%97%B6%E5%85%81%E8%AE%B8%E6%9B%B4%E6%96%B0%E6%95%B0%E7%BB%84"><span class="nav-number">2.2.2.2.2.</span> <span class="nav-text">找到区间内大于给定数字的最小数字，同时允许更新数组</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E2%80%9Dfractional-cascading%E2%80%9D%E5%8A%A0%E9%80%9F%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.2.2.2.3.</span> <span class="nav-text">使用”fractional cascading”加速查询</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8C%83%E5%9B%B4%E6%9B%B4%E6%96%B0-%E5%BB%B6%E8%BF%9F%E4%BC%A0%E6%92%AD-Lazy-Propagation"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">范围更新(延迟传播 Lazy Propagation)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E7%9A%84%E6%AF%8F%E4%B8%AA%E5%85%83%E7%B4%A0%E9%83%BD%E5%8A%A0%E4%B8%8A%E4%B8%80%E4%B8%AA%E5%80%BC"><span class="nav-number">2.2.2.3.1.</span> <span class="nav-text">区间的每个元素都加上一个值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B4%E4%B8%AA%E5%8C%BA%E9%97%B4%E9%83%BD%E6%9B%B4%E6%96%B0%E4%B8%BA%E6%8C%87%E5%AE%9A%E5%80%BC"><span class="nav-number">2.2.2.3.2.</span> <span class="nav-text">整个区间都更新为指定值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E5%A2%9E%E5%8A%A0%E6%9F%90%E4%B8%AA%E5%80%BC%EF%BC%8C%E7%84%B6%E5%90%8E%E6%9F%A5%E8%AF%A2%E5%8C%BA%E9%97%B4%E6%9C%80%E5%A4%A7%E5%80%BC"><span class="nav-number">2.2.2.3.3.</span> <span class="nav-text">区间增加某个值，然后查询区间最大值</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%9B%E5%8C%96%E5%88%B0%E6%9B%B4%E9%AB%98%E7%BB%B4%E5%BA%A6"><span class="nav-number">2.2.2.4.</span> <span class="nav-text">泛化到更高维度</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E4%BA%8C%E7%BB%B4%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="nav-number">2.2.2.4.1.</span> <span class="nav-text">简单二维线段树</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fenwick-Tree"><span class="nav-number">2.3.</span> <span class="nav-text">Fenwick Tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sparse-Table"><span class="nav-number">2.4.</span> <span class="nav-text">Sparse Table</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sqrt-Tree"><span class="nav-number">2.5.</span> <span class="nav-text">Sqrt Tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DIsjoint-Set-Union"><span class="nav-number">2.6.</span> <span class="nav-text">DIsjoint Set Union</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cartesian-Tree"><span class="nav-number">2.7.</span> <span class="nav-text">Cartesian Tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Farach-Colton-and-Bender-Algorithm"><span class="nav-number">2.8.</span> <span class="nav-text">Farach-Colton and Bender Algorithm</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Firepaw</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
